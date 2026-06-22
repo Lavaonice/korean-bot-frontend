@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brevity Companion - Viva Setup</title>
+    <style>
+        /* Shared Styles (Keep identical to index.html for visual consistency) */
+        :root {
+            --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA;
+            --text-primary: #111111; --text-secondary: #555555;
+            --accent-main: #34495E; --border-color: #E1E1E1;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); color: var(--text-primary); background-color: var(--secondary-bg); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; }
+        .container { width: 100%; max-width: 650px; background-color: var(--primary-bg); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; }
+        .header { padding: 30px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .site-name { font-size: 1.75rem; font-weight: 700; color: var(--accent-main); }
+        .content { padding: 30px; }
+
+        /* Viva Specific Styles */
+        .instruction { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; }
+        .chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 30px; }
+        .checkbox-label { display: flex; align-items: center; justify-content: center; padding: 12px 10px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 0.9rem; font-weight: 500; user-select: none; }
+        .checkbox-label input { display: none; }
+        .checkbox-label:hover { background-color: var(--secondary-bg); }
+        .checkbox-label input:checked + span { color: var(--accent-main); }
+        .checkbox-label.checked { border-color: var(--accent-main); background-color: #F4F7FA; color: var(--accent-main); }
+        
+        .footer-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 20px; }
+        .btn { padding: 12px 24px; font-size: 0.95rem; font-weight: 600; border-radius: 6px; cursor: pointer; border: none; text-decoration: none; }
+        .btn-back { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); }
+        .btn-primary { background-color: var(--accent-main); color: var(--primary-bg); }
+        .btn-primary:disabled { background-color: #A0AAB5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="site-name">Viva Simulator</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">Configure your exam boundaries</p>
+        </header>
+
+        <div class="content">
+            <p class="instruction">Select the chapters you want to be tested on. The AI will strictly limit its vocabulary to this cluster.</p>
+            
+            <div class="chapter-grid" id="viva-grid">
+                </div>
+
+            <div class="footer-actions">
+                <a href="dashboard.html" class="btn btn-back">⟵ Back to Modes</a>
+                <button class="btn btn-primary" id="btn-start" disabled onclick="startViva()">Start Audio Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('viva-grid');
+        const startBtn = document.getElementById('btn-start');
+
+        // Generate Chapters 1-40
+        for (let i = 1; i <= 40; i++) {
+            const label = document.createElement('label');
+            label.className = 'checkbox-label';
+            label.innerHTML = `<input type="checkbox" value="${i}" onchange="toggleBox(this)"><span>Chapter ${i}</span>`;
+            grid.appendChild(label);
+        }
+
+        function toggleBox(box) {
+            if (box.checked) box.parentElement.classList.add('checked');
+            else box.parentElement.classList.remove('checked');
+
+            const checkedCount = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            startBtn.disabled = checkedCount === 0; // Disable if 0 selected
+        }
+
+        function startViva() {
+            const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+            alert(`Ready to transition to the voice canvas!\nPayload to send backend: {"mode": "viva", "cluster": [${selected.join(', ')}]}`);
+            // Here you would eventually redirect to a 'voice-canvas.html' passing the parameters
+        }
+    </script>
+</body>
+</html>

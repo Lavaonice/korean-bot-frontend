@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Brevity Companion</title>
+    <style>
+        :root { --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA; --accent-main: #111111; --border: #E1E1E1; --font: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+        body { background-color: var(--secondary-bg); display: flex; justify-content: center; align-items: center; height: 100vh; }
+        
+        .auth-container { background: var(--primary-bg); width: 100%; max-width: 400px; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); text-align: center; }
+        
+        .subtitle { font-size: 0.9rem; color: #666; margin-bottom: 30px; }
+        
+        input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--accent-main); }
+        
+        .btn { width: 100%; padding: 14px; background: var(--accent-main); color: white; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 1rem; }
+        .btn:hover { background: #333; transform: translateY(-2px); }
+        .switch-link { margin-top: 20px; font-size: 0.9rem; color: #666; cursor: pointer; }
+        .switch-link span { color: var(--accent-main); font-weight: 600; }
+
+ .header-group {
+    display: flex;
+    flex-direction: column; /* This forces the tiger on top of the text */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.mascot-gif {
+    /* Default size for PC/Laptop */
+    width: 300px;
+    height: auto;
+    margin-bottom: 10px;
+    transition: width 0.3s ease; /* Makes resizing smooth */
+}
+
+/* Mobile override: Only applies when screen width is 500px or less */
+@media (max-width: 500px) {
+    .mascot-gif {
+        width: 120px; /* Smaller size for phones */
+    }
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-main);
+    text-align: center;
+}
+    </style>
+</head>
+<body>
+
+ <div class="auth-container">
+        <div class="header-group">
+            <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger.apng" alt="Tiger Mascot" class="mascot-gif">
+            <h1 class="logo">Brevity Companion</h1>
+        </div>
+        
+        <p class="subtitle">Log in to continue your Korean journey</p>
+        
+        <input type="email" placeholder="Email Address" id="email">
+        <input type="password" placeholder="Password" id="password">
+        
+        <button class="btn" onclick="fakeLogin()">Enter Platform</button>
+        
+        <p class="switch-link">New student? <span>Create Account</span></p>
+    </div>
+
+    <script>
+        function fakeLogin() {
+            // Give the user 5 KP on first login (Not enough to play! They need 10)
+            if(!localStorage.getItem('kimchi_points')) {
+                localStorage.setItem('kimchi_points', '5'); 
+            }
+            // Redirect to the actual app dashboard
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

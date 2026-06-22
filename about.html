@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Brevity Companion</title>
+    <style>
+        :root { --font: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+        /* Dark cinematic theme for the About page */
+        body { background-color: #0A0A0A; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
+        
+        /* Sidebar (Same code) */
+        .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #1a1a1a; color: white; transition: 0.3s ease; z-index: 1000; padding-top: 60px; border-right: 1px solid #333;}
+        .sidebar.open { left: 0; }
+        .sidebar-link { display: block; padding: 15px 25px; color: #aaa; text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid #222; transition: 0.2s; }
+        .sidebar-link:hover { color: white; background: #333; padding-left: 30px; }
+        .sidebar-tab { position: absolute; right: -40px; top: 20px; width: 40px; height: 50px; background: #1a1a1a; color: white; display: flex; justify-content: center; align-items: center; border-radius: 0 8px 8px 0; cursor: pointer; }
+
+        .about-container { width: 100%; max-width: 800px; text-align: center; }
+        
+        .hero-title { font-size: 3rem; font-weight: 800; background: linear-gradient(to right, #7FB3D5, #E63946); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .hero-subtitle { font-size: 1.2rem; color: #aaa; margin-bottom: 40px; font-weight: 300; }
+
+        /* Cinematic Video Container */
+        .video-wrapper { width: 100%; aspect-ratio: 16/9; background: #111; border-radius: 12px; border: 1px solid #333; overflow: hidden; margin-bottom: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; }
+        .video-wrapper iframe, .video-wrapper video { width: 100%; height: 100%; object-fit: cover; border: none; }
+        
+        /* Fallback text if no video is present yet */
+        .video-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #555; }
+
+        .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; }
+        .tech-card { background: #111; border: 1px solid #222; padding: 25px; border-radius: 12px; }
+        .tech-card h3 { color: #7FB3D5; margin-bottom: 10px; }
+        .tech-card p { color: #888; font-size: 0.95rem; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
+        <h2 style="padding: 0 25px 20px 25px; color: #E63946;">Menu</h2>
+        <a href="dashboard.html" class="sidebar-link">Practice Hub</a>
+        <a href="store.html" class="sidebar-link">Kimchi Points Store</a>
+        <a href="about.html" class="sidebar-link active" style="border-left: 4px solid #E63946; color: white;">About Engine</a>
+    </div>
+
+    <div class="about-container">
+        <h1 class="hero-title">The Engineering Behind Brevity</h1>
+        <p class="hero-subtitle">Bridging Data Science and High-Level Linguistics</p>
+
+        <div class="video-wrapper">
+            <div class="video-placeholder">Project Showcase Video Placeholder</div>
+        </div>
+
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>Asynchronous Architecture</h3>
+                <p>Built on a serverless pipeline utilizing `asyncio.gather` to concurrently process Whisper STT and Google TTS, keeping conversational latency under one second.</p>
+            </div>
+            <div class="tech-card">
+                <h3>Linguistic Boundaries</h3>
+                <p>Proprietary JSON-driven data mapping strictly confines the AI's vocabulary limits, forcing output that aligns with standard Korean textbook curriculums.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store - Brevity Companion</title>
+    <style>
+        :root { --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA; --accent-main: #111111; --kp-color: #E63946; --border: #E1E1E1; --font: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+        body { background-color: var(--secondary-bg); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
+        
+        .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #111; color: white; transition: 0.3s ease; z-index: 1000; padding-top: 60px; }
+        .sidebar.open { left: 0; }
+        .sidebar-link { display: block; padding: 15px 25px; color: #ccc; text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid #333; transition: 0.2s; }
+        .sidebar-link:hover { color: white; background: #222; padding-left: 30px; }
+        .sidebar-link.active { border-left: 4px solid var(--kp-color); color: white; background: #222; }
+        .sidebar-tab { position: absolute; right: -40px; top: 20px; width: 40px; height: 50px; background: #111; color: white; display: flex; justify-content: center; align-items: center; border-radius: 0 8px 8px 0; cursor: pointer; }
+        
+        .container { width: 100%; max-width: 650px; background: var(--primary-bg); border-radius: 12px; border: 1px solid var(--border); padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        .kp-badge { background: #FFF0F1; color: var(--kp-color); padding: 8px 15px; border-radius: 20px; font-weight: 700; border: 1px solid #FFD6D9; }
+        
+        /* Store Grid */
+        .store-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .store-item { border: 2px solid var(--border); padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .store-item:hover { border-color: var(--kp-color); background: #FFF0F1; transform: translateY(-3px); }
+        .store-item h2 { color: var(--kp-color); font-size: 1.8rem; margin-bottom: 5px; }
+        .store-item p { color: #666; font-weight: 600; }
+
+        .premium-card { background: linear-gradient(135deg, #111, #333); color: white; padding: 30px; border-radius: 12px; text-align: center; margin-top: 20px; }
+        .premium-card h3 { color: #FFD700; margin-bottom: 10px; font-size: 1.5rem;}
+        .premium-card p { color: #ccc; margin-bottom: 20px; font-size: 0.9rem;}
+        .premium-btn { background: #FFD700; color: #111; padding: 12px 25px; border-radius: 25px; font-weight: bold; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-tab" onclick="toggleSidebar()">☰</div>
+        <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);">Menu</h2>
+        <a href="dashboard.html" class="sidebar-link">Practice Hub</a>
+        <a href="store.html" class="sidebar-link active">Kimchi Points Store</a>
+        <a href="about.html" class="sidebar-link">About Engine</a>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h2>Recharge Balance</h2>
+            <div class="kp-badge">🪙 <span id="current-kp">0</span> KP</div>
+        </header>
+
+        <p style="margin-bottom: 20px; color: #666;">Conversion Rate: <strong>₹1 INR = 1 KP</strong></p>
+
+        <div class="store-grid">
+            <div class="store-item" onclick="buyPoints(50)">
+                <h2>50 KP</h2>
+                <p>₹50.00</p>
+            </div>
+            <div class="store-item" onclick="buyPoints(100)">
+                <h2>100 KP</h2>
+                <p>₹100.00</p>
+            </div>
+            <div class="store-item" onclick="buyPoints(500)">
+                <h2>500 KP</h2>
+                <p>₹500.00</p>
+            </div>
+            <div class="store-item" onclick="buyPoints(1000)">
+                <h2>1000 KP</h2>
+                <p>₹1000.00</p>
+            </div>
+        </div>
+
+        <div class="premium-card">
+            <h3>Brevity Scholar Premium</h3>
+            <p>Unlimited sessions, zero cooldowns, advanced analytics, and prioritized audio routing.</p>
+            <button class="premium-btn">Join Waitlist</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        
+        let currentKp = parseInt(localStorage.getItem('kimchi_points') || '0');
+        document.getElementById('current-kp').innerText = currentKp;
+
+        function buyPoints(amount) {
+            // Simulate a purchase for frontend testing
+            if(confirm(`Mock Razorpay Gateway: Confirm payment of ₹${amount}?`)) {
+                currentKp += amount;
+                localStorage.setItem('kimchi_points', currentKp);
+                document.getElementById('current-kp').innerText = currentKp;
+                alert(`Successfully added ${amount} KP to your wallet!`);
+            }
+        }
+    </script>
+</body>
+</html>
