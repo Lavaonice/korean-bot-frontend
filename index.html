@@ -5,57 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Brevity Companion</title>
     <style>
-        :root { --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA; --accent-main: #111111; --border: #E1E1E1; --font: 'Segoe UI', sans-serif; }
+        :root { 
+            --primary-bg: #FFFFFF; 
+            --secondary-bg: #F8F9FA; 
+            --accent-main: #111111; 
+            --border: #E1E1E1; 
+            --font: 'Segoe UI', sans-serif; 
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-        body { background-color: var(--secondary-bg); display: flex; justify-content: center; align-items: center; height: 100vh; }
+        body { background-color: var(--secondary-bg); display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
         
         .auth-container { background: var(--primary-bg); width: 100%; max-width: 400px; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); text-align: center; }
         
         .subtitle { font-size: 0.9rem; color: #666; margin-bottom: 30px; }
         
-        input { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; outline: none; }
-        input:focus { border-color: var(--accent-main); }
+        input[type="email"], input[type="password"] { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; outline: none; }
+        input[type="email"]:focus, input[type="password"]:focus { border-color: var(--accent-main); }
         
         .btn { width: 100%; padding: 14px; background: var(--accent-main); color: white; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 1rem; }
         .btn:hover { background: #333; transform: translateY(-2px); }
-        .switch-link { margin-top: 20px; font-size: 0.9rem; color: #666; cursor: pointer; }
-        .switch-link span { color: var(--accent-main); font-weight: 600; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
- .header-group {
-    display: flex;
-    flex-direction: column; /* This forces the tiger on top of the text */
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+        .switch-link { margin-top: 25px; font-size: 0.9rem; color: #666; }
+        .switch-link a { color: var(--accent-main); font-weight: 600; text-decoration: none; }
+        .switch-link a:hover { text-decoration: underline; }
 
-.mascot-gif {
-    /* Default size for PC/Laptop */
-    width: 300px;
-    height: auto;
-    margin-bottom: 10px;
-    transition: width 0.3s ease; /* Makes resizing smooth */
-}
+        .header-group {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-/* Mobile override: Only applies when screen width is 500px or less */
-@media (max-width: 500px) {
-    .mascot-gif {
-        width: 120px; /* Smaller size for phones */
-    }
-}
+        .mascot-gif {
+            width: 300px;
+            height: auto;
+            margin-bottom: 10px;
+            transition: width 0.3s ease; 
+        }
 
-.logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--accent-main);
-    text-align: center;
-}
+        @media (max-width: 500px) {
+            .mascot-gif { width: 120px; }
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--accent-main); text-align: center; }
+
+        /* Subtle Legal Compliance Footer */
+        .legal-footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: #888;
+            line-height: 1.4;
+        }
+        .legal-footer a { color: #666; text-decoration: none; font-weight: 600; }
+        .legal-footer a:hover { text-decoration: underline; }
     </style>
+    <!-- Include Supabase JS CDN UMD bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
- <div class="auth-container">
+    <div class="auth-container">
         <div class="header-group">
             <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger.apng" alt="Tiger Mascot" class="mascot-gif">
             <h1 class="logo">Brevity Companion</h1>
@@ -63,22 +77,63 @@
         
         <p class="subtitle">Log in to continue your Korean journey</p>
         
-        <input type="email" placeholder="Email Address" id="email">
-        <input type="password" placeholder="Password" id="password">
+        <input type="email" placeholder="Email Address" id="email" required>
+        <input type="password" placeholder="Password" id="password" required>
         
-        <button class="btn" onclick="fakeLogin()">Enter Platform</button>
+        <button class="btn" id="loginBtn" onclick="handleLogin()">Enter Platform</button>
         
-        <p class="switch-link">New student? <span>Create Account</span></p>
+        <p class="switch-link">New student? <a href="signup.html">Create Account</a></p>
+
+        <!-- Compliance session hyperlinks at the bottom -->
+        <div class="legal-footer">
+            By clicking Enter Platform, you acknowledge agreement to our 
+            <a href="terms.html" target="_blank">Terms of Service</a> & 
+            <a href="privacy.html" target="_blank">Privacy Policy</a>.
+        </div>
     </div>
 
     <script>
-        function fakeLogin() {
-            // Give the user 5 KP on first login (Not enough to play! They need 10)
-            if(!localStorage.getItem('kimchi_points')) {
-                localStorage.setItem('kimchi_points', '5'); 
+        // Initialize Connection with your live Supabase credentials
+        const SUPABASE_URL = "https://zysltznpsldeuxqtsejc.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_awRlrxnsIcR9IfoODAJKzQ_iaTKlAXN"; 
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function handleLogin() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!email || !password) {
+                alert("Please fill out both credentials fields.");
+                return;
             }
-            // Redirect to the actual app dashboard
-            window.location.href = 'dashboard.html';
+
+            try {
+                loginBtn.disabled = true;
+                loginBtn.innerText = "Authenticating session...";
+
+                // Call Supabase Authentication Layer
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                // Sync localized token metrics safely
+                if (!localStorage.getItem('kimchi_points')) {
+                    localStorage.setItem('kimchi_points', '5'); 
+                }
+
+                // Redirect directly to the platform workspace dashboard
+                window.location.href = 'dashboard.html';
+
+            } catch (err) {
+                alert("Login Failed: " + err.message);
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Enter Platform";
+            }
         }
     </script>
 </body>
