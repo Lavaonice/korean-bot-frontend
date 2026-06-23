@@ -97,7 +97,7 @@
         const SUPABASE_URL = "https://zysltznpsldeuxqtsejc.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_awRlrxnsIcR9IfoODAJKzQ_iaTKlAXN"; 
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function handleLogin() {
             const email = document.getElementById('email').value.trim();
@@ -114,7 +114,7 @@
                 loginBtn.innerText = "Authenticating session...";
 
                 // Call Supabase Authentication Layer
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });

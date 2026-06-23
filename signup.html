@@ -130,7 +130,7 @@
         const SUPABASE_URL = "https://zysltznpsldeuxqtsejc.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_awRlrxnsIcR9IfoODAJKzQ_iaTKlAXN"; 
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function handleSignup() {
             const fullName = document.getElementById('fullName').value.trim();
@@ -166,7 +166,7 @@
                 submitBtn.innerText = "Processing registration...";
 
                 // 2. Call Supabase Auth API
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
                     options: {
