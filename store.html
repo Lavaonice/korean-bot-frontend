@@ -160,6 +160,83 @@
         }
         .btn-recharge:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 112, 67, 0.4); }
 
+        /* --- Section Heading --- */
+        .section-heading {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 0 14px 4px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-main);
+        }
+
+        /* --- Premium Plan Card --- */
+        .plan-card {
+            width: 100%;
+            max-width: 800px;
+            background: var(--primary-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .plan-info h2 { font-size: 1.3rem; color: var(--accent-main); margin-bottom: 6px; }
+        .plan-info p { color: #555; font-size: 0.95rem; max-width: 420px; line-height: 1.5; }
+        .plan-tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .plan-tag { font-size: 0.78rem; background: #F8F9FA; border: 1px solid var(--border); color: #555; padding: 4px 10px; border-radius: 20px; }
+        .plan-price-block { text-align: right; flex-shrink: 0; }
+        .plan-price { font-size: 2rem; font-weight: 800; color: var(--accent-main); line-height: 1; }
+        .plan-price span { font-size: 1rem; font-weight: 600; color: #888; }
+        .plan-period { font-size: 0.85rem; color: #888; margin-bottom: 14px; }
+        .btn-premium {
+            background-color: var(--accent-main);
+            color: white; border: none; padding: 12px 28px; font-size: 1rem;
+            font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .btn-premium:hover { background: #000; transform: translateY(-2px); }
+
+        @media (max-width: 600px) {
+            .plan-card { flex-direction: column; text-align: center; gap: 18px; }
+            .plan-info p { max-width: 100%; }
+            .plan-price-block { text-align: center; width: 100%; }
+        }
+
+        /* --- Checkout Modal --- */
+        .modal-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55); z-index: 2000;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: white; border-radius: 14px; max-width: 420px; width: 100%;
+            padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+        .modal-box h3 { color: var(--accent-main); font-size: 1.2rem; margin-bottom: 4px; }
+        .modal-sub { color: #888; font-size: 0.85rem; margin-bottom: 20px; }
+        .order-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .order-row.total { font-weight: 700; color: var(--accent-main); border-bottom: none; padding-top: 14px; font-size: 1.05rem; }
+        .phonepe-btn {
+            width: 100%; margin-top: 22px; background: #5F259F; color: white;
+            border: none; padding: 14px; border-radius: 8px; font-weight: 700;
+            font-size: 1rem; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px; transition: 0.2s;
+        }
+        .phonepe-btn:hover { background: #4d1f80; }
+        .modal-note {
+            font-size: 0.78rem; color: #999; text-align: center; margin-top: 14px; line-height: 1.4;
+        }
+        .modal-close {
+            background: none; border: none; color: #999; font-size: 0.85rem;
+            cursor: pointer; display: block; margin: 10px auto 0; text-decoration: underline;
+        }
+
         /* --- Mobile Overrides --- */
         @media (max-width: 500px) {
             .price-box { width: 100%; min-width: unset; }
@@ -192,10 +269,29 @@
 
     <div class="container">
         <header class="header">
-            <h2>Recharge Balance</h2>
+            <h2>Store</h2>
             <div class="kp-badge">🪙 <span id="current-kp">0</span> KP</div>
         </header>
 
+        <div class="section-heading">Brevity Premium</div>
+        <div class="plan-card">
+            <div class="plan-info">
+                <h2>Weekly Premium Pass</h2>
+                <p>Skip the queue and practice without interruption. Premium gives you priority server routing and removes the standard cooldown lock for 7 days.</p>
+                <div class="plan-tags">
+                    <span class="plan-tag">Faster queue joining</span>
+                    <span class="plan-tag">No 36-min cooldown</span>
+                    <span class="plan-tag">Priority routing</span>
+                </div>
+            </div>
+            <div class="plan-price-block">
+                <div class="plan-price">₹49<span>/wk</span></div>
+                <div class="plan-period">billed once, valid 7 days</div>
+                <button class="btn-premium" onclick="openCheckout('premium')">Get Premium</button>
+            </div>
+        </div>
+
+        <div class="section-heading">Kimchi Points Top-Up</div>
         <div class="premium-hero">
             <h1>Support the <span class="highlight-underline">Brevity Engine</span> and unlock practice time</h1>
             
@@ -220,10 +316,26 @@
                     <input type="range" id="kp-slider" min="10" max="1000" step="10" value="100" oninput="updateSlider()">
                 </div>
 
-                <button class="btn-recharge" onclick="processPurchase()">Add Kimchi Points</button>
+                <button class="btn-recharge" onclick="openCheckout('kp')">Add Kimchi Points</button>
             </div>
         </div>
 
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-box">
+            <h3 id="modal-title">Checkout</h3>
+            <p class="modal-sub" id="modal-sub">Review your order before paying</p>
+
+            <div id="order-rows"></div>
+
+            <button class="phonepe-btn" onclick="payWithPhonePe()">
+                Pay with PhonePe
+            </button>
+            <p class="modal-note">You'll be redirected to PhonePe to complete payment securely. Your balance updates automatically once payment is confirmed.</p>
+            <button class="modal-close" onclick="closeCheckout()">Cancel</button>
+        </div>
     </div>
 
     <script>
@@ -252,14 +364,54 @@
 
         updateSlider();
 
-        function processPurchase() {
-            const amount = parseInt(slider.value);
-            if(confirm(`Initializing Mock Payment Gateway...\n\nPay ₹${amount} for ${amount} Kimchi Points?`)) {
-                currentKp += amount;
-                localStorage.setItem('kimchi_points', currentKp);
-                document.getElementById('current-kp').innerText = currentKp;
-                alert(`Success! 🐯 The tiger thanks you for your support. Added ${amount} KP to your wallet!`);
+        // --- Checkout Modal Logic ---
+        let pendingOrder = null;
+
+        function openCheckout(type) {
+            const modal = document.getElementById('checkout-modal');
+            const rows = document.getElementById('order-rows');
+            const title = document.getElementById('modal-title');
+            const sub = document.getElementById('modal-sub');
+
+            if (type === 'kp') {
+                const amount = parseInt(slider.value);
+                pendingOrder = { type: 'kp', amount: amount, label: `${amount} Kimchi Points` };
+                title.innerText = 'Confirm Top-Up';
+                sub.innerText = 'Kimchi Points are added to your account instantly after payment.';
+                rows.innerHTML = `
+                    <div class="order-row"><span>${amount} Kimchi Points</span><span>₹${amount}.00</span></div>
+                    <div class="order-row total"><span>Total</span><span>₹${amount}.00</span></div>
+                `;
+            } else if (type === 'premium') {
+                pendingOrder = { type: 'premium', amount: 49, label: 'Brevity Premium (7 days)' };
+                title.innerText = 'Confirm Premium Pass';
+                sub.innerText = 'Premium activates instantly and lasts 7 days from purchase.';
+                rows.innerHTML = `
+                    <div class="order-row"><span>Brevity Premium &mdash; 7 day pass</span><span>₹49.00</span></div>
+                    <div class="order-row total"><span>Total</span><span>₹49.00</span></div>
+                `;
             }
+
+            modal.classList.add('open');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.remove('open');
+            pendingOrder = null;
+        }
+
+        function payWithPhonePe() {
+            if (!pendingOrder) return;
+
+            // PhonePe Payment Gateway integration point.
+            // Once merchant onboarding is approved, this will call the PhonePe
+            // Standard Checkout API to create an order and redirect the user
+            // to the PhonePe payment page, then verify the callback server-side
+            // before crediting the account.
+            //
+            // For now (pending merchant approval), purchases are not yet live.
+            alert("Online payments are launching shortly \u2014 we're finishing PhonePe merchant verification. Please check back soon!");
+            closeCheckout();
         }
     </script>
 </body>
