@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brevity Companion - Viva Setup</title>
+<title>Brevity Companion - Practice Setup</title>
 <style>
     :root {
         --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA;
@@ -23,12 +23,8 @@
     .content { padding: 30px; }
     .instruction { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; }
 
-    .chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 30px; }
-    .checkbox-label { display: flex; align-items: center; justify-content: center; padding: 12px 10px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 0.9rem; font-weight: 500; user-select: none; }
-    .checkbox-label input { display: none; }
-    .checkbox-label:hover { background-color: var(--secondary-bg); }
-    .checkbox-label input:checked + span { color: var(--accent-main); }
-    .checkbox-label.checked { border-color: var(--accent-main); background-color: #F4F7FA; color: var(--accent-main); }
+    .chapter-select { width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-family); font-size: 1rem; color: var(--text-primary); background-color: var(--secondary-bg); cursor: pointer; margin-bottom: 30px; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2334495E%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; transition: border-color 0.2s; }
+    .chapter-select:focus { outline: none; border-color: var(--accent-main); background-color: var(--primary-bg); }
 
     .footer-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 20px; }
     .btn { padding: 12px 24px; font-size: 0.95rem; font-weight: 600; border-radius: 6px; cursor: pointer; border: none; text-decoration: none; }
@@ -46,56 +42,53 @@
             <div class="kp-badge">🪙 <span id="kp-display">0</span> KP</div>
         </div>
         <header class="header">
-            <h1 class="site-name">Viva Simulator</h1>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">Configure your exam boundaries</p>
+            <h1 class="site-name">Practice Mode</h1>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">Structured drills for a specific chapter</p>
         </header>
 
         <div class="content">
-            <p class="instruction">Select the chapters you want to be tested on. The AI will strictly limit its vocabulary to this cluster.</p>
+            <p class="instruction">Select the chapter you want to practice. The AI tutor will focus strictly on the grammar and vocabulary introduced in this lesson.</p>
 
-            <div class="chapter-grid" id="viva-grid"></div>
+            <select id="chapter-dropdown" class="chapter-select" onchange="checkSelection()">
+                <option value="" disabled selected>Select a chapter to begin...</option>
+            </select>
 
             <div class="footer-actions">
                 <a href="dashboard.html" class="btn btn-back">⟵ Back to Modes</a>
-                <button class="btn btn-primary" id="btn-start" disabled onclick="startViva()">Start Audio Exam</button>
+                <button class="btn btn-primary" id="btn-start" disabled onclick="startPractice()">Start Audio Drills</button>
             </div>
         </div>
     </div>
 
     <script>
-        const grid = document.getElementById('viva-grid');
+        const dropdown = document.getElementById('chapter-dropdown');
         const startBtn = document.getElementById('btn-start');
         const kpBalance = parseInt(localStorage.getItem('kimchi_points') || '0');
         document.getElementById('kp-display').innerText = kpBalance;
 
         for (let i = 1; i <= 40; i++) {
-            const label = document.createElement('label');
-            label.className = 'checkbox-label';
-            label.innerHTML = `<input type="checkbox" value="${i}" onchange="toggleBox(this)"><span>Chapter ${i}</span>`;
-            grid.appendChild(label);
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `Chapter ${i}`;
+            dropdown.appendChild(option);
         }
 
-        function toggleBox(box) {
-            if (box.checked) box.parentElement.classList.add('checked');
-            else box.parentElement.classList.remove('checked');
-
-            const checkedCount = document.querySelectorAll('input[type="checkbox"]:checked').length;
-            startBtn.disabled = checkedCount === 0;
+        function checkSelection() {
+            startBtn.disabled = dropdown.value === "";
         }
 
-        function startViva() {
+        function startPractice() {
             if (kpBalance < 10) {
                 alert("Not enough Kimchi Points. Please top up in the store.");
                 window.location.href = "dashboard.html";
                 return;
             }
-            const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-                .map(cb => parseInt(cb.value, 10));
+            const selectedChapter = dropdown.value;
 
             localStorage.setItem('kimchi_points', kpBalance - 10);
             localStorage.setItem('brevity_pending_session', JSON.stringify({
-                mode: "viva",
-                cluster: selected
+                mode: "practice",
+                chapter: parseInt(selectedChapter, 10)
             }));
 
             window.location.href = "connect.html";

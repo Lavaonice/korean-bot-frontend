@@ -1,161 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Brevity Companion</title>
-    <style>
-        :root { --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA; --accent-main: #2C3E50; --kp-color: #E63946; --border: #E1E1E1; --font: 'Segoe UI', sans-serif; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-        body { background-color: var(--secondary-bg); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brevity Companion - Dashboard</title>
+<style>
+    :root {
+        --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA;
+        --text-primary: #111111; --text-secondary: #555555;
+        --accent-main: #34495E; --accent-hover: #2C3E50;
+        --border-color: #E1E1E1; --kp-color: #E63946;
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+    body { background-color: var(--secondary-bg); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
 
-        /* --- THE BLACK SIDEBAR NAVIGATION --- */
-        .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #111; color: white; transition: 0.3s ease; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
-        .sidebar.open { left: 0; }
-        .sidebar-link { display: block; padding: 15px 25px; color: #ccc; text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid #333; transition: 0.2s; }
-        .sidebar-link:hover { color: white; background: #222; padding-left: 30px; }
-        .sidebar-link.active { border-left: 4px solid var(--kp-color); color: white; background: #222; }
-        
-        /* The Black Tab that sticks out */
-        .sidebar-tab { position: absolute; right: -40px; top: 20px; width: 40px; height: 50px; background: #111; color: white; display: flex; justify-content: center; align-items: center; border-radius: 0 8px 8px 0; cursor: pointer; box-shadow: 2px 0 5px rgba(0,0,0,0.2); }
-        
-        /* Main Container */
-        .container { width: 100%; max-width: 750px; background: var(--primary-bg); border-radius: 12px; border: 1px solid var(--border); padding: 40px; margin-left: 0; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
-        /* Header & Mascot Layout */
-        .top-bar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
-        .kp-badge { background: #FFF0F1; color: var(--kp-color); padding: 8px 15px; border-radius: 20px; font-weight: 700; border: 1px solid #FFD6D9; font-size: 0.9rem; display: inline-block;}
-  
-        /* New Side-by-Side Header Layout */
-        .dashboard-header { 
-            display: flex; 
-            flex-direction: row; 
-            align-items: center; 
-            justify-content: flex-start;
-            gap: 40px; 
-            margin-bottom: 40px; 
-            border-bottom: 1px solid var(--border); 
-            padding-bottom: 30px; 
-        }
+    /* Sidebar */
+    .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #111; color: white; transition: 0.3s ease; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
+    .sidebar.open { left: 0; }
+    .sidebar-link { display: block; padding: 15px 25px; color: #ccc; text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid #333; transition: 0.2s; }
+    .sidebar-link:hover { color: white; background: #222; padding-left: 30px; }
+    .sidebar-link.active { border-left: 4px solid var(--kp-color); color: white; background: #222; }
+    .sidebar-tab { position: absolute; right: -40px; top: 20px; width: 40px; height: 50px; background: #111; color: white; display: flex; justify-content: center; align-items: center; border-radius: 0 8px 8px 0; cursor: pointer; box-shadow: 2px 0 5px rgba(0,0,0,0.2); }
+    .sidebar-tab::before { content: "☰"; }
 
-        .title-text { 
-            text-align: left; 
-        }
-        /* Mascot CSS */
-        .mascot-gif {
-            width: 200px;
-            height: auto;
-            transition: width 0.3s ease; 
-        }
+    .container { width: 100%; max-width: 750px; background: var(--primary-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 40px; margin-left: 0; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-        /* Mobile Override */
-        @media (max-width: 500px) {
-            .dashboard-header { 
-                flex-direction: column; 
-                text-align: center; 
-                gap: 20px; 
-            }
-            .title-text { text-align: center; } 
-            .mascot-gif { width: 120px; }
-            .title-text h1 { font-size: 1.8rem; }
-        }
-        .alert-box { display: none; background: #FFF0F1; border: 1px solid var(--kp-color); color: var(--kp-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; }
-        
-        .mode-card { border: 1px solid var(--border); border-radius: 8px; padding: 25px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: transform 0.2s, box-shadow 0.2s; }
-        .mode-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-        .mode-info h3 { color: var(--accent-main); margin-bottom: 8px; font-size: 1.3rem;}
-        .mode-info p { color: #555; font-size: 1rem; line-height: 1.4; max-width: 450px; }
-        
-        .btn-play { background: #34495E; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; margin-left: 15px;}
-        .btn-play:hover { background: #2C3E50; }
-        .btn-play:disabled { background: #ccc; cursor: not-allowed; }
-    </style>
+    .top-bar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
+    .kp-badge { background: #FFF0F1; color: var(--kp-color); padding: 8px 15px; border-radius: 20px; font-weight: 700; border: 1px solid #FFD6D9; font-size: 0.9rem; display: inline-block; }
+
+    .dashboard-header { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 40px; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 30px; }
+    .title-text { text-align: left; }
+    .mascot-gif { width: 200px; height: auto; transition: width 0.3s ease; }
+
+    @media (max-width: 500px) {
+        .dashboard-header { flex-direction: column; text-align: center; gap: 20px; }
+        .title-text { text-align: center; }
+        .mascot-gif { width: 120px; }
+        .title-text h1 { font-size: 1.8rem; }
+    }
+
+    .alert-box { display: none; background: #FFF0F1; border: 1px solid var(--kp-color); color: var(--kp-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; }
+    .alert-box a { color: var(--kp-color); text-decoration: underline; }
+
+    .mode-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: transform 0.2s, box-shadow 0.2s; }
+    .mode-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+    .mode-info h3 { color: var(--accent-main); margin-bottom: 8px; font-size: 1.3rem; }
+    .mode-info p { color: #555; font-size: 1rem; line-height: 1.4; max-width: 450px; }
+
+    .btn-play { background: var(--accent-main); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; margin-left: 15px; }
+    .btn-play:hover { background: var(--accent-hover); }
+    .btn-play:disabled { background: #ccc; cursor: not-allowed; }
+</style>
 </head>
 <body>
 
-  <div class="sidebar" id="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="sidebar-tab" onclick="toggleSidebar()"></div>
     <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);">Menu</h2>
     <a href="dashboard.html" class="sidebar-link active">Practice Hub</a>
     <a href="store.html" class="sidebar-link">Kimchi Points Store</a>
     <a href="about.html" class="sidebar-link">About Engine</a>
-    
-    
-    <!-- Legal Compliance Links Grouped Near Logout -->
+
     <div style="margin-top: auto; border-top: 1px solid #333;">
         <a href="Privacy.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;">Privacy Policy</a>
         <a href="Terms.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;">Terms of Service</a>
         <a href="refund.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888; border-bottom: none;">Refund Policy</a>
-        <a href="index.html" class="sidebar-link" style="border-top: 1px solid #333;" onclick="localStorage.clear()">Log Out</a>
+        <a href="index.html" class="sidebar-link" style="border-top: 1px solid #333;" onclick="localStorage.removeItem('brevity_pending_session')">Log Out</a>
     </div>
 </div>
 
-    <div class="container">
-        <div class="top-bar">
-            <div class="kp-badge">🪙 <span id="kp-display">0</span> KP</div>
-        </div>
-
-        <div class="dashboard-header">
-            <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger1.apng" alt="Brevity Mascot" class="mascot-gif" onerror="this.src='https://placehold.co/300x300?text=Mascot'">
-            <div class="title-text">
-                <h1>Brevity Companion</h1>
-                <p>Select your evaluation mode</p>
-            </div>
-        </div>
-
-        <div class="alert-box" id="kp-warning">
-            Not enough Kimchi Points! (10 KP required per session).<br>
-            <a href="store.html" style="color: var(--kp-color); text-decoration: underline;">Top up here</a>.
-        </div>
-
-        <div class="mode-card">
-            <div class="mode-info">
-                <h3>Casual Mode</h3>
-                <p>Relaxed practice, perfect for initial vocabulary familiarization.</p>
-            </div>
-            <button class="btn-play session-btn" onclick="startSession('Casual')">Enter (-10 KP)</button>
-        </div>
-
-        <div class="mode-card">
-            <div class="mode-info">
-                <h3>Practice Mode</h3>
-                <p>Structured drills and exercises based on specific textbook chapters.</p>
-            </div>
-            <button class="btn-play session-btn" onclick="startSession('Practice')">Setup (-10 KP)</button>
-        </div>
-
-        <div class="mode-card">
-            <div class="mode-info">
-                <h3>Viva Simulator</h3>
-                <p>A real-time oral exam spanning a custom cluster of chapters.</p>
-            </div>
-            <button class="btn-play session-btn" onclick="window.location.href='Viva.html'">Setup (-10 KP)</button>
-        </div>
-
+<div class="container">
+    <div class="top-bar">
+        <div class="kp-badge">🪙 <span id="kp-display">0</span> KP</div>
     </div>
 
-    <script>
-        // Sidebar Logic
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-        }
+    <div class="dashboard-header">
+        <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger1.apng" alt="Brevity Mascot" class="mascot-gif" onerror="this.src='https://placehold.co/300x300?text=Mascot'">
+        <div class="title-text">
+            <h1>Brevity Companion</h1>
+            <p>Select your evaluation mode</p>
+        </div>
+    </div>
 
-        // Kimchi Points Economy Logic
-        const kpBalance = parseInt(localStorage.getItem('kimchi_points') || '0');
-        document.getElementById('kp-display').innerText = kpBalance;
+    <div class="alert-box" id="kp-warning">
+        Not enough Kimchi Points! (10 KP required per session).<br>
+        <a href="store.html">Top up here</a>.
+    </div>
 
-        if (kpBalance < 10) {
-            document.getElementById('kp-warning').style.display = 'block';
-            document.querySelectorAll('.session-btn').forEach(btn => btn.disabled = true);
-        }
+    <div class="mode-card">
+        <div class="mode-info">
+            <h3>Casual Mode</h3>
+            <p>Relaxed practice, perfect for initial vocabulary familiarization.</p>
+        </div>
+        <button class="btn-play session-btn" onclick="goTo('casual.html')">Enter (-10 KP)</button>
+    </div>
 
-        function startSession(mode) {
-            if(kpBalance >= 10) {
-                localStorage.setItem('kimchi_points', kpBalance - 10);
-                alert(`Started ${mode}! 10 KP deducted. Remaining: ${kpBalance - 10}`);
-                window.location.reload();
-            }
+    <div class="mode-card">
+        <div class="mode-info">
+            <h3>Practice Mode</h3>
+            <p>Structured drills and exercises based on specific textbook chapters.</p>
+        </div>
+        <button class="btn-play session-btn" onclick="goTo('practice.html')">Setup (-10 KP)</button>
+    </div>
+
+    <div class="mode-card">
+        <div class="mode-info">
+            <h3>Viva Simulator</h3>
+            <p>A real-time oral exam spanning a custom cluster of chapters.</p>
+        </div>
+        <button class="btn-play session-btn" onclick="goTo('Viva.html')">Setup (-10 KP)</button>
+    </div>
+
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // Seed a starting balance so a fresh visitor isn't instantly locked out
+    // (there's no live store checkout yet — see store.html placeholder).
+    if (localStorage.getItem('kimchi_points') === null) {
+        localStorage.setItem('kimchi_points', '50');
+    }
+    const kpBalance = parseInt(localStorage.getItem('kimchi_points') || '0');
+    document.getElementById('kp-display').innerText = kpBalance;
+
+    if (kpBalance < 10) {
+        document.getElementById('kp-warning').style.display = 'block';
+        document.querySelectorAll('.session-btn').forEach(btn => btn.disabled = true);
+    }
+
+    // KP is deducted on the setup page when the session actually starts,
+    // not here — this screen only checks affordability.
+    function goTo(page) {
+        if (kpBalance >= 10) {
+            window.location.href = page;
         }
-    </script>
+    }
+</script>
 </body>
 </html>
