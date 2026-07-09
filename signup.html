@@ -85,8 +85,9 @@
 
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--accent-main); text-align: center; }
     </style>
-    <!-- Include Supabase JS CDN UMD bundle -->
+    <!-- Include Supabase JS CDN UMD bundle + shared auth layer -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
 </head>
 <body>
 
@@ -126,11 +127,7 @@
     </div>
 
     <script>
-        // 1. Initialize Connection using details from Supabase dashboard settings
-        const SUPABASE_URL = "https://zysltznpsldeuxqtsejc.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_awRlrxnsIcR9IfoODAJKzQ_iaTKlAXN"; 
-        
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Supabase client comes from the shared auth.js (global supabaseClient).
 
         async function handleSignup() {
             const fullName = document.getElementById('fullName').value.trim();
@@ -181,7 +178,9 @@
 
                 if (error) throw error;
 
-                // 3. Initialize Client Points Local Economy
+                // 3. Initialize Client Points Local Economy.
+                // Auth is now handled entirely by the Supabase session (auth.js),
+                // so no local login flag is needed here.
                 localStorage.setItem('kimchi_points', '5');
                 localStorage.setItem('ai_consent_granted', 'true');
                 localStorage.setItem('ai_consent_timestamp', new Date().toISOString());

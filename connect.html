@@ -181,6 +181,10 @@
 </head>
 <body>
 
+    <!-- Supabase + shared auth layer (validates the real session) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+
     <!-- ==========================================
          SCREEN 1: QUEUE & INITIALIZATION PIPELINE
          ========================================== -->
@@ -230,6 +234,15 @@
     </div>
 
     <script>
+    (async () => {
+        // ==========================================
+        // 0. AUTH GATE — only logged-in users may enter a session
+        // ==========================================
+        const authUser = await requireAuth();
+
+        // If requireAuth redirected (no session), stop here.
+        if (!authUser) return;
+
         // ==========================================
         // 0. LOAD SESSION CONFIG FROM THE SETUP PAGE
         // ==========================================
@@ -289,7 +302,7 @@
             { id: 'step-2', delay: 500, queueCheck: true },
             { id: 'step-3', delay: 1000 },
             { id: 'step-4', delay: 1500 },
-            { id: 'step-5', delay: 500 }
+            { id: 'step-5', delay: 500, mic: true }
         ];
 
         async function runInitializationPipeline() {
@@ -307,6 +320,20 @@
                     queuePosUI.classList.remove('hidden');
                     await pollQueue();
                     el.classList.add('active');
+                }
+
+                // Request microphone permission ONCE here (step 5), before the
+                // session screen appears — so the user is only prompted a single time.
+                if (step.mic) {
+                    const granted = await getMicPermission();
+                    if (!granted) {
+                        document.getElementById('loader-title').innerText = "Microphone blocked";
+                        document.getElementById('loader-subtitle').innerText = "Allow mic access in your browser to use voice chat, then reload this page.";
+                        el.classList.remove('active');
+                        el.classList.add('done');
+                        el.querySelector('.step-check').innerText = '!';
+                        return; // stay on loading screen; session can't proceed without audio
+                    }
                 }
 
                 el.classList.remove('active');
@@ -381,6 +408,10 @@
         let isRecording = false;
         let mediaRecorder;
         let audioChunks = [];
+        // Single mic stream acquired ONCE at session start and reused every turn,
+        // so the browser only asks for permission one time.
+        let speechStream = null;
+        let micReady = false;
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
         if (isTouchDevice) statusText.innerText = "Hold the mic to speak";
@@ -405,10 +436,25 @@
             casual: ["오~ 진짜요? 재미있네요!", "그렇군요! 그럼 저는 이렇게 생각해요..."]
         };
 
-        async function startRecording() {
+        // Acquire microphone permission ONCE. Called during the loading
+        // pipeline so the user approves access before the session starts.
+        async function getMicPermission() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                speechStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                micReady = true;
+                return true;
+            } catch (err) {
+                return false;
+            }
+        }
+
+        async function startRecording() {
+            if (!micReady) {
+                statusText.innerText = "Microphone not available";
+                return;
+            }
+            try {
+                mediaRecorder = new MediaRecorder(speechStream);
                 audioChunks = [];
 
                 mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
@@ -445,8 +491,7 @@
                     mediaRecorder.addEventListener('stop', () => track.stop());
                 });
             } catch (err) {
-                statusText.innerText = "Error: Microphone access denied";
-                alert("Please allow microphone access.");
+                statusText.innerText = "Error: Could not start recording";
             }
         }
 
@@ -499,6 +544,9 @@
                 window.location.href = "dashboard.html";
             }
         }
+        // Expose for the inline onclick="endSession()" handler.
+        window.endSession = endSession;
+    })();
     </script>
 </body>
 </html>

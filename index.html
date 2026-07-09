@@ -64,8 +64,9 @@
         .legal-footer a { color: #666; text-decoration: none; font-weight: 600; }
         .legal-footer a:hover { text-decoration: underline; }
     </style>
-    <!-- Include Supabase JS CDN UMD bundle -->
+    <!-- Include Supabase JS CDN UMD bundle + shared auth layer -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
 </head>
 <body>
 
@@ -93,11 +94,7 @@
     </div>
 
     <script>
-        // Initialize Connection with your live Supabase credentials
-        const SUPABASE_URL = "https://zysltznpsldeuxqtsejc.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_awRlrxnsIcR9IfoODAJKzQ_iaTKlAXN"; 
-        
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Supabase client comes from the shared auth.js (global supabaseClient).
 
         async function handleLogin() {
             const email = document.getElementById('email').value.trim();
@@ -121,9 +118,12 @@
 
                 if (error) throw error;
 
+                // Auth is now handled entirely by the Supabase session
+                // (see auth.js requireAuth), so there is no local flag to set.
+
                 // Sync localized token metrics safely
                 if (!localStorage.getItem('kimchi_points')) {
-                    localStorage.setItem('kimchi_points', '5'); 
+                    localStorage.setItem('kimchi_points', '5');
                 }
 
                 // Redirect directly to the platform workspace dashboard

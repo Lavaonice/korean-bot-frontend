@@ -34,6 +34,12 @@
         .tech-card h3 { color: #7FB3D5; margin-bottom: 10px; }
         .tech-card p { color: #888; font-size: 0.95rem; line-height: 1.6; }
     </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+    // Auth gate — protected page. Validates the real Supabase session.
+    requireAuth();
+</script>
 </head>
 <body>
 
@@ -42,14 +48,14 @@
     <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);">Menu</h2>
     <a href="dashboard.html" class="sidebar-link active">Practice Hub</a>
     <a href="store.html" class="sidebar-link">Kimchi Points Store</a>
+    <a href="profile.html" class="sidebar-link">My Profile</a>
     <a href="about.html" class="sidebar-link">About Engine</a>
-    <a href="documents.html" class="sidebar-link">Business Documents</a>
-    
+
     <div style="margin-top: auto; border-top: 1px solid #333;">
         <a href="Privacy.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;">Privacy Policy</a>
         <a href="Terms.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;">Terms of Service</a>
         <a href="refund.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888; border-bottom: none;">Refund Policy</a>
-        <a href="index.html" class="sidebar-link" style="border-top: 1px solid #333;" onclick="localStorage.clear()">Log Out</a>
+        <a href="index.html" class="sidebar-link" style="border-top: 1px solid #333;" onclick="logout()">Log Out</a>
     </div>
 </div>
 
