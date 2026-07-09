@@ -45,6 +45,8 @@
         .avatar { position: relative; width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-main), var(--kp-color)); display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(0,0,0,0.18); overflow: hidden; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .avatar .initials { font-size: 2.6rem; font-weight: 700; color: white; }
+        .avatar-edit { position: absolute; right: 2px; bottom: 2px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent-main); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 0.9rem; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 2px solid #fff; transition: background 0.2s; }
+        .avatar-edit:hover { background: var(--accent-hover); }
         .hero-info { flex: 1; min-width: 0; }
         .hero-info h1 { font-size: 1.7rem; color: var(--text-primary); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .hero-email { color: var(--text-secondary); font-size: 1rem; margin-top: 4px; word-break: break-all; }
@@ -151,8 +153,12 @@
     <!-- Profile Hero -->
     <div class="profile-hero">
         <div class="avatar" id="avatar">
-            <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger1.apng" alt="Mascot" onerror="this.style.display='none'">
+            <img id="avatar-img" alt="Profile avatar" style="display:none;">
             <span class="initials" id="initials" style="display:none;"></span>
+            <label class="avatar-edit" title="Change avatar">
+                ✎
+                <input type="file" id="avatar-upload" accept="image/*" hidden>
+            </label>
         </div>
         <div class="hero-info">
             <h1>
@@ -182,6 +188,16 @@
             <div class="field-label">Password <small>Change your login password</small></div>
             <div class="field-value">
                 <button class="btn btn-outline btn-sm" onclick="changePassword()">Change Password</button>
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field-label">Avatar <small>Upload a photo or pick a color</small></div>
+            <div class="field-value">
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;">
+                    Upload Image
+                    <input type="file" id="avatar-upload-2" accept="image/*" hidden>
+                </label>
+                <div id="avatar-colors" style="display:flex; gap:6px; margin-top:10px;"></div>
             </div>
         </div>
     </div>
@@ -284,7 +300,8 @@
     }
 
     // --- defaults ---
-    const defaultProfile = { name: '', email: '', plan: 'Free', memberSince: null };
+    const AVATAR_COLORS = ['#34495E','#E63946','#2E86C1','#1E824C','#8E44AD','#D35400','#16A085','#2C3E50'];
+    const defaultProfile = { name: '', email: '', plan: 'Free', memberSince: null, avatarImage: '', avatarColor: '#34495E' };
     const defaultSettings = {
         dailyGoal: '15', uiLanguage: 'en',
         emailNotifications: true, streakAlerts: true, autoAudio: false
@@ -306,9 +323,21 @@
         document.getElementById('email-value').innerText = profile.email || '—';
         document.getElementById('name-input').value = profile.name || '';
 
+        // Avatar: show uploaded image if present, otherwise initials over the
+        // chosen background color.
+        const avatarEl = document.getElementById('avatar');
+        const imgEl = document.getElementById('avatar-img');
         const init = document.getElementById('initials');
-        init.innerText = initialsOf(name);
-        init.style.display = '';
+        avatarEl.style.background = profile.avatarColor || '#34495E';
+        if (profile.avatarImage) {
+            imgEl.src = profile.avatarImage;
+            imgEl.style.display = '';
+            init.style.display = 'none';
+        } else {
+            imgEl.style.display = 'none';
+            init.innerText = initialsOf(name);
+            init.style.display = '';
+        }
 
         const ms = profile.memberSince ? new Date(profile.memberSince) : null;
         document.getElementById('member-since').innerText =
@@ -370,6 +399,44 @@
         toast('Preference updated ✓');
     }
 
+    // --- Avatar editor (upload image or pick a color) ---
+    function handleAvatarUpload(file) {
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) { toast('Image must be under 2 MB.'); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+            profile.avatarImage = reader.result;
+            saveJSON(PROFILE_KEY, profile);
+            renderProfile();
+            toast('Avatar updated ✓');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function initAvatarEditor() {
+        // Wire both upload inputs (hero + account card) to the same handler.
+        document.getElementById('avatar-upload').addEventListener('change', e => handleAvatarUpload(e.target.files[0]));
+        document.getElementById('avatar-upload-2').addEventListener('change', e => handleAvatarUpload(e.target.files[0]));
+
+        // Build the color swatches.
+        const wrap = document.getElementById('avatar-colors');
+        AVATAR_COLORS.forEach(color => {
+            const sw = document.createElement('button');
+            sw.type = 'button';
+            sw.style.cssText = 'width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,0.25);cursor:pointer;background:' + color + ';';
+            if (color === (profile.avatarColor || '#34495E')) sw.style.borderColor = '#111';
+            sw.onclick = () => {
+                profile.avatarColor = color;
+                profile.avatarImage = ''; // a color choice clears any uploaded photo
+                saveJSON(PROFILE_KEY, profile);
+                renderProfile();
+                initAvatarEditor(); // refresh the selected-ring highlight
+                toast('Avatar color updated ✓');
+            };
+            wrap.appendChild(sw);
+        });
+    }
+
     // Log Out uses the shared logout() from auth.js (Supabase signOut + redirect).
 
     // --- bootstrap ---
@@ -396,6 +463,7 @@
         renderProfile();
         renderSettings();
         renderStats();
+        initAvatarEditor();
     })();
 </script>
 </body>

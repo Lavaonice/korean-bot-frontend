@@ -20,12 +20,13 @@
         body { background-color: var(--secondary-bg); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
         
         /* --- Sidebar --- */
-        .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #111; color: white; transition: 0.3s ease; z-index: 1000; padding-top: 60px; }
+        .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #111; color: white; transition: 0.3s ease; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
         .sidebar-link { display: block; padding: 15px 25px; color: #ccc; text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid #333; transition: 0.2s; }
         .sidebar-link:hover { color: white; background: #222; padding-left: 30px; }
         .sidebar-link.active { border-left: 4px solid var(--kp-color); color: white; background: #222; }
-        .sidebar-tab { position: absolute; right: -40px; top: 20px; width: 40px; height: 50px; background: #111; color: white; display: flex; justify-content: center; align-items: center; border-radius: 0 8px 8px 0; cursor: pointer; z-index: 1001;}
+        .sidebar-tab { position: absolute; right: -40px; top: 20px; width: 40px; height: 50px; background: #111; color: white; display: flex; justify-content: center; align-items: center; border-radius: 0 8px 8px 0; cursor: pointer; box-shadow: 2px 0 5px rgba(0,0,0,0.2); z-index: 1001; }
+        .sidebar-tab::before { content: "☰"; }
 
         /* --- Main Layout --- */
         .container { width: 100%; max-width: 800px; background: var(--primary-bg); border-radius: 12px; border: 1px solid var(--border); padding: 30px; margin-bottom: 40px;}
@@ -260,8 +261,8 @@
     <div class="sidebar" id="sidebar">
     <div class="sidebar-tab" onclick="toggleSidebar()"></div>
     <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);">Menu</h2>
-    <a href="dashboard.html" class="sidebar-link active">Practice Hub</a>
-    <a href="store.html" class="sidebar-link">Kimchi Points Store</a>
+    <a href="dashboard.html" class="sidebar-link">Practice Hub</a>
+    <a href="store.html" class="sidebar-link active">Kimchi Points Store</a>
     <a href="profile.html" class="sidebar-link">My Profile</a>
     <a href="about.html" class="sidebar-link">About Engine</a>
 
