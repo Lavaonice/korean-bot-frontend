@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Brevity Companion</title>
     <style>
-        :root { --font: 'Segoe UI', sans-serif; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-        /* Dark cinematic theme for the About page */
-        body { background-color: #0A0A0A; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
-        
+        :root {
+            --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA;
+            --text-primary: #111111; --text-secondary: #555555;
+            --accent-main: #34495E; --accent-hover: #2C3E50;
+            --border-color: #E1E1E1; --kp-color: #E63946;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--secondary-bg); color: var(--text-primary); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 40px 20px; overflow-x: hidden; }
+
         /* Sidebar — must match the dashboard/store/profile sidebar exactly */
         .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #111; color: white; transition: 0.3s ease; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
         .sidebar.open { left: 0; }
@@ -19,22 +24,30 @@
         .sidebar-tab { position: absolute; right: -40px; top: 20px; width: 40px; height: 50px; background: #111; color: white; display: flex; justify-content: center; align-items: center; border-radius: 0 8px 8px 0; cursor: pointer; box-shadow: 2px 0 5px rgba(0,0,0,0.2); z-index: 1001; }
         .sidebar-tab::before { content: "☰"; }
 
-        .about-container { width: 100%; max-width: 800px; text-align: center; }
-        
-        .hero-title { font-size: 3rem; font-weight: 800; background: linear-gradient(to right, #7FB3D5, #E63946); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-        .hero-subtitle { font-size: 1.2rem; color: #aaa; margin-bottom: 40px; font-weight: 300; }
+        .container { width: 100%; max-width: 800px; background: var(--primary-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 40px; margin-left: 0; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-        /* Cinematic Video Container */
-        .video-wrapper { width: 100%; aspect-ratio: 16/9; background: #111; border-radius: 12px; border: 1px solid #333; overflow: hidden; margin-bottom: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; }
+        .about-container { width: 100%; text-align: center; }
+
+        .hero-title { font-size: 2.2rem; font-weight: 800; color: var(--accent-main); margin-bottom: 8px; }
+        .hero-subtitle { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 32px; font-weight: 400; }
+
+        /* Video Container */
+        .video-wrapper { width: 100%; aspect-ratio: 16/9; background: var(--secondary-bg); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; margin-bottom: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; }
         .video-wrapper iframe, .video-wrapper video { width: 100%; height: 100%; object-fit: cover; border: none; }
-        
+
         /* Fallback text if no video is present yet */
-        .video-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #555; }
+        .video-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-secondary); }
 
         .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; }
-        .tech-card { background: #111; border: 1px solid #222; padding: 25px; border-radius: 12px; }
-        .tech-card h3 { color: #7FB3D5; margin-bottom: 10px; }
-        .tech-card p { color: #888; font-size: 0.95rem; line-height: 1.6; }
+        .tech-card { background: var(--secondary-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; }
+        .tech-card h3 { color: var(--accent-main); margin-bottom: 10px; }
+        .tech-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+
+        @media (max-width: 600px) {
+            .tech-grid { grid-template-columns: 1fr; }
+            .container { padding: 24px; }
+            .hero-title { font-size: 1.7rem; }
+        }
     </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
@@ -61,6 +74,7 @@
     </div>
 </div>
 
+    <div class="container">
     <div class="about-container">
         <h1 class="hero-title">The Engineering Behind Brevity</h1>
         <p class="hero-subtitle">Bridging Data Science and High-Level Linguistics</p>
@@ -79,6 +93,7 @@
                 <p>Proprietary JSON-driven data mapping strictly confines the AI's vocabulary limits, forcing output that aligns with standard Korean textbook curriculums.</p>
             </div>
         </div>
+    </div>
     </div>
 
     <script>

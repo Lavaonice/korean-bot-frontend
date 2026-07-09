@@ -45,8 +45,9 @@
         .avatar { position: relative; width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-main), var(--kp-color)); display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(0,0,0,0.18); overflow: hidden; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .avatar .initials { font-size: 2.6rem; font-weight: 700; color: white; }
-        .avatar-edit { position: absolute; right: 2px; bottom: 2px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent-main); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 0.9rem; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 2px solid #fff; transition: background 0.2s; }
+        .avatar-edit { position: absolute; right: 4px; bottom: 4px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-main); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 2px solid #fff; transition: background 0.2s; line-height: 1; }
         .avatar-edit:hover { background: var(--accent-hover); }
+        .avatar-edit svg { display: block; }
         .hero-info { flex: 1; min-width: 0; }
         .hero-info h1 { font-size: 1.7rem; color: var(--text-primary); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .hero-email { color: var(--text-secondary); font-size: 1rem; margin-top: 4px; word-break: break-all; }
@@ -155,8 +156,11 @@
         <div class="avatar" id="avatar">
             <img id="avatar-img" alt="Profile avatar" style="display:none;">
             <span class="initials" id="initials" style="display:none;"></span>
-            <label class="avatar-edit" title="Change avatar">
-                ✎
+            <label class="avatar-edit" title="Change avatar" aria-label="Change avatar">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                </svg>
                 <input type="file" id="avatar-upload" accept="image/*" hidden>
             </label>
         </div>
@@ -197,7 +201,40 @@
                     Upload Image
                     <input type="file" id="avatar-upload-2" accept="image/*" hidden>
                 </label>
+                <button class="btn btn-outline btn-sm" id="remove-avatar" style="margin-left:8px; display:none;" onclick="removeAvatar()">Remove Photo</button>
                 <div id="avatar-colors" style="display:flex; gap:6px; margin-top:10px;"></div>
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field-label">Gender <small>Required</small></div>
+            <div class="field-value">
+                <select id="gender-input" onchange="saveField('gender', this.value)">
+                    <option value="">Prefer not to say</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="nonbinary">Non-binary</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field-label">Date of Birth <small>Required</small></div>
+            <div class="field-value">
+                <input type="date" id="dob-input" onchange="saveField('dob', this.value)">
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field-label">City / Hometown <small>Required</small></div>
+            <div class="field-value">
+                <input type="text" id="city-input" placeholder="e.g. Seoul">
+                <button class="btn btn-sm" style="margin-left:8px;" onclick="saveField('city', document.getElementById('city-input').value.trim())">Save</button>
+            </div>
+        </div>
+        <div class="field-row">
+            <div class="field-label">Institute / School <small>Optional — where you study</small></div>
+            <div class="field-value">
+                <input type="text" id="institute-input" placeholder="e.g. Yonsei University">
+                <button class="btn btn-sm" style="margin-left:8px;" onclick="saveField('institute', document.getElementById('institute-input').value.trim())">Save</button>
             </div>
         </div>
     </div>
@@ -301,7 +338,7 @@
 
     // --- defaults ---
     const AVATAR_COLORS = ['#34495E','#E63946','#2E86C1','#1E824C','#8E44AD','#D35400','#16A085','#2C3E50'];
-    const defaultProfile = { name: '', email: '', plan: 'Free', memberSince: null, avatarImage: '', avatarColor: '#34495E' };
+    const defaultProfile = { name: '', email: '', plan: 'Free', memberSince: null, avatarImage: '', avatarColor: '#34495E', gender: '', dob: '', city: '', institute: '' };
     const defaultSettings = {
         dailyGoal: '15', uiLanguage: 'en',
         emailNotifications: true, streakAlerts: true, autoAudio: false
@@ -323,6 +360,13 @@
         document.getElementById('email-value').innerText = profile.email || '—';
         document.getElementById('name-input').value = profile.name || '';
 
+        // Personal info fields (optional, editable)
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+        setVal('gender-input', profile.gender);
+        setVal('dob-input', profile.dob);
+        setVal('city-input', profile.city);
+        setVal('institute-input', profile.institute);
+
         // Avatar: show uploaded image if present, otherwise initials over the
         // chosen background color.
         const avatarEl = document.getElementById('avatar');
@@ -338,6 +382,10 @@
             init.innerText = initialsOf(name);
             init.style.display = '';
         }
+
+        // "Remove Photo" only makes sense once a photo has been uploaded.
+        const removeBtn = document.getElementById('remove-avatar');
+        if (removeBtn) removeBtn.style.display = profile.avatarImage ? '' : 'none';
 
         const ms = profile.memberSince ? new Date(profile.memberSince) : null;
         document.getElementById('member-since').innerText =
@@ -399,6 +447,26 @@
         toast('Preference updated ✓');
     }
 
+    function saveField(key, value) {
+        profile[key] = value;
+        saveJSON(PROFILE_KEY, profile);
+        // Best-effort sync to Supabase user metadata
+        const meta = {};
+        meta[key] = value;
+        supabaseClient.auth.updateUser({ data: meta }).catch(() => {});
+        toast('Saved ✓');
+    }
+
+    function removeAvatar() {
+        if (!profile.avatarImage) return;
+        profile.avatarImage = '';
+        saveJSON(PROFILE_KEY, profile);
+        // Best-effort sync to Supabase user metadata
+        supabaseClient.auth.updateUser({ data: { avatarImage: '' } }).catch(() => {});
+        renderProfile();
+        toast('Photo removed ✓');
+    }
+
     // --- Avatar editor (upload image or pick a color) ---
     function handleAvatarUpload(file) {
         if (!file) return;
@@ -413,13 +481,12 @@
         reader.readAsDataURL(file);
     }
 
-    function initAvatarEditor() {
-        // Wire both upload inputs (hero + account card) to the same handler.
-        document.getElementById('avatar-upload').addEventListener('change', e => handleAvatarUpload(e.target.files[0]));
-        document.getElementById('avatar-upload-2').addEventListener('change', e => handleAvatarUpload(e.target.files[0]));
+    let _avatarUploadWired = false;
 
-        // Build the color swatches.
+    function buildColorSwatches() {
+        // Always clear first so swatches never accumulate on re-render.
         const wrap = document.getElementById('avatar-colors');
+        wrap.innerHTML = '';
         AVATAR_COLORS.forEach(color => {
             const sw = document.createElement('button');
             sw.type = 'button';
@@ -430,11 +497,22 @@
                 profile.avatarImage = ''; // a color choice clears any uploaded photo
                 saveJSON(PROFILE_KEY, profile);
                 renderProfile();
-                initAvatarEditor(); // refresh the selected-ring highlight
+                buildColorSwatches(); // refresh only the highlight ring
                 toast('Avatar color updated ✓');
             };
             wrap.appendChild(sw);
         });
+    }
+
+    function initAvatarEditor() {
+        // Wire the upload inputs exactly once (guarded) so we never stack
+        // duplicate change-listeners.
+        if (!_avatarUploadWired) {
+            document.getElementById('avatar-upload').addEventListener('change', e => handleAvatarUpload(e.target.files[0]));
+            document.getElementById('avatar-upload-2').addEventListener('change', e => handleAvatarUpload(e.target.files[0]));
+            _avatarUploadWired = true;
+        }
+        buildColorSwatches();
     }
 
     // Log Out uses the shared logout() from auth.js (Supabase signOut + redirect).
@@ -455,6 +533,10 @@
                 if (meta.full_name) profile.name = meta.full_name;
                 if (user.email) profile.email = user.email;
                 if (meta.plan) profile.plan = meta.plan;
+                if (meta.gender) profile.gender = meta.gender;
+                if (meta.dob) profile.dob = meta.dob;
+                if (meta.city) profile.city = meta.city;
+                if (meta.institute) profile.institute = meta.institute;
                 if (user.created_at && !profile.memberSince) profile.memberSince = user.created_at;
                 saveJSON(PROFILE_KEY, profile);
             }

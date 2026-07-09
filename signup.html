@@ -3,87 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - Brevity Companion</title>
+    <title>Create Account</title>
     <style>
-        :root { 
-            --primary-bg: #FFFFFF; 
-            --secondary-bg: #F8F9FA; 
-            --accent-main: #111111; 
-            --kp-color: #E63946;
-            --border: #E1E1E1; 
-            --font: 'Segoe UI', sans-serif; 
+        :root {
+            --primary-bg: #FFFFFF;
+            --secondary-bg: #F8F9FA;
+            --accent-main: #111111;
+            --border: #E1E1E1;
+            --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-        body { background-color: var(--secondary-bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        
-        .auth-container { background: var(--primary-bg); width: 100%; max-width: 420px; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); text-align: center; }
-        
-        .subtitle { font-size: 0.9rem; color: #666; margin-bottom: 25px; }
-        
-        input[type="text"], input[type="email"], input[type="password"] { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; outline: none; }
-        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus { border-color: var(--accent-main); }
-        
+        body { background-color: var(--secondary-bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 24px 16px; }
+        .auth-container { background: var(--primary-bg); width: 100%; max-width: 440px; padding: 40px 36px 34px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); text-align: center; }
+
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--accent-main); text-align: center; margin-bottom: 6px; }
+        .subtitle { font-size: 0.9rem; color: #666; margin-bottom: 28px; }
+
+        /* Inputs */
+        label.field { display: block; margin-bottom: 14px; text-align: left; }
+        label.field > span { display: block; font-size: 0.78rem; font-weight: 600; color: var(--accent-main); margin-bottom: 6px; }
+        label.field .req { color: #E63946; }
+        .field input, .field select {
+            width: 100%; padding: 12px 14px; border: 1px solid var(--border);
+            border-radius: 6px; font-size: 0.95rem; outline: none; background: #fff;
+            color: #111; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .field input:focus, .field select:focus { border-color: var(--accent-main); box-shadow: 0 0 0 3px rgba(17,17,17,0.10); }
+        .field select { appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23111111%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 14px top 50%; background-size: 11px auto; padding-right: 36px; }
+        .field.invalid input, .field.invalid select { border-color: #E63946; box-shadow: 0 0 0 3px rgba(230,57,70,0.12); }
+
+        /* Section divider */
+        .section-divider { display: flex; align-items: center; gap: 12px; margin: 6px 0 16px; }
+        .section-divider::before, .section-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+        .section-divider span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #999; }
+
         /* Compliance Consent Layout */
-        .compliance-wrapper {
-            background: #FAFAFA;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .consent-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
+        .compliance-wrapper { background: #FAFAFA; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 20px; text-align: left; }
+        .consent-group { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
         .consent-group:last-child { margin-bottom: 0; }
-        .consent-checkbox {
-            width: auto;
-            margin-top: 3px;
-            cursor: pointer;
-            accent-color: var(--accent-main);
-        }
-        .consent-label {
-            font-size: 0.78rem;
-            color: #555;
-            line-height: 1.4;
-            cursor: pointer;
-            user-select: none;
-        }
-        .consent-label a { color: var(--kp-color); text-decoration: none; font-weight: 600; }
+        .consent-checkbox { width: auto; margin-top: 3px; cursor: pointer; accent-color: var(--accent-main); }
+        .consent-label { font-size: 0.78rem; color: #555; line-height: 1.45; cursor: pointer; user-select: none; }
+        .consent-label a { color: #E63946; text-decoration: none; font-weight: 600; }
         .consent-label a:hover { text-decoration: underline; }
-        
+
         .btn { width: 100%; padding: 14px; background: var(--accent-main); color: white; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 1rem; }
         .btn:hover { background: #333; transform: translateY(-2px); }
         .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
-        .switch-link { margin-top: 20px; font-size: 0.9rem; color: #666; }
+        .switch-link { margin-top: 22px; font-size: 0.9rem; color: #666; }
         .switch-link a { color: var(--accent-main); font-weight: 600; text-decoration: none; }
         .switch-link a:hover { text-decoration: underline; }
 
-        .header-group {
-            display: flex;
-            flex-direction: column; 
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+        @media (max-width: 480px) {
+            .auth-container { padding: 28px 22px 24px; border-radius: 12px; }
+            .logo { font-size: 1.6rem; }
         }
-
-        .mascot-gif {
-            width: 160px;
-            height: auto;
-            margin-bottom: 10px;
-            transition: width 0.3s ease; 
-        }
-
-        @media (max-width: 500px) {
-            .mascot-gif { width: 110px; }
-        }
-
-        .logo { font-size: 1.8rem; font-weight: 700; color: var(--accent-main); text-align: center; }
     </style>
     <!-- Include Supabase JS CDN UMD bundle + shared auth layer -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -92,19 +66,53 @@
 <body>
 
     <div class="auth-container">
-        <!-- Fixed Header Group Structural Layout -->
-        <div class="header-group">
-            
-            <h1 class="logo">Brevity Companion</h1>
-        </div>
-        
-        <p class="subtitle">Create an account to start practicing Korean</p>
-        
-        <input type="text" placeholder="Full Name" id="fullName" required>
-        <input type="email" placeholder="Email Address" id="email" required>
-        <input type="password" placeholder="Password (Min 6 chars)" id="password" required>
-        <input type="password" placeholder="Confirm Password" id="confirmPassword" required>
-        
+        <h1 class="logo">Create Account</h1>
+        <p class="subtitle">Sign up to start practicing Korean</p>
+
+        <!-- Account credentials -->
+        <label class="field">
+            <span>Full Name <span class="req">*</span></span>
+            <input type="text" placeholder="Full name" id="fullName">
+        </label>
+        <label class="field">
+            <span>Email Address <span class="req">*</span></span>
+            <input type="email" placeholder="you@example.com" id="email">
+        </label>
+        <label class="field">
+            <span>Password <span class="req">*</span></span>
+            <input type="password" placeholder="At least 6 characters" id="password">
+        </label>
+        <label class="field">
+            <span>Confirm Password <span class="req">*</span></span>
+            <input type="password" placeholder="Re-enter password" id="confirmPassword">
+        </label>
+
+        <div class="section-divider"><span>About You</span></div>
+
+        <!-- Profile details -->
+        <label class="field">
+            <span>Gender <span class="req">*</span></span>
+            <select id="gender">
+                <option value="" disabled selected>Select…</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="nonbinary">Non-binary</option>
+                <option value="other">Other</option>
+            </select>
+        </label>
+        <label class="field">
+            <span>Date of Birth <span class="req">*</span></span>
+            <input type="date" id="dob" title="Date of Birth">
+        </label>
+        <label class="field">
+            <span>City / Hometown <span class="req">*</span></span>
+            <input type="text" placeholder="City or hometown" id="city">
+        </label>
+        <label class="field">
+            <span>Institute / School <span style="color:#999;font-weight:400;">(optional)</span></span>
+            <input type="text" placeholder="Institute or school" id="institute">
+        </label>
+
         <!-- Enforced Compliance Blocks -->
         <div class="compliance-wrapper">
             <div class="consent-group">
@@ -120,14 +128,22 @@
                 </label>
             </div>
         </div>
-        
-        <button class="btn" id="submitBtn" onclick="handleSignup()">Register Account</button>
-        
+
+        <button class="btn" id="submitBtn" onclick="handleSignup()">Create Account</button>
+
         <p class="switch-link">Already a student? <a href="index.html">Log In</a></p>
     </div>
 
     <script>
         // Supabase client comes from the shared auth.js (global supabaseClient).
+
+        // Flag a field as invalid (red border) and return false.
+        function markInvalid(id, bad) {
+            const el = document.getElementById(id);
+            const wrap = el.closest('.field');
+            if (wrap) wrap.classList.toggle('invalid', bad);
+            return !bad;
+        }
 
         async function handleSignup() {
             const fullName = document.getElementById('fullName').value.trim();
@@ -138,31 +154,38 @@
             const aiConsent = document.getElementById('ai-consent').checked;
             const submitBtn = document.getElementById('submitBtn');
 
-            // Form Validations
-            if (!fullName || !email || !password || !confirmPassword) {
-                alert("Please fill out all identity fields.");
-                return;
-            }
-            if (password !== confirmPassword) {
-                alert("Passwords do not match.");
-                return;
-            }
-            if (password.length < 6) {
-                alert("Password must be at least 6 characters long.");
-                return;
-            }
+            // Profile fields: Gender, DOB and City are required; Institute is optional.
+            const gender = document.getElementById('gender').value;
+            const dob = document.getElementById('dob').value;
+            const city = document.getElementById('city').value.trim();
+            const institute = document.getElementById('institute').value.trim();
+
+            // Clear previous invalid marks, then validate.
+            ['fullName','email','password','confirmPassword','gender','dob','city']
+                .forEach(id => markInvalid(id, false));
+
+            let ok = true;
+            if (!fullName) ok = markInvalid('fullName', true) && ok;
+            if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) ok = markInvalid('email', true) && ok;
+            if (!password) ok = markInvalid('password', true) && ok;
+            if (password !== confirmPassword) ok = markInvalid('confirmPassword', true) && ok;
+            if (password && password.length < 6) ok = markInvalid('password', true) && ok;
+            if (!gender) ok = markInvalid('gender', true) && ok;
+            if (!dob) ok = markInvalid('dob', true) && ok;
+            if (!city) ok = markInvalid('city', true) && ok;
+
+            if (!ok) { alert("Please complete the required fields marked in red."); return; }
 
             // Compliance Gate Checks
             if (!ageConsent || !aiConsent) {
-                alert("You must check both validation boxes to confirm your age status and accept the AI data routing disclosures.");
+                alert("You must check both boxes to confirm your age and accept the AI data routing disclosures.");
                 return;
             }
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.innerText = "Processing registration...";
+                submitBtn.innerText = "Creating account…";
 
-                // 2. Call Supabase Auth API
                 const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
@@ -171,27 +194,28 @@
                             full_name: fullName,
                             age_verified_18_plus: true,
                             ai_consent_granted: true,
-                            consent_timestamp: new Date().toISOString()
+                            consent_timestamp: new Date().toISOString(),
+                            gender: gender || null,
+                            dob: dob || null,
+                            city: city || null,
+                            institute: institute || null
                         }
                     }
                 });
 
                 if (error) throw error;
 
-                // 3. Initialize Client Points Local Economy.
-                // Auth is now handled entirely by the Supabase session (auth.js),
-                // so no local login flag is needed here.
                 localStorage.setItem('kimchi_points', '5');
                 localStorage.setItem('ai_consent_granted', 'true');
                 localStorage.setItem('ai_consent_timestamp', new Date().toISOString());
 
-                alert("Registration highly successful! Please check your email inbox to confirm your registration verification link.");
+                alert("Registration successful! Please check your email to confirm your account.");
                 window.location.href = 'index.html';
 
             } catch (err) {
                 alert("Registration failed: " + err.message);
                 submitBtn.disabled = false;
-                submitBtn.innerText = "Register Account";
+                submitBtn.innerText = "Create Account";
             }
         }
     </script>
