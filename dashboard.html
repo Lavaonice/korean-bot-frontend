@@ -33,11 +33,28 @@
     .title-text { text-align: left; }
     .mascot-gif { width: 200px; height: auto; transition: width 0.3s ease; }
 
+    @media (max-width: 768px) {
+        body { padding: 24px 14px; }
+        .container { max-width: 100%; padding: 28px 22px; }
+        .mode-card { flex-direction: column; align-items: stretch; gap: 16px; padding: 20px; }
+        .btn-play { margin-left: 0; width: 100%; }
+        .mode-info h3 { font-size: 1.2rem; }
+        .mode-info p { font-size: 0.95rem; }
+    }
+
     @media (max-width: 500px) {
-        .dashboard-header { flex-direction: column; text-align: center; gap: 20px; }
+        body { padding: 18px 12px; }
+        .container { padding: 22px 16px; border-radius: 12px; }
+        .top-bar { margin-bottom: 16px; }
+        .kp-badge { font-size: 0.82rem; padding: 7px 13px; }
+        .bell-btn { width: 40px; height: 40px; font-size: 1rem; }
+        .dashboard-header { flex-direction: column; text-align: center; gap: 18px; padding-bottom: 22px; margin-bottom: 26px; }
         .title-text { text-align: center; }
-        .mascot-gif { width: 120px; }
-        .title-text h1 { font-size: 1.8rem; }
+        .mascot-gif { width: 150px; }
+        .title-text h1 { font-size: 1.6rem; }
+        .mode-card { padding: 18px 16px; }
+        .mode-info h3 { font-size: 1.1rem; }
+        .mode-info p { font-size: 0.9rem; }
     }
 
     .alert-box { display: none; background: #FFF0F1; border: 1px solid var(--kp-color); color: var(--kp-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; }

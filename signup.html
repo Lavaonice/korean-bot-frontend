@@ -55,8 +55,14 @@
         .switch-link a:hover { text-decoration: underline; }
 
         @media (max-width: 480px) {
-            .auth-container { padding: 28px 22px 24px; border-radius: 12px; }
+            .auth-container { padding: 26px 20px 22px; border-radius: 12px; }
             .logo { font-size: 1.6rem; }
+        }
+
+        /* On short phones, let the form scroll instead of being clipped. */
+        @media (max-height: 720px) {
+            body { align-items: flex-start; }
+            .auth-container { margin: 12px 0; }
         }
     </style>
     <!-- Include Supabase JS CDN UMD bundle + shared auth layer -->

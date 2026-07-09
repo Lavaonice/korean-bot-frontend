@@ -13,7 +13,8 @@
             --font: 'Segoe UI', sans-serif; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
-        body { background-color: var(--secondary-bg); display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        body { background-color: var(--secondary-bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; padding: 24px 16px; }
+        .auth-container { max-width: 400px; width: 100%; }
         
         .auth-container { background: var(--primary-bg); width: 100%; max-width: 400px; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid var(--border); text-align: center; }
         
@@ -40,14 +41,25 @@
         }
 
         .mascot-gif {
-            width: 300px;
+            width: 260px;
+            max-width: 70%;
             height: auto;
             margin-bottom: 10px;
-            transition: width 0.3s ease; 
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container { padding: 32px 24px; }
+            .mascot-gif { width: 220px; }
         }
 
         @media (max-width: 500px) {
-            .mascot-gif { width: 120px; }
+            .mascot-gif { width: 180px; }
+            .logo { font-size: 1.6rem; }
+        }
+
+        @media (max-width: 360px) {
+            .mascot-gif { width: 150px; }
         }
 
         .logo { font-size: 1.8rem; font-weight: 700; color: var(--accent-main); text-align: center; }

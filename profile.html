@@ -113,14 +113,36 @@
         .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--store-darker); color: white; padding: 12px 22px; border-radius: 8px; font-size: 0.9rem; opacity: 0; transition: 0.3s; z-index: 2000; box-shadow: 0 6px 18px rgba(0,0,0,0.3); }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
+        @media (max-width: 768px) {
+            body { padding: 24px 14px; }
+            .container { max-width: 100%; padding: 28px 22px; }
+            .plan-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .plan-card .btn-kp { width: 100%; }
+            .danger-zone { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .btn-danger { width: 100%; }
+        }
+
         @media (max-width: 600px) {
-            .profile-hero { flex-direction: column; text-align: center; }
+            body { padding: 16px 10px; }
+            .container { padding: 22px 16px; border-radius: 12px; }
+            .top-bar { margin-bottom: 18px; }
+
+            .profile-hero { flex-direction: column; text-align: center; gap: 18px; padding-bottom: 22px; }
+            .avatar { width: 96px; height: 96px; }
+            .avatar .initials { font-size: 2.2rem; }
+            .hero-info { width: 100%; }
             .hero-info h1, .hero-email, .hero-meta { justify-content: center; text-align: center; }
+            .hero-info h1 { font-size: 1.5rem; }
+
+            .section-title { font-size: 1.05rem; }
             .field-row { flex-direction: column; align-items: stretch; gap: 8px; }
-            .field-value { text-align: left; }
-            .field-value input { width: 100%; text-align: left; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .container { padding: 24px; }
+            .field-value { text-align: left; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+            .field-value input[type="text"], .field-value select { width: 100%; text-align: left; }
+            .field-value .btn-sm, .field-value .btn-outline { width: 100%; margin-left: 0 !important; }
+
+            .stats-grid { grid-template-columns: 1fr; gap: 10px; }
+            .stat-box { padding: 16px; }
+            .stat-box .num { font-size: 1.5rem; }
         }
     </style>
 <script>
