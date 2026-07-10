@@ -375,21 +375,27 @@
             .interactive-section { border-radius: 14px; column-gap: 0; overflow: visible; }
 
             /* Phone: the tiger is BIG and is allowed to spill out to the left of
-               the box (negative margin) so it's clearly visible, not tiny. */
+               the box (negative margin) so it's clearly visible, not tiny. It
+               also tucks BEHIND the panel, overlapping it, so the dead transparent
+               space in the PNG gets cropped against the controls instead of
+               leaving a gap. The panel sits on top (higher z-index) so the
+               number + slider stay fully visible and tappable. */
             .mascot-pin {
                 align-items: center;
                 justify-content: flex-start;
                 overflow: visible;
                 min-width: 0;
+                z-index: 1;
             }
             .mascot-img {
                 width: clamp(150px, 44vw, 240px);
                 margin-left: -18vw;            /* push it left, out of the box */
-                margin-right: 0;
+                margin-right: -22vw;           /* pull it right, over the panel
+                                                  (crops the empty PNG padding) */
                 filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
             }
 
-            .panel { max-width: none; gap: 14px; align-items: stretch; }
+            .panel { max-width: none; gap: 14px; align-items: stretch; position: relative; z-index: 2; }
             .price-box { width: clamp(110px, 48vw, 220px); }
 
             .plan-card { padding: 24px 18px; border-radius: 14px; }
@@ -405,8 +411,8 @@
             .premium-hero h1 { font-size: 1.25rem; margin-bottom: 18px; }
             .header h2 { font-size: 1.2rem; }
             .interactive-section { column-gap: 0; padding: 14px 12px; overflow: visible; }
-            .mascot-img { width: clamp(130px, 46vw, 200px); margin-left: -20vw; }
-            .panel { gap: 12px; }
+            .mascot-img { width: clamp(130px, 46vw, 200px); margin-left: -20vw; margin-right: -24vw; }
+            .panel { gap: 12px; position: relative; z-index: 2; }
         }
     </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
