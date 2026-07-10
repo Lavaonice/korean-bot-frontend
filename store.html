@@ -372,14 +372,13 @@
             .section-heading { font-size: 1.15rem; margin: 0 0 12px 2px; }
             .header { padding-left: 44px; }
 
-            .interactive-section { border-radius: 14px; column-gap: 0; overflow: visible; }
+            .interactive-section { border-radius: 14px; column-gap: 3px; overflow: visible; }
 
-            /* Phone: the tiger is BIG and is allowed to spill out to the left of
-               the box (negative margin) so it's clearly visible, not tiny. It
-               also tucks BEHIND the panel, overlapping it, so the dead transparent
-               space in the PNG gets cropped against the controls instead of
-               leaving a gap. The panel sits on top (higher z-index) so the
-               number + slider stay fully visible and tappable. */
+            /* Phone: tiger is MAX size and spills out to the LEFT of the box
+               (negative left margin) so it stays big. A small right pull eats
+               the PNG's transparent padding so the visible tiger sits just 3px
+               from the panel — close, but never overlapping/colliding. The
+               panel stays on top (higher z-index) so number + slider are usable. */
             .mascot-pin {
                 align-items: center;
                 justify-content: flex-start;
@@ -388,15 +387,16 @@
                 z-index: 1;
             }
             .mascot-img {
-                width: clamp(150px, 44vw, 240px);
-                margin-left: -18vw;            /* push it left, out of the box */
-                margin-right: -22vw;           /* pull it right, over the panel
-                                                  (crops the empty PNG padding) */
+                width: clamp(180px, 60vw, 300px);
+                margin-left: -22vw;            /* spill left, out of the box */
+                margin-right: -8vw;            /* gentle pull to crop transparent
+                                                  padding — keeps a ~3px gap, no
+                                                  collision */
                 filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
             }
 
             .panel { max-width: none; gap: 14px; align-items: stretch; position: relative; z-index: 2; }
-            .price-box { width: clamp(110px, 48vw, 220px); }
+            .price-box { width: clamp(110px, 46vw, 220px); }
 
             .plan-card { padding: 24px 18px; border-radius: 14px; }
             .plan-price { font-size: 2.2rem; }
@@ -410,8 +410,8 @@
             .premium-hero { padding: 20px 12px; }
             .premium-hero h1 { font-size: 1.25rem; margin-bottom: 18px; }
             .header h2 { font-size: 1.2rem; }
-            .interactive-section { column-gap: 0; padding: 14px 12px; overflow: visible; }
-            .mascot-img { width: clamp(130px, 46vw, 200px); margin-left: -20vw; margin-right: -24vw; }
+            .interactive-section { column-gap: 3px; padding: 14px 12px; overflow: visible; }
+            .mascot-img { width: clamp(160px, 62vw, 240px); margin-left: -24vw; margin-right: -8vw; }
             .panel { gap: 12px; position: relative; z-index: 2; }
         }
     </style>
