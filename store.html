@@ -87,30 +87,55 @@
         .inr-value { display: block; font-size: 0.9rem; color: #888; margin-top: 5px; }
 
         /* --- Mascot & Slider Container --- */
-        .slider-wrapper {
-            position: relative;
+        .slider-zone {
+            position: relative;       /* Tiger overlays the track on desktop */
             width: 100%;
             max-width: 400px;
-            margin-top: 50px; /* Big gap to fit the giant tiger */
+            margin-top: 50px;         /* Gap to fit the giant tiger */
             margin-bottom: 30px;
         }
+        .slider-col { width: 100%; }
 
-        .mascot-img {
+        .mascot-col {
             position: absolute;
-            bottom: -5px; /* Pulls the tiger down so its feet hit the track */
-            left: 0; /* Updated by JS */
-            transform: translateX(-50%); /* Centers image directly over the click point */
-            width: 150px; /* Much bigger for PC! */
+            bottom: -5px;             /* Tiger's feet hit the track */
+            left: 0;                  /* Updated by JS */
+            transform: translateX(-50%);
+            z-index: 10;
+            pointer-events: none;     /* Clicks pass through to the slider */
+        }
+        .mascot-img {
+            width: 150px;             /* Much bigger for PC! */
             height: auto;
+            display: block;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
             animation: bounce 2s infinite ease-in-out;
-            pointer-events: none; /* Crucial: Allows clicks to pass through to the slider */
-            z-index: 10;
         }
+
+        /* Equivalent-amount readout shown on phones (hidden on desktop) */
+        .amount-readout { display: none; }
+        .amount-pill {
+            background: var(--store-darker);
+            border: 2px solid #444;
+            border-radius: 14px;
+            padding: 12px 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.15;
+        }
+        .amount-kp { font-size: 1.5rem; font-weight: 800; color: #fff; }
+        .amount-eq { font-size: 0.85rem; color: #FFB74D; margin-top: 2px; font-weight: 600; }
 
         @keyframes bounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Mobile-only bob: no horizontal shift (tiger sits beside the slider) */
+        @keyframes bounce-m {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
         }
 
         /* --- Custom Range Slider --- */
@@ -248,30 +273,53 @@
             .header h2 { font-size: 1.4rem; }
             .kp-badge { font-size: 0.85rem; padding: 7px 13px; }
             .interactive-section { padding: 26px 20px; }
-            .slider-wrapper { margin-top: 60px; margin-bottom: 26px; }
+            .slider-zone { margin-top: 56px; margin-bottom: 26px; }
             .mascot-img { width: 120px; }
             .section-heading { padding-left: 2px; }
         }
 
-        /* --- Mobile Overrides --- */
+        /* --- Mobile (phones): redesigned slider layout --- */
         @media (max-width: 500px) {
-            body { padding: 16px 10px; }
+            body { padding: 16px 12px; }
             .container { padding: 20px 16px; border-radius: 12px; }
             .premium-hero { padding: 24px 18px; }
             .premium-hero h1 { font-size: 1.35rem; margin-bottom: 22px; }
             .features-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 24px; font-size: 0.9rem; }
-            .interactive-section { padding: 22px 14px 28px; }
-            .price-box {
-                width: auto; min-width: unset;
-                padding: 12px 26px;
-                display: inline-block;
-            }
-            .kp-value { font-size: 1.7rem; }
-            .mascot-img { width: 96px; bottom: -2px; }
-            .slider-wrapper { margin-top: 58px; margin-bottom: 20px; }
             .modal-box { padding: 22px 18px; }
             .plan-name { font-size: 1.3rem; }
             .header h2 { font-size: 1.25rem; }
+
+            /* Compact readout of the equivalent amount — sits above the slider */
+            .amount-readout { display: flex; }
+            .price-box { display: none; }
+            .interactive-section { padding: 22px 18px 26px; }
+            .slider-zone { flex-direction: row; align-items: center; gap: 12px; }
+            .slider-col { width: 100%; }
+            .slider-wrapper { margin: 6px 0 0; }
+            .mascot-col {
+                flex: 0 0 auto;
+                width: 32%;
+                max-width: 132px;
+                min-width: 84px;
+                align-self: stretch;
+                justify-content: flex-end;
+                align-items: flex-end;
+                animation: bounce-m 2s infinite ease-in-out;
+            }
+            .mascot-img {
+                position: relative;
+                left: auto;
+                transform: none;
+                bottom: 0;
+                width: 100%;
+                height: auto;
+            }
+            .btn-recharge {
+                width: 100%;
+                padding: 16px 35px;
+                font-size: 1.15rem;
+                margin-top: 4px;
+            }
         }
 
         /* --- Small phones --- */
@@ -280,12 +328,10 @@
             .container { padding: 18px 14px; }
             .premium-hero { padding: 22px 14px; }
             .premium-hero h1 { font-size: 1.2rem; margin-bottom: 20px; }
-            .interactive-section { padding: 18px 10px 24px; }
-            .price-box { padding: 10px 20px; }
-            .kp-value { font-size: 1.5rem; }
-            .mascot-img { width: 82px; }
-            .slider-wrapper { margin-top: 52px; margin-bottom: 16px; }
             .header h2 { font-size: 1.15rem; }
+            .mascot-col { width: 30%; }
+            .slider-zone { gap: 8px; }
+            .btn-recharge { padding: 15px 28px; font-size: 1.05rem; }
         }
     </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -351,15 +397,28 @@
             </div>
 
             <div class="interactive-section">
-                
-                <div class="price-box">
-                    <div class="kp-value"><span id="slider-kp">100</span> KP</div>
-                    <div class="inr-value">₹<span id="slider-inr">100</span> INR</div>
+
+                <div class="amount-readout" aria-live="polite">
+                    <div class="amount-pill">
+                        <span class="amount-kp"><span id="slider-kp">100</span> KP</span>
+                        <span class="amount-eq">= ₹<span id="slider-inr">100</span> INR</span>
+                    </div>
                 </div>
 
-                <div class="slider-wrapper">
-                    <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger2.apng" alt="Store Mascot" class="mascot-img" id="mascot">
-                    <input type="range" id="kp-slider" min="10" max="1000" step="10" value="100" oninput="updateSlider()">
+                <div class="price-box">
+                    <div class="kp-value"><span id="slider-kp-pc">100</span> KP</div>
+                    <div class="inr-value">₹<span id="slider-inr-pc">100</span> INR</div>
+                </div>
+
+                <div class="slider-zone">
+                    <div class="slider-col">
+                        <div class="slider-wrapper">
+                            <input type="range" id="kp-slider" min="10" max="1000" step="10" value="100" oninput="updateSlider()">
+                        </div>
+                    </div>
+                    <div class="mascot-col">
+                        <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger2.apng" alt="Store Mascot" class="mascot-img" id="mascot">
+                    </div>
                 </div>
 
                 <button class="btn-recharge" onclick="openCheckout('kp')">Add Kimchi Points</button>
@@ -393,22 +452,41 @@
         const slider = document.getElementById('kp-slider');
         const displayKp = document.getElementById('slider-kp');
         const displayInr = document.getElementById('slider-inr');
+        const displayKpPc = document.getElementById('slider-kp-pc');
+        const displayInrPc = document.getElementById('slider-inr-pc');
         const mascot = document.getElementById('mascot');
+        const mascotCol = mascot ? mascot.closest('.mascot-col') : null;
 
         function updateSlider() {
             const val = slider.value;
             displayKp.innerText = val;
-            displayInr.innerText = val; 
-            
-            const min = slider.min || 10;
-            const max = slider.max || 1000;
+            displayInr.innerText = val;
+            if (displayKpPc) displayKpPc.innerText = val;
+            if (displayInrPc) displayInrPc.innerText = val;
+
+            const min = parseInt(slider.min || 10);
+            const max = parseInt(slider.max || 1000);
             const percent = ((val - min) / (max - min)) * 100;
-            
+
             slider.style.setProperty('--slider-fill', `${percent}%`);
-            mascot.style.left = `${percent}%`;
+
+            if (!mascotCol) return;
+
+            // Phones: tiger sits beside the slider (in flow) and grows with the value.
+            // Desktop: tiger rides on top of the thumb via absolute left positioning.
+            const isPhone = window.matchMedia('(max-width: 500px)').matches;
+            if (isPhone) {
+                mascotCol.style.left = '';
+                const size = 84 + (percent / 100) * 48; // 84px -> 132px
+                mascot.style.width = size + 'px';
+            } else {
+                mascot.style.width = '';
+                mascotCol.style.left = `${percent}%`;
+            }
         }
 
         updateSlider();
+        window.addEventListener('resize', updateSlider);
 
         // --- Checkout Modal Logic ---
         let pendingOrder = null;
