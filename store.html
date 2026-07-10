@@ -138,14 +138,12 @@
             animation: bounce-pin 2.2s infinite ease-in-out;
         }
         .mascot-img {
-            width: clamp(90px, 26vw, 200px);   /* fluid — scales down on phones
-                                         (was locked at 200px, which swallowed
-                                         the slider panel on small screens) */
+            width: clamp(70px, 16vw, 260px);   /* 80% larger than before (was
+                                         200px) — scales down on phones so the
+                                         slider panel keeps room */
             height: auto;
             display: block;
             filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
-
-            transition: transform 0.12s ease-out;
         }
 
         .slider-zone {
@@ -226,6 +224,27 @@
             width: 100%;
         }
         .btn-recharge:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 112, 67, 0.4); }
+
+        /* --- Editable KP number, inline inside the price box --- */
+        .kp-input {
+            width: 4ch;                 /* fits up to "1000" comfortably */
+            min-width: 3ch;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font: inherit;               /* match the .kp-value size/weight */
+            font-weight: 700;
+            text-align: right;
+            padding: 0;
+            outline: none;
+            -moz-appearance: textfield;
+            font-variant-numeric: tabular-nums;
+        }
+        .kp-input::-webkit-outer-spin-button,
+        .kp-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Faint underline on focus so it reads as editable, not broken */
+        .kp-input:focus { text-decoration: underline; text-decoration-color: var(--store-highlight); text-underline-offset: 3px; }
+        .kp-input-suffix { color: #BBB; font-size: 0.9rem; font-weight: 600; }
 
         /* --- Section Heading --- */
         .section-heading {
@@ -437,7 +456,7 @@
 
                 <div class="panel">
                     <div class="price-box">
-                        <div class="kp-value"><span id="slider-kp-pc">100</span> KP</div>
+                        <div class="kp-value"><input type="number" id="kp-input" class="kp-input" min="10" max="1000" step="10" value="100" inputmode="numeric" aria-label="Kimchi Points"><span class="kp-input-suffix">KP</span></div>
                         <div class="inr-value">₹<span id="slider-inr-pc">100</span> INR</div>
                     </div>
 
@@ -502,18 +521,28 @@
         document.getElementById('current-kp').innerText = currentKp;
 
         const slider = document.getElementById('kp-slider');
-        const displayKpPc = document.getElementById('slider-kp-pc');
         const displayInrPc = document.getElementById('slider-inr-pc');
-        const mascot = document.getElementById('mascot');
+        const kpInput = document.getElementById('kp-input');
+        const MIN_KP = parseInt(slider.min || 10);
+        const MAX_KP = parseInt(slider.max || 1000);
 
-        function updateSlider() {
-            const val = slider.value;
-            if (displayKpPc) displayKpPc.innerText = val;
-            if (displayInrPc) displayInrPc.innerText = val;
+        // Single source of truth: set the KP amount from any control (slider,
+        // typed input, or +/- steppers) and keep every view in sync.
+        function setKp(value, source) {
+            value = Math.round(value);
+            if (isNaN(value)) value = MIN_KP;
+            if (value < MIN_KP) value = MIN_KP;
+            if (value > MAX_KP) value = MAX_KP;
+            // Snap to the slider's step so the thumb/tiger stay consistent.
+            const step = parseInt(slider.step || 10);
+            value = Math.round(value / step) * step;
+            if (value < MIN_KP) value = MIN_KP;
 
-            const min = parseInt(slider.min || 10);
-            const max = parseInt(slider.max || 1000);
-            const percent = ((val - min) / (max - min)) * 100;
+            const percent = ((value - MIN_KP) / (MAX_KP - MIN_KP)) * 100;
+
+            // The inline editable number IS the KP display, so write it there.
+            if (kpInput && source !== 'input') kpInput.value = value;
+            if (displayInrPc) displayInrPc.innerText = value;
 
             // Fill color of the track.
             slider.style.setProperty('--slider-fill', `${percent}%`);
@@ -522,18 +551,32 @@
             const thumbSize = 22 + (percent / 100) * 22; // 22px -> 44px
             slider.style.setProperty('--thumb-size', `${thumbSize}px`);
 
-            // The mascot stays put in its column; only its scale reacts to the
-            // value so nothing jitters while dragging. On phones keep the growth
-            // gentle (up to ~1.15x) so the smaller tiger never overflows.
-            if (mascot) {
-                const isPhone = window.matchMedia('(max-width: 500px)').matches;
-                const maxBoost = isPhone ? 0.15 : 0.35;
-                const scale = 1 + (percent / 100) * maxBoost;
-                mascot.style.transform = `scale(${scale.toFixed(3)})`;
-            }
+            // Reflect into the slider unless the user is dragging it.
+            if (source !== 'slider') slider.value = value;
         }
 
-        updateSlider();
+        function updateSlider() { setKp(parseInt(slider.value || MIN_KP, 10), 'slider'); }
+
+        // Typed input: live-sync as the user types; snaps on blur.
+        if (kpInput) {
+            kpInput.addEventListener('input', () => {
+                let v = parseInt(kpInput.value || '', 10);
+                if (isNaN(v)) return;                 // let them clear it mid-edit
+                v = Math.max(MIN_KP, Math.min(MAX_KP, v));
+                const percent = ((v - MIN_KP) / (MAX_KP - MIN_KP)) * 100;
+                if (displayInrPc) displayInrPc.innerText = v;
+                slider.style.setProperty('--slider-fill', `${percent}%`);
+                slider.style.setProperty('--thumb-size', `${22 + (percent / 100) * 22}px`);
+                slider.value = v;
+            });
+            kpInput.addEventListener('change', () => setKp(parseInt(kpInput.value || MIN_KP, 10), 'input'));
+            // Keep the caret at the end and ignore non-numeric on keypress.
+            kpInput.addEventListener('keypress', (e) => {
+                if (!/[0-9]/.test(e.key) && !['Backspace','Delete','Tab','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
+            });
+        }
+
+        setKp(parseInt(slider.value || MIN_KP, 10), 'init');
 
         // --- Checkout Modal Logic ---
         let pendingOrder = null;
