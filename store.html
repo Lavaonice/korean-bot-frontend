@@ -372,20 +372,25 @@
             .section-heading { font-size: 1.15rem; margin: 0 0 12px 2px; }
             .header { padding-left: 44px; }
 
-            .interactive-section { border-radius: 14px; column-gap: 10px; }
+            .interactive-section { border-radius: 14px; column-gap: 6px; overflow: visible; }
 
-            /* Phone: keep the tiger smaller and aligned to the top-right of its
-               column so it reads as a companion beside the slider, not a wall. */
+            /* Phone: the tiger is BIG and is allowed to spill out to the left of
+               the box (negative margin) so it's clearly visible, not tiny. */
             .mascot-pin {
-                align-items: flex-start;
-                justify-content: flex-end;
-                padding-right: 2px;
-                padding-top: 2px;
+                align-items: center;
+                justify-content: flex-start;
+                overflow: visible;
+                min-width: 0;
             }
-            .mascot-img { width: clamp(74px, 24vw, 120px); }
+            .mascot-img {
+                width: clamp(150px, 44vw, 240px);
+                margin-left: -18vw;            /* push it left, out of the box */
+                margin-right: 4px;
+                filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
+            }
 
-            .panel { max-width: none; gap: 14px; }
-            .price-box { width: clamp(110px, 42vw, 200px); }
+            .panel { max-width: none; gap: 14px; align-items: stretch; }
+            .price-box { width: clamp(110px, 48vw, 220px); }
 
             .plan-card { padding: 24px 18px; border-radius: 14px; }
             .plan-price { font-size: 2.2rem; }
@@ -399,8 +404,8 @@
             .premium-hero { padding: 20px 12px; }
             .premium-hero h1 { font-size: 1.25rem; margin-bottom: 18px; }
             .header h2 { font-size: 1.2rem; }
-            .interactive-section { column-gap: 6px; padding: 14px 12px; }
-            .mascot-img { width: clamp(64px, 22vw, 96px); }
+            .interactive-section { column-gap: 4px; padding: 14px 12px; overflow: visible; }
+            .mascot-img { width: clamp(130px, 46vw, 200px); margin-left: -20vw; }
             .panel { gap: 12px; }
         }
     </style>
