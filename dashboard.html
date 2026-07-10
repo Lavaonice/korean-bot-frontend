@@ -6,9 +6,9 @@
 <title>Brevity Companion - Dashboard</title>
 <style>
     :root {
-        --primary-bg: #FFFFFF; --secondary-bg: #F8F9FA;
+        --primary-bg: #FFFFFF; --secondary-bg: #F5F5F5;
         --text-primary: #111111; --text-secondary: #555555;
-        --accent-main: #34495E; --accent-hover: #2C3E50;
+        --accent-main: #111111; --accent-hover: #333333;
         --border-color: #E1E1E1; --kp-color: #E63946;
         --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
@@ -29,9 +29,11 @@
     .top-bar { display: flex; justify-content: flex-end; margin-bottom: 10px; }
     .kp-badge { background: #FFF0F1; color: var(--kp-color); padding: 8px 15px; border-radius: 20px; font-weight: 700; border: 1px solid #FFD6D9; font-size: 0.9rem; display: inline-block; }
 
-    .dashboard-header { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 40px; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 30px; }
-    .title-text { text-align: left; }
-    .mascot-gif { width: 200px; height: auto; transition: width 0.3s ease; }
+    .dashboard-header { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 24px; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 30px; }
+    .title-text { text-align: left; flex: 1; min-width: 0; }
+    .title-text h1 { font-size: 2.4rem; line-height: 1.05; font-weight: 800; color: var(--accent-main); }
+    .title-text p { color: var(--text-secondary); font-size: 1rem; margin-top: 8px; }
+    .mascot-gif { width: 170px; height: auto; flex-shrink: 0; transition: width 0.3s ease; }
 
     @media (max-width: 768px) {
         body { padding: 24px 14px; }
@@ -40,6 +42,8 @@
         .btn-play { margin-left: 0; width: 100%; }
         .mode-info h3 { font-size: 1.2rem; }
         .mode-info p { font-size: 0.95rem; }
+        .dashboard-header { gap: 18px; }
+        .mascot-gif { width: 160px; }
     }
 
     @media (max-width: 500px) {
@@ -48,13 +52,19 @@
         .top-bar { margin-bottom: 16px; }
         .kp-badge { font-size: 0.82rem; padding: 7px 13px; }
         .bell-btn { width: 40px; height: 40px; font-size: 1rem; }
-        .dashboard-header { flex-direction: column; text-align: center; gap: 18px; padding-bottom: 22px; margin-bottom: 26px; }
-        .title-text { text-align: center; }
-        .mascot-gif { width: 150px; }
+        .dashboard-header { flex-direction: row; align-items: center; justify-content: flex-start; text-align: left; gap: 14px; padding-bottom: 22px; margin-bottom: 26px; }
+        .title-text { text-align: left; }
+        .mascot-gif { width: 130px; }
         .title-text h1 { font-size: 1.6rem; }
         .mode-card { padding: 18px 16px; }
         .mode-info h3 { font-size: 1.1rem; }
         .mode-info p { font-size: 0.9rem; }
+    }
+
+    @media (max-width: 380px) {
+        .dashboard-header { gap: 10px; }
+        .mascot-gif { width: 110px; }
+        .title-text h1 { font-size: 1.4rem; }
     }
 
     .alert-box { display: none; background: #FFF0F1; border: 1px solid var(--kp-color); color: var(--kp-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; }
@@ -132,7 +142,7 @@
     <div class="dashboard-header">
         <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger1.apng" alt="Brevity Mascot" class="mascot-gif" onerror="this.src='https://placehold.co/300x300?text=Mascot'">
         <div class="title-text">
-            <h1>Brevity Companion</h1>
+            <h1>Brevity<br>Companion</h1>
             <p>Select your evaluation mode</p>
         </div>
     </div>
