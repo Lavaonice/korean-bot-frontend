@@ -86,7 +86,7 @@
             grid-template-columns: auto 1fr;
             grid-template-areas: "mascot panel";
             align-items: center;
-            column-gap: clamp(8px, 4vw, 40px);
+            column-gap: clamp(6px, 3vw, 28px);
         }
 
         .panel {
@@ -372,7 +372,7 @@
             .section-heading { font-size: 1.15rem; margin: 0 0 12px 2px; }
             .header { padding-left: 44px; }
 
-            .interactive-section { border-radius: 14px; column-gap: 6px; overflow: visible; }
+            .interactive-section { border-radius: 14px; column-gap: 0; overflow: visible; }
 
             /* Phone: the tiger is BIG and is allowed to spill out to the left of
                the box (negative margin) so it's clearly visible, not tiny. */
@@ -385,7 +385,7 @@
             .mascot-img {
                 width: clamp(150px, 44vw, 240px);
                 margin-left: -18vw;            /* push it left, out of the box */
-                margin-right: 4px;
+                margin-right: 0;
                 filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
             }
 
@@ -404,7 +404,7 @@
             .premium-hero { padding: 20px 12px; }
             .premium-hero h1 { font-size: 1.25rem; margin-bottom: 18px; }
             .header h2 { font-size: 1.2rem; }
-            .interactive-section { column-gap: 4px; padding: 14px 12px; overflow: visible; }
+            .interactive-section { column-gap: 0; padding: 14px 12px; overflow: visible; }
             .mascot-img { width: clamp(130px, 46vw, 200px); margin-left: -20vw; }
             .panel { gap: 12px; }
         }
