@@ -138,13 +138,13 @@
             animation: bounce-pin 2.2s infinite ease-in-out;
         }
         .mascot-img {
-            width: clamp(200px, 22vw, 200px);   /* scales all the way down on
-                                         phones instead of forcing a stacked
-                                         layout, but stays visually prominent */
+            width: clamp(90px, 26vw, 200px);   /* fluid — scales down on phones
+                                         (was locked at 200px, which swallowed
+                                         the slider panel on small screens) */
             height: auto;
             display: block;
             filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
-            
+
             transition: transform 0.12s ease-out;
         }
 
@@ -353,7 +353,20 @@
             .section-heading { font-size: 1.15rem; margin: 0 0 12px 2px; }
             .header { padding-left: 44px; }
 
-            .interactive-section { border-radius: 14px; }
+            .interactive-section { border-radius: 14px; column-gap: 10px; }
+
+            /* Phone: keep the tiger smaller and aligned to the top-right of its
+               column so it reads as a companion beside the slider, not a wall. */
+            .mascot-pin {
+                align-items: flex-start;
+                justify-content: flex-end;
+                padding-right: 2px;
+                padding-top: 2px;
+            }
+            .mascot-img { width: clamp(74px, 24vw, 120px); }
+
+            .panel { max-width: none; gap: 14px; }
+            .price-box { width: clamp(110px, 42vw, 200px); }
 
             .plan-card { padding: 24px 18px; border-radius: 14px; }
             .plan-price { font-size: 2.2rem; }
@@ -367,6 +380,9 @@
             .premium-hero { padding: 20px 12px; }
             .premium-hero h1 { font-size: 1.25rem; margin-bottom: 18px; }
             .header h2 { font-size: 1.2rem; }
+            .interactive-section { column-gap: 6px; padding: 14px 12px; }
+            .mascot-img { width: clamp(64px, 22vw, 96px); }
+            .panel { gap: 12px; }
         }
     </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -506,10 +522,13 @@
             const thumbSize = 22 + (percent / 100) * 22; // 22px -> 44px
             slider.style.setProperty('--thumb-size', `${thumbSize}px`);
 
-            // The mascot stays pinned top-right, only its scale reacts to the value —
-            // no position changes, so nothing jitters while dragging.
+            // The mascot stays put in its column; only its scale reacts to the
+            // value so nothing jitters while dragging. On phones keep the growth
+            // gentle (up to ~1.15x) so the smaller tiger never overflows.
             if (mascot) {
-                const scale = 1 + (percent / 100) * 0.35; // up to 1.35x
+                const isPhone = window.matchMedia('(max-width: 500px)').matches;
+                const maxBoost = isPhone ? 0.15 : 0.35;
+                const scale = 1 + (percent / 100) * maxBoost;
                 mascot.style.transform = `scale(${scale.toFixed(3)})`;
             }
         }
