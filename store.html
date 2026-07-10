@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store - Brevity Companion</title>
+    <title data-i18n="store.title">Store - Brevity Companion</title>
     <style>
         :root { 
             --primary-bg: #FFFFFF; --secondary-bg: #F5F5F5;
@@ -414,8 +414,26 @@
             .mascot-img { width: clamp(160px, 62vw, 240px); margin-left: -24vw; margin-right: -8vw; }
             .panel { gap: 12px; position: relative; z-index: 2; }
         }
+
+        /* --- Admin store banner --- */
+        .admin-store-banner {
+            display: flex; align-items: center; gap: 14px;
+            background: linear-gradient(135deg, #FFF3C4 0%, #FFD86B 50%, #F5B400 100%);
+            color: #2A1A00; border: 1px solid #E8B400; border-radius: 12px;
+            padding: 16px 20px; margin-bottom: 26px; box-shadow: 0 8px 22px rgba(245,180,0,0.25);
+        }
+        .admin-store-crown { font-size: 1.8rem; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
+        .admin-store-banner strong { font-size: 1rem; }
+        .admin-store-banner div { font-size: 0.85rem; color: #4A3300; line-height: 1.4; }
+        .admin-store-kp { margin-left: auto; font-size: 1.3rem; font-weight: 800; color: #B8860B; white-space: nowrap; }
+        @media (max-width: 500px) {
+            .admin-store-banner { flex-wrap: wrap; }
+            .admin-store-kp { margin-left: 0; width: 100%; }
+        }
     </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
 <script src="auth.js"></script>
 <script>
     // Auth gate — protected page. Validates the real Supabase session.
@@ -426,37 +444,46 @@
 
     <div class="sidebar" id="sidebar">
     <div class="sidebar-tab" onclick="toggleSidebar()"></div>
-    <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);">Menu</h2>
-    <a href="dashboard.html" class="sidebar-link">Practice Hub</a>
-    <a href="store.html" class="sidebar-link active">Kimchi Points Store</a>
-    <a href="profile.html" class="sidebar-link">My Profile</a>
-    <a href="about.html" class="sidebar-link">About Engine</a>
+    <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);" data-i18n="menu">Menu</h2>
+    <a href="dashboard.html" class="sidebar-link" data-i18n="nav.practice">Practice Hub</a>
+    <a href="store.html" class="sidebar-link active" data-i18n="nav.store">Kimchi Points Store</a>
+    <a href="profile.html" class="sidebar-link" data-i18n="nav.profile">My Profile</a>
+    <a href="about.html" class="sidebar-link" data-i18n="nav.about">About Engine</a>
 
     <div style="margin-top: auto; border-top: 1px solid #333;">
-        <a href="Privacy.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;">Privacy Policy</a>
-        <a href="Terms.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;">Terms of Service</a>
-        <a href="refund.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888; border-bottom: none;">Refund Policy</a>
-        <a href="index.html" class="sidebar-link" style="border-top: 1px solid #333;" onclick="logout()">Log Out</a>
+        <a href="Privacy.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;" data-i18n="nav.privacy">Privacy Policy</a>
+        <a href="Terms.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888;" data-i18n="nav.terms">Terms of Service</a>
+        <a href="refund.html" class="sidebar-link" style="font-size: 0.9rem; padding: 10px 25px; color: #888; border-bottom: none;" data-i18n="nav.refund">Refund Policy</a>
+        <a href="index.html" class="sidebar-link" style="border-top: 1px solid #333;" onclick="logout()" data-i18n="nav.logout">Log Out</a>
     </div>
 </div>
 
     <div class="container">
         <header class="header">
-            <h2>Store</h2>
+            <h2 data-i18n="store.heading">Store</h2>
             <div class="kp-badge">🪙 <span id="current-kp">0</span> KP</div>
         </header>
 
-        <div class="section-heading">Kimchi Points Top-Up</div>
+        <div class="admin-store-banner" id="admin-store-banner" style="display:none;">
+            <span class="admin-store-crown">👑</span>
+            <div>
+                <strong data-i18n="store.adminTitle">Admin Account — Unlimited Access</strong>
+                <div data-i18n="store.adminNote">You have infinite Kimchi Points and no session gating. No top-up required.</div>
+            </div>
+            <div class="admin-store-kp">∞ KP</div>
+        </div>
+
+        <div class="section-heading" data-i18n="store.topUpHeading">Kimchi Points Top-Up</div>
         <div class="premium-hero">
-            <h1>Support the <span class="highlight-underline">Brevity Engine</span> and unlock practice time</h1>
-            
+            <h1><span data-i18n="store.supportEngine">Support the Brevity Engine and unlock practice time</span></h1>
+
             <div class="features-grid">
-                <div class="feature-item"><span class="check-icon">✓</span> Bypass 36-minute cooldown locks</div>
-                <div class="feature-item"><span class="check-icon">✓</span> Unrestricted audio generation</div>
-                <div class="feature-item"><span class="check-icon">✓</span> Access advanced Viva chapter clusters</div>
-                <div class="feature-item"><span class="check-icon">✓</span> Prioritized server routing (Zero Lag)</div>
-                <div class="feature-item"><span class="check-icon">✓</span> Directly support cloud infrastructure</div>
-                <div class="feature-item"><span class="check-icon">✓</span> Unlock premium vocabulary analytics</div>
+                <div class="feature-item"><span class="check-icon">✓</span> <span data-i18n="store.f1">Bypass 36-minute cooldown locks</span></div>
+                <div class="feature-item"><span class="check-icon">✓</span> <span data-i18n="store.f2">Unrestricted audio generation</span></div>
+                <div class="feature-item"><span class="check-icon">✓</span> <span data-i18n="store.f3">Access advanced Viva chapter clusters</span></div>
+                <div class="feature-item"><span class="check-icon">✓</span> <span data-i18n="store.f4">Prioritized server routing (Zero Lag)</span></div>
+                <div class="feature-item"><span class="check-icon">✓</span> <span data-i18n="store.f5">Directly support cloud infrastructure</span></div>
+                <div class="feature-item"><span class="check-icon">✓</span> <span data-i18n="store.f6">Unlock premium vocabulary analytics</span></div>
             </div>
 
             <div class="interactive-section">
@@ -477,7 +504,7 @@
                         </div>
                     </div>
 
-                    <button class="btn-recharge" onclick="openCheckout('kp')">Add Kimchi Points</button>
+                    <button class="btn-recharge" onclick="openCheckout('kp')" data-i18n="store.addKP">Add Kimchi Points</button>
                 </div>
             </div>
         </div>
@@ -487,23 +514,23 @@
 
 
 
-        <h1><div class="section-heading">Brevity Premium</div></h1>
+        <h1><div class="section-heading" data-i18n="store.premiumHeading">Brevity Premium</div></h1>
 <br>
         <div class="plan-card">
             <div class="plan-info">
-                <span class="plan-badge">Premium Pass</span>
-                <h2>Weekly Premium Pass</h2>
-                <p>Skip the queue and practice without interruption. Premium gives you priority server routing and removes the standard cooldown lock for 7 days.</p>
+                <span class="plan-badge" data-i18n="store.premiumBadge">Premium Pass</span>
+                <h2 data-i18n="store.weeklyPass">Weekly Premium Pass</h2>
+                <p data-i18n="store.premiumDesc">Skip the queue and practice without interruption. Premium gives you priority server routing and removes the standard cooldown lock for 7 days.</p>
                 <div class="plan-tags">
-                    <span class="plan-tag">Faster queue joining</span>
-                    <span class="plan-tag">No 36-min cooldown</span>
-                    <span class="plan-tag">Priority routing</span>
+                    <span class="plan-tag" data-i18n="store.tag.fasterQueue">Faster queue joining</span>
+                    <span class="plan-tag" data-i18n="store.tag.noCooldown">No 36-min cooldown</span>
+                    <span class="plan-tag" data-i18n="store.tag.priorityRouting">Priority routing</span>
                 </div>
             </div>
             <div class="plan-price-block">
                 <div class="plan-price">₹49<span>/wk</span></div>
-                <div class="plan-period">billed once, valid 7 days</div>
-                <button class="btn-premium" onclick="openCheckout('premium')">Get Premium</button>
+                <div class="plan-period" data-i18n="store.billedOnce">billed once, valid 7 days</div>
+                <button class="btn-premium" onclick="openCheckout('premium')" data-i18n="store.getPremium">Get Premium</button>
             </div>
         </div>
 
@@ -512,16 +539,16 @@
     <!-- Checkout Modal -->
     <div class="modal-overlay" id="checkout-modal">
         <div class="modal-box">
-            <h3 id="modal-title">Checkout</h3>
-            <p class="modal-sub" id="modal-sub">Review your order before paying</p>
+            <h3 id="modal-title" data-i18n="store.checkout">Checkout</h3>
+            <p class="modal-sub" id="modal-sub" data-i18n="store.checkoutSub">Review your order before paying</p>
 
             <div id="order-rows"></div>
 
-            <button class="phonepe-btn" onclick="payWithPhonePe()">
+            <button class="phonepe-btn" onclick="payWithPhonePe()" data-i18n="store.payPhonePe">
                 Pay with PhonePe
             </button>
-            <p class="modal-note">You'll be redirected to PhonePe to complete payment securely. Your balance updates automatically once payment is confirmed.</p>
-            <button class="modal-close" onclick="closeCheckout()">Cancel</button>
+            <p class="modal-note" data-i18n="store.modalNote">You'll be redirected to PhonePe to complete payment securely. Your balance updates automatically once payment is confirmed.</p>
+            <button class="modal-close" onclick="closeCheckout()" data-i18n="store.cancel">Cancel</button>
         </div>
     </div>
 
@@ -529,7 +556,13 @@
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
         
         let currentKp = parseInt(localStorage.getItem('kimchi_points') || '0');
-        document.getElementById('current-kp').innerText = currentKp;
+
+        // Admin accounts have infinite Kimchi Points and never need to top up.
+        const storeUnlimited = window.kpUnlimited && window.kpUnlimited();
+        document.getElementById('current-kp').innerText = storeUnlimited ? '∞' : currentKp;
+
+        const adminBanner = document.getElementById('admin-store-banner');
+        if (adminBanner) adminBanner.style.display = storeUnlimited ? '' : 'none';
 
         const slider = document.getElementById('kp-slider');
         const displayInrPc = document.getElementById('slider-inr-pc');
@@ -600,20 +633,20 @@
 
             if (type === 'kp') {
                 const amount = parseInt(slider.value);
-                pendingOrder = { type: 'kp', amount: amount, label: `${amount} Kimchi Points` };
-                title.innerText = 'Confirm Top-Up';
-                sub.innerText = 'Kimchi Points are added to your account instantly after payment.';
+                pendingOrder = { type: 'kp', amount: amount, label: t('store.orderKP', { n: amount }) };
+                title.innerText = t('store.confirmTopUp');
+                sub.innerText = t('store.confirmTopUpSub');
                 rows.innerHTML = `
-                    <div class="order-row"><span>${amount} Kimchi Points</span><span>₹${amount}.00</span></div>
-                    <div class="order-row total"><span>Total</span><span>₹${amount}.00</span></div>
+                    <div class="order-row"><span>${t('store.orderKP', { n: amount })}</span><span>₹${amount}.00</span></div>
+                    <div class="order-row total"><span>${t('store.total')}</span><span>₹${amount}.00</span></div>
                 `;
             } else if (type === 'premium') {
-                pendingOrder = { type: 'premium', amount: 49, label: 'Brevity Premium (7 days)' };
-                title.innerText = 'Confirm Premium Pass';
-                sub.innerText = 'Premium activates instantly and lasts 7 days from purchase.';
+                pendingOrder = { type: 'premium', amount: 49, label: t('store.orderPremium') };
+                title.innerText = t('store.confirmPremium');
+                sub.innerText = t('store.confirmPremiumSub');
                 rows.innerHTML = `
-                    <div class="order-row"><span>Brevity Premium &mdash; 7 day pass</span><span>₹49.00</span></div>
-                    <div class="order-row total"><span>Total</span><span>₹49.00</span></div>
+                    <div class="order-row"><span>${t('store.orderPremium')}</span><span>₹49.00</span></div>
+                    <div class="order-row total"><span>${t('store.total')}</span><span>₹49.00</span></div>
                 `;
             }
 
@@ -635,7 +668,7 @@
             // before crediting the account.
             //
             // For now (pending merchant approval), purchases are not yet live.
-            alert("Online payments are launching shortly \u2014 we're finishing PhonePe merchant verification. Please check back soon!");
+            alert(t('store.payLaunching'));
             closeCheckout();
         }
     </script>

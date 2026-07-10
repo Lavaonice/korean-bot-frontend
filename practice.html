@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brevity Companion - Practice Setup</title>
+<title data-i18n="practice.title">Brevity Companion - Practice Setup</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
 <script src="auth.js"></script>
 <script>
     // Auth gate — protected page. Validates the real Supabase session.
@@ -68,24 +70,24 @@
 
     <div class="container">
         <div class="top-bar">
-            <span class="site-name-small">Brevity Companion</span>
+            <span class="site-name-small" data-i18n="brand">Brevity Companion</span>
             <div class="kp-badge">🪙 <span id="kp-display">0</span> KP</div>
         </div>
         <header class="header">
             <h1 class="site-name">Practice Mode</h1>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">Structured drills for a specific chapter</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;" data-i18n="practice.sub">Structured drills for a specific chapter</p>
         </header>
 
         <div class="content">
-            <p class="instruction">Select the chapter you want to practice. The AI tutor will focus strictly on the grammar and vocabulary introduced in this lesson.</p>
+            <p class="instruction" data-i18n="practice.instruction">Select the chapter you want to practice. The AI tutor will focus strictly on the grammar and vocabulary introduced in this lesson.</p>
 
             <select id="chapter-dropdown" class="chapter-select" onchange="checkSelection()">
-                <option value="" disabled selected>Select a chapter to begin...</option>
+                <option value="" disabled selected data-i18n="practice.selectChapter">Select a chapter to begin...</option>
             </select>
 
             <div class="footer-actions">
-                <a href="dashboard.html" class="btn btn-back">⟵ Back to Modes</a>
-                <button class="btn btn-primary" id="btn-start" disabled onclick="startPractice()">Start Audio Drills</button>
+                <a href="dashboard.html" class="btn btn-back" data-i18n="practice.back">⟵ Back to Modes</a>
+                <button class="btn btn-primary" id="btn-start" disabled onclick="startPractice()" data-i18n="practice.start">Start Audio Drills</button>
             </div>
         </div>
     </div>
@@ -94,28 +96,44 @@
         const dropdown = document.getElementById('chapter-dropdown');
         const startBtn = document.getElementById('btn-start');
         const kpBalance = parseInt(localStorage.getItem('kimchi_points') || '0');
-        document.getElementById('kp-display').innerText = kpBalance;
+        // Admin accounts have infinite Kimchi Points and are never gated.
+        const UNLIMITED = window.kpUnlimited && window.kpUnlimited();
+        document.getElementById('kp-display').innerText = UNLIMITED ? '∞' : kpBalance;
 
-        for (let i = 1; i <= 40; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = `Chapter ${i}`;
-            dropdown.appendChild(option);
+        function buildChapters() {
+            dropdown.innerHTML = '';
+            const placeholder = document.createElement('option');
+            placeholder.value = "";
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            placeholder.setAttribute('data-i18n', 'practice.selectChapter');
+            placeholder.textContent = t('practice.selectChapter');
+            dropdown.appendChild(placeholder);
+            for (let i = 1; i <= 40; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = t('practice.chapter', { n: i });
+                dropdown.appendChild(option);
+            }
         }
+        buildChapters();
+        // Rebuild dynamically-built options when the language changes.
+        document.addEventListener('brevity:langchange', buildChapters);
 
         function checkSelection() {
             startBtn.disabled = dropdown.value === "";
         }
 
         function startPractice() {
-            if (kpBalance < 10) {
-                alert("Not enough Kimchi Points. Please top up in the store.");
+            if (!UNLIMITED && kpBalance < 10) {
+                alert(t('practice.notEnough'));
                 window.location.href = "dashboard.html";
                 return;
             }
             const selectedChapter = dropdown.value;
 
-            localStorage.setItem('kimchi_points', kpBalance - 10);
+            // Admin accounts are never charged — infinite Kimchi Points.
+            if (!UNLIMITED) localStorage.setItem('kimchi_points', kpBalance - 10);
             localStorage.setItem('brevity_pending_session', JSON.stringify({
                 mode: "practice",
                 chapter: parseInt(selectedChapter, 10)

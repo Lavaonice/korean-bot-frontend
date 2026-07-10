@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Brevity Companion - Korean Tutor</title>
+    <script src="theme.js"></script>
     <style>
         :root {
             --primary-bg: #FFFFFF; --secondary-bg: #F5F5F5;
@@ -205,28 +206,30 @@
 
     <!-- Supabase + shared auth layer (validates the real session) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
     <script src="auth.js"></script>
 
     <!-- ==========================================
          SCREEN 1: QUEUE & INITIALIZATION PIPELINE
          ========================================== -->
     <div id="loading-screen">
-        <div class="loader-logo">Brevity Companion</div>
+        <div class="loader-logo" data-i18n="brand">Brevity Companion</div>
         <div class="queue-card">
             <div class="status-icon" id="loader-icon"></div>
             <div class="queue-title" id="loader-title">Initializing Session...</div>
             <div class="queue-subtitle" id="loader-subtitle">Please wait while we prepare your AI instructor.</div>
 
             <div class="queue-position hidden" id="queue-position-ui">
-                Position: #<span id="queue-num">2</span>
+                <span id="loader-position-label" data-i18n="connect.position">Position: #</span><span id="queue-num">2</span>
             </div>
 
             <ul class="pipeline-steps" id="pipeline-steps">
-                <li id="step-1"><span class="step-check"></span> Verifying Subscription</li>
-                <li id="step-2"><span class="step-check"></span> Reserving Execution Slot</li>
-                <li id="step-3"><span class="step-check"></span> Loading Yonsei Curriculum</li>
-                <li id="step-4"><span class="step-check"></span> Compiling AI Prompt (Pre-computing)</li>
-                <li id="step-5"><span class="step-check"></span> Connecting Speech Recognition</li>
+                <li id="step-1"><span class="step-check"></span> <span class="step-label" data-i18n="connect.step1">Verifying Subscription</span></li>
+                <li id="step-2"><span class="step-check"></span> <span class="step-label" data-i18n="connect.step2">Reserving Execution Slot</span></li>
+                <li id="step-3"><span class="step-check"></span> <span class="step-label" data-i18n="connect.step3">Loading Yonsei Curriculum</span></li>
+                <li id="step-4"><span class="step-check"></span> <span class="step-label" data-i18n="connect.step4">Compiling AI Prompt (Pre-computing)</span></li>
+                <li id="step-5"><span class="step-check"></span> <span class="step-label" data-i18n="connect.step5">Connecting Speech Recognition</span></li>
             </ul>
         </div>
     </div>
@@ -242,7 +245,7 @@
             </div>
             <div class="header-right">
                 <div class="timer" id="session-timer">10:00</div>
-                <button class="end-btn" onclick="endSession()">End</button>
+                <button class="end-btn" onclick="endSession()" data-i18n="connect.end">End</button>
             </div>
         </header>
 
@@ -251,7 +254,7 @@
         <div class="interaction-bar">
             <div class="status-text" id="status-text">Tap the mic or press Space to speak</div>
             <button class="mic-button" id="mic-btn">🎤</button>
-            <div class="keyboard-hint">Press <strong>Spacebar</strong> or <strong>Enter</strong> to start/stop</div>
+            <div class="keyboard-hint" id="keyboard-hint">Press <strong>Spacebar</strong> or <strong>Enter</strong> to start/stop</div>
         </div>
     </div>
 
@@ -337,8 +340,8 @@
 
                 if (step.queueCheck && checkIfSlotsAreFull()) {
                     el.classList.remove('active');
-                    document.getElementById('loader-title').innerText = "Server is busy";
-                    document.getElementById('loader-subtitle').innerText = "You are in the queue. Waiting for a slot to free up...";
+                    document.getElementById('loader-title').innerText = t('connect.serverBusy');
+                    document.getElementById('loader-subtitle').innerText = t('connect.queueWait');
                     queuePosUI.classList.remove('hidden');
                     await pollQueue();
                     el.classList.add('active');
@@ -349,8 +352,8 @@
                 if (step.mic) {
                     const granted = await getMicPermission();
                     if (!granted) {
-                        document.getElementById('loader-title').innerText = "Microphone blocked";
-                        document.getElementById('loader-subtitle').innerText = "Allow mic access in your browser to use voice chat, then reload this page.";
+                        document.getElementById('loader-title').innerText = t('connect.micBlocked');
+                        document.getElementById('loader-subtitle').innerText = t('connect.micAllow');
                         el.classList.remove('active');
                         el.classList.add('done');
                         el.querySelector('.step-check').innerText = '!';
@@ -364,8 +367,8 @@
             }
 
             document.getElementById('loader-icon').classList.add('ready');
-            document.getElementById('loader-title').innerText = "Ready!";
-            document.getElementById('loader-subtitle').innerText = "Entering classroom...";
+            document.getElementById('loader-title').innerText = t('connect.ready');
+            document.getElementById('loader-subtitle').innerText = t('connect.entering');
 
             setTimeout(() => {
                 loadingScreen.classList.add('hidden');
@@ -389,8 +392,8 @@
                 queueNum--;
             }
             queuePosUI.classList.add('hidden');
-            document.getElementById('loader-title').innerText = "Initializing Session...";
-            document.getElementById('loader-subtitle').innerText = "A slot opened up! Preparing your lesson.";
+            document.getElementById('loader-title').innerText = t('connect.initTitle');
+            document.getElementById('loader-subtitle').innerText = t('connect.slotOpened');
         }
 
         runInitializationPipeline();
@@ -436,7 +439,19 @@
         let micReady = false;
         const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-        if (isTouchDevice) statusText.innerText = "Hold the mic to speak";
+        const keyboardHint = document.getElementById('keyboard-hint');
+        function refreshSessionStrings() {
+            if (isTouchDevice) statusText.innerText = t('connect.holdMic');
+            else statusText.innerText = t('connect.tapMic');
+            if (keyboardHint) keyboardHint.innerHTML = t('connect.spacebarHtml');
+            document.getElementById('loader-title').innerText = t('connect.initTitle');
+            document.getElementById('loader-subtitle').innerText = t('connect.initSub');
+        }
+        refreshSessionStrings();
+        document.addEventListener('brevity:langchange', refreshSessionStrings);
+
+        // Note: loader-title/subtitle may be overwritten mid-pipeline; that's fine
+        // because the pipeline sets them explicitly as it runs.
 
         function addChatBubble(text, sender, scenario = null) {
             const bubble = document.createElement('div');
@@ -472,7 +487,7 @@
 
         async function startRecording() {
             if (!micReady) {
-                statusText.innerText = "Microphone not available";
+                statusText.innerText = t('connect.micNotAvail');
                 return;
             }
             try {
@@ -482,7 +497,7 @@
                 mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
                 mediaRecorder.onstop = async () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    statusText.innerText = "Transcribing & thinking...";
+                    statusText.innerText = t('connect.transcribing');
                     micBtn.style.opacity = "0.5";
 
                     // --- BACKEND INTEGRATION GOES HERE ---
@@ -498,7 +513,7 @@
                             const replies = MOCK_REPLIES[sessionConfig.mode] || MOCK_REPLIES.casual;
                             const reply = replies[Math.floor(Math.random() * replies.length)];
                             addChatBubble(reply, 'ai');
-                            statusText.innerText = isTouchDevice ? "Hold the mic to speak" : "Tap mic or press Space to speak";
+                            statusText.innerText = isTouchDevice ? t('connect.holdMic') : t('connect.tapMic');
                             micBtn.style.opacity = "1";
                         }, 1000);
                     }, 1500);
@@ -507,13 +522,13 @@
                 mediaRecorder.start();
                 isRecording = true;
                 micBtn.classList.add('recording');
-                statusText.innerText = "Listening... Release to send";
+                statusText.innerText = t('connect.listening');
 
                 mediaRecorder.stream.getAudioTracks().forEach(track => {
                     mediaRecorder.addEventListener('stop', () => track.stop());
                 });
             } catch (err) {
-                statusText.innerText = "Error: Could not start recording";
+                statusText.innerText = t('connect.recError');
             }
         }
 
@@ -561,7 +576,7 @@
         });
 
         function endSession(auto = false) {
-            if (auto || confirm("Are you sure you want to end this session?")) {
+            if (auto || confirm(t('connect.confirmEnd'))) {
                 localStorage.removeItem('brevity_pending_session');
                 window.location.href = "dashboard.html";
             }

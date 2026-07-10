@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Brevity Companion</title>
+    <title data-i18n="login.title">Login - Brevity Companion</title>
     <style>
         :root { 
             --primary-bg: #FFFFFF; 
@@ -78,6 +78,8 @@
     </style>
     <!-- Include Supabase JS CDN UMD bundle + shared auth layer -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
     <script src="auth.js"></script>
 </head>
 <body>
@@ -85,23 +87,23 @@
     <div class="auth-container">
         <div class="header-group">
             <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger.apng" alt="Tiger Mascot" class="mascot-gif">
-            <h1 class="logo">Brevity Companion</h1>
+            <h1 class="logo" data-i18n="brand">Brevity Companion</h1>
         </div>
-        
-        <p class="subtitle">Log in to continue your Korean journey</p>
-        
-        <input type="email" placeholder="Email Address" id="email" required>
-        <input type="password" placeholder="Password" id="password" required>
-        
-        <button class="btn" id="loginBtn" onclick="handleLogin()">Enter Platform</button>
-        
-        <p class="switch-link">New student? <a href="signup.html">Create Account</a></p>
+
+        <p class="subtitle" data-i18n="login.subtitle">Log in to continue your Korean journey</p>
+
+        <input type="email" placeholder="Email Address" id="email" data-i18n-ph="login.email" required>
+        <input type="password" placeholder="Password" id="password" data-i18n-ph="login.password" required>
+
+        <button class="btn" id="loginBtn" onclick="handleLogin()" data-i18n="login.enter">Enter Platform</button>
+
+        <p class="switch-link"><span data-i18n="login.newStudent">New student?</span> <a href="signup.html" data-i18n="login.createAccount">Create Account</a></p>
 
         <!-- Compliance session hyperlinks at the bottom -->
         <div class="legal-footer">
-            By clicking Enter Platform, you acknowledge agreement to our 
-            <a href="Terms.html">Terms of Service</a> & 
-            <a href="Privacy.html">Privacy Policy</a>.
+            <span data-i18n="login.legalFooter">By clicking Enter Platform, you acknowledge agreement to our</span>
+            <a href="Terms.html" data-i18n="login.terms">Terms of Service</a> &amp;
+            <a href="Privacy.html" data-i18n="login.privacy">Privacy Policy</a>.
         </div>
     </div>
 
@@ -114,13 +116,13 @@
             const loginBtn = document.getElementById('loginBtn');
 
             if (!email || !password) {
-                alert("Please fill out both credentials fields.");
+                alert(t('login.fillCreds'));
                 return;
             }
 
             try {
                 loginBtn.disabled = true;
-                loginBtn.innerText = "Authenticating session...";
+                loginBtn.innerText = t('login.authenticating');
 
                 // Call Supabase Authentication Layer
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -133,6 +135,10 @@
                 // Auth is now handled entirely by the Supabase session
                 // (see auth.js requireAuth), so there is no local flag to set.
 
+                // Mirror the Supabase `is_admin` metadata flag into localStorage
+                // so gate pages can read admin/infinite-KP status synchronously.
+                if (window.applyAdminFlag) await window.applyAdminFlag(data.user);
+
                 // Sync localized token metrics safely
                 if (!localStorage.getItem('kimchi_points')) {
                     localStorage.setItem('kimchi_points', '5');
@@ -142,9 +148,9 @@
                 window.location.href = 'dashboard.html';
 
             } catch (err) {
-                alert("Login Failed: " + err.message);
+                alert(t('login.failed') + err.message);
                 loginBtn.disabled = false;
-                loginBtn.innerText = "Enter Platform";
+                loginBtn.innerText = t('login.enter');
             }
         }
     </script>

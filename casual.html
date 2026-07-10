@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brevity Companion - Casual Setup</title>
+<title data-i18n="casual.title">Brevity Companion - Casual Setup</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
 <script src="auth.js"></script>
 <script>
     // Auth gate — protected page. Validates the real Supabase session.
@@ -66,40 +68,45 @@
 
     <div class="container">
         <div class="top-bar">
-            <span class="site-name-small">Brevity Companion</span>
+            <span class="site-name-small" data-i18n="brand">Brevity Companion</span>
             <div class="kp-badge">🪙 <span id="kp-display">0</span> KP</div>
         </div>
         <header class="header">
             <h1 class="site-name">Casual Mode</h1>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">Freestyle conversation practice</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;" data-i18n="casual.sub">Freestyle conversation practice</p>
         </header>
 
         <div class="content">
-            <p class="instruction">Is there a specific topic, scenario, or vocabulary you'd like to talk about today? (Optional)</p>
+            <p class="instruction" data-i18n="casual.instruction">Is there a specific topic, scenario, or vocabulary you'd like to talk about today? (Optional)</p>
 
-            <textarea id="topic-area" class="topic-input" placeholder="e.g., Let's practice ordering food at a restaurant, or ask me questions about my weekend..."></textarea>
+            <textarea id="topic-area" class="topic-input" data-i18n-ph="casual.placeholder" placeholder="e.g., Let's practice ordering food at a restaurant, or ask me questions about my weekend..."></textarea>
 
             <div class="footer-actions">
-                <a href="dashboard.html" class="btn btn-back">⟵ Back to Modes</a>
-                <button class="btn btn-primary" id="btn-start" onclick="startCasual()">Start Audio Chat</button>
+                <a href="dashboard.html" class="btn btn-back" data-i18n="casual.back">⟵ Back to Modes</a>
+                <button class="btn btn-primary" id="btn-start" onclick="startCasual()" data-i18n="casual.start">Start Audio Chat</button>
             </div>
         </div>
     </div>
 
     <script>
         const kpBalance = parseInt(localStorage.getItem('kimchi_points') || '0');
-        document.getElementById('kp-display').innerText = kpBalance;
+        // Admin accounts have infinite Kimchi Points and are never gated.
+        const UNLIMITED = window.kpUnlimited && window.kpUnlimited();
+        document.getElementById('kp-display').innerText = UNLIMITED ? '∞' : kpBalance;
 
         function startCasual() {
-            if (kpBalance < 10) {
-                alert("Not enough Kimchi Points. Please top up in the store.");
+            if (!UNLIMITED && kpBalance < 10) {
+                alert(t('casual.notEnough'));
                 window.location.href = "dashboard.html";
                 return;
             }
             const topic = document.getElementById('topic-area').value.trim();
 
-            // Deduct KP now, at the moment the session actually starts.
-            localStorage.setItem('kimchi_points', kpBalance - 10);
+            // Admin accounts are never charged — infinite Kimchi Points.
+            if (!UNLIMITED) {
+                // Deduct KP now, at the moment the session actually starts.
+                localStorage.setItem('kimchi_points', kpBalance - 10);
+            }
 
             // Hand the session config off to the voice canvas.
             localStorage.setItem('brevity_pending_session', JSON.stringify({

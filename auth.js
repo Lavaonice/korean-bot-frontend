@@ -180,6 +180,11 @@ if (!window.__brevityAuthLoaded) {
 
         _clearRetryState();
         if (hideUntilChecked) document.documentElement.style.visibility = "";
+
+        // Make sure the local admin mirror reflects the freshly-validated
+        // Supabase user before any page logic runs.
+        await applyAdminFlag(user);
+
         return user;
     }
 
@@ -197,6 +202,45 @@ if (!window.__brevityAuthLoaded) {
     }
 
     /* -----------------------------------------------------------------
+       ADMIN ACCOUNT — infinite Kimchi Points / no gating (testing).
+       -----------------------------------------------------------------
+       The site is fully static (Supabase handles auth only; there is no
+       backend). The single source of truth for "is this an admin" is the
+       Supabase auth user's metadata flag `is_admin`. Because gate pages
+       read Kimchi Points synchronously from localStorage, we mirror that
+       flag into localStorage (`brevity_is_admin`) so the 4 gate pages can
+       treat an admin as unlimited without any network round-trip.
+
+       The flag is refreshed from Supabase on every auth event, so it can
+       never drift from the server-side record while a session is live.
+       ----------------------------------------------------------------- */
+
+    // localStorage key mirroring the Supabase `is_admin` metadata flag.
+    const ADMIN_FLAG_KEY = "brevity_is_admin";
+
+    // Refresh the local admin mirror from the live Supabase user.
+    // Returns true when the user is an admin. Safe to call repeatedly.
+    async function applyAdminFlag(user) {
+        let isAdmin = false;
+        if (user && user.user_metadata) {
+            isAdmin = user.user_metadata.is_admin === true ||
+                      user.user_metadata.is_admin === "true";
+        }
+        // Fall back to the cached flag if we can't reach the server right now.
+        if (!user) {
+            isAdmin = localStorage.getItem(ADMIN_FLAG_KEY) === "true";
+        }
+        localStorage.setItem(ADMIN_FLAG_KEY, isAdmin ? "true" : "false");
+        return isAdmin;
+    }
+
+    // True when the local admin mirror says the current user is an admin.
+    // Reads synchronously so gate pages can decide instantly.
+    function kpUnlimited() {
+        return localStorage.getItem(ADMIN_FLAG_KEY) === "true";
+    }
+
+    /* -----------------------------------------------------------------
        TASK 2 — Global authentication state listener (registered once).
        WHAT : Reacts to Supabase auth changes for the whole browsing session.
        WHEN : Active from the moment auth.js loads, on every page.
@@ -204,8 +248,15 @@ if (!window.__brevityAuthLoaded) {
               they log out in another tab), bounce them to login immediately.
               Token refreshes are silent; session/user updates keep them in.
        ----------------------------------------------------------------- */
-    supabaseClient.auth.onAuthStateChange((event, session) => {
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
         _authLog("auth state", event, session ? "active" : "none");
+        // Keep the local admin mirror in lockstep with Supabase on any
+        // session/user change so admin rights never go stale.
+        if (session && session.user) {
+            await applyAdminFlag(session.user);
+        } else if (event === "SIGNED_OUT") {
+            localStorage.setItem(ADMIN_FLAG_KEY, "false");
+        }
         switch (event) {
             case "SIGNED_OUT":
                 // Signed out while browsing -> send them to login now.
@@ -224,8 +275,10 @@ if (!window.__brevityAuthLoaded) {
     });
 
     // Expose the public API on window so other (classic) page scripts can
-    // reference these by bare name (supabaseClient / requireAuth / logout).
+    // reference these by bare name (supabaseClient / requireAuth / logout…).
     window.supabaseClient = supabaseClient;
     window.requireAuth = requireAuth;
     window.logout = logout;
+    window.applyAdminFlag = applyAdminFlag;
+    window.kpUnlimited = kpUnlimited;
 }

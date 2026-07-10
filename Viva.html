@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brevity Companion - Viva Setup</title>
+<title data-i18n="viva.title">Brevity Companion - Viva Setup</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
 <script src="auth.js"></script>
 <script>
     // Auth gate — protected page. Validates the real Supabase session.
@@ -72,22 +74,22 @@
 
     <div class="container">
         <div class="top-bar">
-            <span class="site-name-small">Brevity Companion</span>
+            <span class="site-name-small" data-i18n="brand">Brevity Companion</span>
             <div class="kp-badge">🪙 <span id="kp-display">0</span> KP</div>
         </div>
         <header class="header">
             <h1 class="site-name">Viva Simulator</h1>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;">Configure your exam boundaries</p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 5px;" data-i18n="viva.sub">Configure your exam boundaries</p>
         </header>
 
         <div class="content">
-            <p class="instruction">Select the chapters you want to be tested on. The AI will strictly limit its vocabulary to this cluster.</p>
+            <p class="instruction" data-i18n="viva.instruction">Select the chapters you want to be tested on. The AI will strictly limit its vocabulary to this cluster.</p>
 
             <div class="chapter-grid" id="viva-grid"></div>
 
             <div class="footer-actions">
-                <a href="dashboard.html" class="btn btn-back">⟵ Back to Modes</a>
-                <button class="btn btn-primary" id="btn-start" disabled onclick="startViva()">Start Audio Exam</button>
+                <a href="dashboard.html" class="btn btn-back" data-i18n="viva.back">⟵ Back to Modes</a>
+                <button class="btn btn-primary" id="btn-start" disabled onclick="startViva()" data-i18n="viva.start">Start Audio Exam</button>
             </div>
         </div>
     </div>
@@ -96,14 +98,22 @@
         const grid = document.getElementById('viva-grid');
         const startBtn = document.getElementById('btn-start');
         const kpBalance = parseInt(localStorage.getItem('kimchi_points') || '0');
-        document.getElementById('kp-display').innerText = kpBalance;
+        // Admin accounts have infinite Kimchi Points and are never gated.
+        const UNLIMITED = window.kpUnlimited && window.kpUnlimited();
+        document.getElementById('kp-display').innerText = UNLIMITED ? '∞' : kpBalance;
 
-        for (let i = 1; i <= 40; i++) {
-            const label = document.createElement('label');
-            label.className = 'checkbox-label';
-            label.innerHTML = `<input type="checkbox" value="${i}" onchange="toggleBox(this)"><span>Chapter ${i}</span>`;
-            grid.appendChild(label);
+        function buildGrid() {
+            grid.innerHTML = '';
+            for (let i = 1; i <= 40; i++) {
+                const label = document.createElement('label');
+                label.className = 'checkbox-label';
+                label.innerHTML = `<input type="checkbox" value="${i}" onchange="toggleBox(this)"><span>${t('viva.chapter', { n: i })}</span>`;
+                grid.appendChild(label);
+            }
         }
+        buildGrid();
+        // Rebuild dynamically-built chapter labels when the language changes.
+        document.addEventListener('brevity:langchange', buildGrid);
 
         function toggleBox(box) {
             if (box.checked) box.parentElement.classList.add('checked');
@@ -114,15 +124,16 @@
         }
 
         function startViva() {
-            if (kpBalance < 10) {
-                alert("Not enough Kimchi Points. Please top up in the store.");
+            if (!UNLIMITED && kpBalance < 10) {
+                alert(t('viva.notEnough'));
                 window.location.href = "dashboard.html";
                 return;
             }
             const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
                 .map(cb => parseInt(cb.value, 10));
 
-            localStorage.setItem('kimchi_points', kpBalance - 10);
+            // Admin accounts are never charged — infinite Kimchi Points.
+            if (!UNLIMITED) localStorage.setItem('kimchi_points', kpBalance - 10);
             localStorage.setItem('brevity_pending_session', JSON.stringify({
                 mode: "viva",
                 cluster: selected

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account</title>
+    <title data-i18n="signup.title">Create Account</title>
     <style>
         :root {
             --primary-bg: #FFFFFF;
@@ -67,56 +67,58 @@
     </style>
     <!-- Include Supabase JS CDN UMD bundle + shared auth layer -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
     <script src="auth.js"></script>
 </head>
 <body>
 
     <div class="auth-container">
-        <h1 class="logo">Create Account</h1>
-        <p class="subtitle">Sign up to start practicing Korean</p>
+        <h1 class="logo" data-i18n="signup.title">Create Account</h1>
+        <p class="subtitle" data-i18n="signup.subtitle">Sign up to start practicing Korean</p>
 
         <!-- Account credentials -->
         <label class="field">
-            <span>Full Name <span class="req">*</span></span>
-            <input type="text" placeholder="Full name" id="fullName">
+            <span><span data-i18n="signup.fullName">Full Name</span> <span class="req">*</span></span>
+            <input type="text" placeholder="Full name" id="fullName" data-i18n-ph="signup.fullName">
         </label>
         <label class="field">
-            <span>Email Address <span class="req">*</span></span>
-            <input type="email" placeholder="you@example.com" id="email">
+            <span><span data-i18n="signup.email">Email Address</span> <span class="req">*</span></span>
+            <input type="email" placeholder="you@example.com" id="email" data-i18n-ph="signup.email">
         </label>
         <label class="field">
-            <span>Password <span class="req">*</span></span>
-            <input type="password" placeholder="At least 6 characters" id="password">
+            <span><span data-i18n="signup.password">Password</span> <span class="req">*</span></span>
+            <input type="password" placeholder="At least 6 characters" id="password" data-i18n-ph="signup.password">
         </label>
         <label class="field">
-            <span>Confirm Password <span class="req">*</span></span>
-            <input type="password" placeholder="Re-enter password" id="confirmPassword">
+            <span><span data-i18n="signup.confirmPassword">Confirm Password</span> <span class="req">*</span></span>
+            <input type="password" placeholder="Re-enter password" id="confirmPassword" data-i18n-ph="signup.confirmPassword">
         </label>
 
-        <div class="section-divider"><span>About You</span></div>
+        <div class="section-divider"><span data-i18n="signup.aboutYou">About You</span></div>
 
         <!-- Profile details -->
         <label class="field">
-            <span>Gender <span class="req">*</span></span>
+            <span><span data-i18n="signup.gender">Gender</span> <span class="req">*</span></span>
             <select id="gender">
-                <option value="" disabled selected>Select…</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-                <option value="nonbinary">Non-binary</option>
-                <option value="other">Other</option>
+                <option value="" disabled selected data-i18n="profile.gender.prefer">Select…</option>
+                <option value="female" data-i18n="profile.gender.female">Female</option>
+                <option value="male" data-i18n="profile.gender.male">Male</option>
+                <option value="nonbinary" data-i18n="profile.gender.nonbinary">Non-binary</option>
+                <option value="other" data-i18n="profile.gender.other">Other</option>
             </select>
         </label>
         <label class="field">
-            <span>Date of Birth <span class="req">*</span></span>
+            <span><span data-i18n="signup.dob">Date of Birth</span> <span class="req">*</span></span>
             <input type="date" id="dob" title="Date of Birth">
         </label>
         <label class="field">
-            <span>City / Hometown <span class="req">*</span></span>
-            <input type="text" placeholder="City or hometown" id="city">
+            <span><span data-i18n="signup.city">City / Hometown</span> <span class="req">*</span></span>
+            <input type="text" placeholder="City or hometown" id="city" data-i18n-ph="signup.city">
         </label>
         <label class="field">
-            <span>Institute / School <span style="color:#999;font-weight:400;">(optional)</span></span>
-            <input type="text" placeholder="Institute or school" id="institute">
+            <span><span data-i18n="signup.institute">Institute / School</span> <span style="color:#999;font-weight:400;" data-i18n="signup.instituteOpt">(optional)</span></span>
+            <input type="text" placeholder="Institute or school" id="institute" data-i18n-ph="signup.institute">
         </label>
 
         <!-- Enforced Compliance Blocks -->
@@ -124,20 +126,20 @@
             <div class="consent-group">
                 <input type="checkbox" id="age-consent" class="consent-checkbox">
                 <label for="age-consent" class="consent-label">
-                    I represent and warrant that I am <b>18 years of age or older</b> and possess the full legal capacity to accept our platform's <a href="Terms.html">Terms of Service</a>.
+                    <span data-i18n="signup.ageConsent">I represent and warrant that I am 18 years of age or older and possess the full legal capacity to accept our platform's</span> <a href="Terms.html" data-i18n="login.terms">Terms of Service</a>.
                 </label>
             </div>
             <div class="consent-group">
                 <input type="checkbox" id="ai-consent" class="consent-checkbox">
                 <label for="ai-consent" class="consent-label">
-                   I consent to my voice recordings and text inputs being transmitted and processed by third-party AI models (STT speech capture, TTS voice streams, and LLM evaluations) to handle engine feedback per our <a href="Privacy.html">Privacy Policy</a>.
+                   <span data-i18n="signup.aiConsent">I consent to my voice recordings and text inputs being transmitted and processed by third-party AI models (STT speech capture, TTS voice streams, and LLM evaluations) to handle engine feedback per our</span> <a href="Privacy.html" data-i18n="login.privacy">Privacy Policy</a>.
                 </label>
             </div>
         </div>
 
-        <button class="btn" id="submitBtn" onclick="handleSignup()">Create Account</button>
+        <button class="btn" id="submitBtn" onclick="handleSignup()" data-i18n="signup.submit">Create Account</button>
 
-        <p class="switch-link">Already a student? <a href="index.html">Log In</a></p>
+        <p class="switch-link"><span data-i18n="signup.alreadyStudent">Already a student?</span> <a href="index.html" data-i18n="signup.login">Log In</a></p>
     </div>
 
     <script>
@@ -180,17 +182,17 @@
             if (!dob) ok = markInvalid('dob', true) && ok;
             if (!city) ok = markInvalid('city', true) && ok;
 
-            if (!ok) { alert("Please complete the required fields marked in red."); return; }
+            if (!ok) { alert(t('signup.requiredFields')); return; }
 
             // Compliance Gate Checks
             if (!ageConsent || !aiConsent) {
-                alert("You must check both boxes to confirm your age and accept the AI data routing disclosures.");
+                alert(t('signup.consentRequired'));
                 return;
             }
 
             try {
                 submitBtn.disabled = true;
-                submitBtn.innerText = "Creating account…";
+                submitBtn.innerText = t('signup.creating');
 
                 const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
@@ -215,13 +217,13 @@
                 localStorage.setItem('ai_consent_granted', 'true');
                 localStorage.setItem('ai_consent_timestamp', new Date().toISOString());
 
-                alert("Registration successful! Please check your email to confirm your account.");
+                alert(t('signup.success'));
                 window.location.href = 'index.html';
 
             } catch (err) {
-                alert("Registration failed: " + err.message);
+                alert(t('signup.failed') + err.message);
                 submitBtn.disabled = false;
-                submitBtn.innerText = "Create Account";
+                submitBtn.innerText = t('signup.submit');
             }
         }
     </script>
