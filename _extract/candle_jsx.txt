@@ -1,0 +1,3 @@
+=== candle JSX ===
+,w.jsx("div",{className:"wood-shadow"})]})]}),w.jsxs("div",{id:"candle",ref:i,title:"Drag the candle · tap for settings",children:[w.jsx("div",{className:"candle-glow"}),w.jsx("div",{className:"candle-flame-outer"}),w.jsx("div",{className:"candle-flame-inner"}),w.jsx("div",{className:"candle-smoke"}),w.jsx("div",{className:"candle-body"}),w.jsx("div",{id:"candle-flame"})]}),w.jsx("button",{id:"return-taskbar",onClick:a,title:"Back to the site",children:"← Brevity"}),w.jsxs("div",{id:"overlay-layer",children:[w.jsx("div",{id:"screen-glow"}),w.jsx("div",{id:"light-flicker"}),w.jsx("canvas",{id:"dust-overlay",ref:r}),w.jsx("canvas",{id:"ink-overlay"}),w.jsx("div",{id:"page-shadow"})]}),w.jsxs("div",{id:"cursor-layer",children:[w.jsx(
+

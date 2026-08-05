@@ -1,0 +1,15 @@
+#candle-light{position:fixed;left:60px;top:90px;width:820px;height:820px;transform:translate(-50%,-50%);background:radial-gradient(circle,var(--candle) 0%,transparent 60%);z-index:5;pointer-events:none;transition:left .18s ease,top .18s ease;animation:flicker 6s ease-in-out infinite}
+
+#candle{position:fixed;left:60px;top:90px;width:150px;height:188px;transform:translate(-50%,-50%);z-index:60;cursor:grab;touch-action:none;-webkit-user-select:none;-moz-user-select:none;user-select:none;background:url(assets/diary/candle.png) center / contain no-repeat;filter:drop-shadow(0 0 26px rgba(255,170,90,.35))}
+
+#candle:active{cursor:grabbing}
+
+.candle-flame-outer{position:absolute;left:44%;top:-16px;transform:translate(-50%);width:34px;height:72px;border-radius:50% 50% 48% 48%/64% 64% 38% 38%;background:radial-gradient(ellipse,#ffd369,#ff8d26,transparent);filter:blur(4px);transform-origin:center bottom;pointer-events:none;animation:flameDance 2.6s ease-in-out infinite}
+
+.candle-flame-inner{position:absolute;left:44%;top:0;transform:translate(-50%);width:16px;height:38px;border-radius:50%/60% 60% 40% 40%;background:radial-gradient(ellipse,#ffffff,#ffe49b,transparent);filter:blur(.6px);transform-origin:center bottom;pointer-events:none;animation:flameCoreDance 1.4s ease-in-out infinite}
+
+.candle-glow,.candle-smoke,.candle-body,#candle-flame{display:none}
+
+#candle{width:104px;height:130px}
+
+#candle-flame{width:23.2%;height:12.6%;top:20.3%}

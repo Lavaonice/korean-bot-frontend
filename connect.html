@@ -370,11 +370,20 @@
             document.getElementById('loader-title').innerText = t('connect.ready');
             document.getElementById('loader-subtitle').innerText = t('connect.entering');
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 loadingScreen.classList.add('hidden');
                 sessionScreen.classList.remove('hidden');
                 addChatBubble(meta.opener, 'ai', meta.scenario);
                 startSessionTimer();
+
+                // Connect to the backend for this mode (token + Space URL),
+                // then open a real session so the first spoken turn works.
+                const ok = await initBackendConnection();
+                if (ok) {
+                    await startBackendSession();
+                } else {
+                    addChatBubble("(Backend not configured yet — connecting soon.)", 'ai');
+                }
             }, 800);
         }
 
@@ -473,6 +482,131 @@
             casual: ["오~ 진짜요? 재미있네요!", "그렇군요! 그럼 저는 이렇게 생각해요..."]
         };
 
+        // ==========================================
+        // 3b. BACKEND PLUMBING (Supabase JWT + HF Space calls)
+        // ==========================================
+        // The backend validates the Supabase JWT on every protected route, so
+        // we forward the current session's access token as a Bearer header.
+        let currentSessionId = null;     // assigned by /session/start
+        let currentBackend = null;       // base URL for this mode
+        let authToken = null;            // Supabase access token
+
+        function getAuthHeaders() {
+            const headers = { "Content-Type": "application/json" };
+            if (authToken) headers["Authorization"] = "Bearer " + authToken;
+            return headers;
+        }
+
+        // Resolve the active Supabase token + the correct Space URL for this mode.
+        async function initBackendConnection() {
+            currentBackend = (typeof backendUrlFor === "function")
+                ? backendUrlFor(sessionConfig.mode) : null;
+
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                authToken = session ? session.access_token : null;
+            } catch (e) {
+                authToken = null;
+            }
+
+            if (!currentBackend) {
+                // No backend configured yet — surface a clear message instead
+                // of silently failing when the user tries to speak.
+                console.warn("[brevity] no backend URL configured for mode", sessionConfig.mode);
+                return false;
+            }
+            return true;
+        }
+
+        // Kick off a session on the backend. Returns true on success.
+        async function startBackendSession() {
+            if (!currentBackend) return false;
+            try {
+                const body = {};
+                if (sessionConfig.mode === "practice" && sessionConfig.chapter) {
+                    body.chapters = [sessionConfig.chapter];
+                }
+                const res = await fetch(currentBackend + "/api/v1/session/start", {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(body)
+                });
+                const json = await res.json();
+                if (!res.ok || !json.success) {
+                    console.error("[brevity] session/start failed", json);
+                    return false;
+                }
+                currentSessionId = json.data.session_id;
+                return true;
+            } catch (err) {
+                console.error("[brevity] session/start error", err);
+                return false;
+            }
+        }
+
+        // Send one recorded turn; returns { reply, audio, transcript }.
+        async function sendTurnToBackend(audioBlob) {
+            if (!currentBackend || !currentSessionId) {
+                throw new Error("Backend not connected");
+            }
+            const arrayBuf = await audioBlob.arrayBuffer();
+            const bytes = new Uint8Array(arrayBuf);
+            // Chunk the conversion so large clips don't blow the call stack.
+            let bin = "";
+            const CHUNK = 0x8000;
+            for (let i = 0; i < bytes.length; i += CHUNK) {
+                bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+            }
+            const b64 = btoa(bin);
+            const res = await fetch(currentBackend + "/api/v1/conversation/message", {
+                method: "POST",
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ session: currentSessionId, audio: b64 })
+            });
+            const json = await res.json();
+            if (!res.ok || !json.success) {
+                throw new Error(json.message || ("HTTP " + res.status));
+            }
+            return {
+                reply: json.data.reply,
+                audio: json.data.audio,        // base64 MP3
+                transcript: json.data.transcript
+            };
+        }
+
+        // Tear down the backend session.
+        async function endBackendSession() {
+            if (!currentBackend || !currentSessionId) return;
+            try {
+                await fetch(currentBackend + "/api/v1/session/end", {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ session: currentSessionId })
+                });
+            } catch (e) {
+                /* best-effort */
+            } finally {
+                currentSessionId = null;
+            }
+        }
+
+        // Play a base64 MP3 returned by the backend.
+        let currentAudio = null;
+        function playMp3(base64Mp3) {
+            try {
+                const bin = atob(base64Mp3);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                const blob = new Blob([bytes], { type: "audio/mpeg" });
+                const url = URL.createObjectURL(blob);
+                if (currentAudio) { currentAudio.pause(); URL.revokeObjectURL(currentAudio.src); }
+                currentAudio = new Audio(url);
+                currentAudio.play().catch(() => {});
+            } catch (e) {
+                console.error("[brevity] audio play failed", e);
+            }
+        }
+
         // Acquire microphone permission ONCE. Called during the loading
         // pipeline so the user approves access before the session starts.
         async function getMicPermission() {
@@ -500,23 +634,23 @@
                     statusText.innerText = t('connect.transcribing');
                     micBtn.style.opacity = "0.5";
 
-                    // --- BACKEND INTEGRATION GOES HERE ---
-                    // const formData = new FormData();
-                    // formData.append("audio", audioBlob);
-                    // const response = await fetch('/api/v1/conversation/message', { method: 'POST', body: formData });
-                    // const data = await response.json();
-
-                    // --- MOCK RESPONSE FOR UI DEMO ---
-                    setTimeout(() => {
-                        addChatBubble("(사용자 음성 입력)", 'user');
-                        setTimeout(() => {
-                            const replies = MOCK_REPLIES[sessionConfig.mode] || MOCK_REPLIES.casual;
-                            const reply = replies[Math.floor(Math.random() * replies.length)];
-                            addChatBubble(reply, 'ai');
-                            statusText.innerText = isTouchDevice ? t('connect.holdMic') : t('connect.tapMic');
-                            micBtn.style.opacity = "1";
-                        }, 1000);
-                    }, 1500);
+                    // --- REAL BACKEND INTEGRATION ---
+                    try {
+                        const reply = await sendTurnToBackend(audioBlob);
+                        addChatBubble(reply.transcript || "(음성 입력)", 'user');
+                        if (reply.reply) {
+                            addChatBubble(reply.reply, 'ai');
+                        }
+                        if (reply.audio) {
+                            playMp3(reply.audio);
+                        }
+                    } catch (err) {
+                        console.error("[brevity] turn failed", err);
+                        addChatBubble("(연결 오류가 발생했어요 — 다시 말씀해 주세요)", 'ai');
+                    } finally {
+                        statusText.innerText = isTouchDevice ? t('connect.holdMic') : t('connect.tapMic');
+                        micBtn.style.opacity = "1";
+                    }
                 };
 
                 mediaRecorder.start();
@@ -578,6 +712,8 @@
         function endSession(auto = false) {
             if (auto || confirm(t('connect.confirmEnd'))) {
                 localStorage.removeItem('brevity_pending_session');
+                // Best-effort backend teardown (don't block navigation on it).
+                endBackendSession();
                 window.location.href = "dashboard.html";
             }
         }

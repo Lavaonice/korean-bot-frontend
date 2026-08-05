@@ -125,6 +125,7 @@
     <div class="sidebar-tab" onclick="toggleSidebar()"></div>
     <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);" data-i18n="menu">Menu</h2>
     <a href="dashboard.html" class="sidebar-link active" data-i18n="nav.practice">Practice Hub</a>
+    <a href="grimoire.html" class="sidebar-link" data-i18n="grimoire.title">Hanja Grimoire</a>
     <a href="store.html" class="sidebar-link" data-i18n="nav.store">Kimchi Points Store</a>
     <a href="profile.html" class="sidebar-link" data-i18n="nav.profile">My Profile</a>
     <a href="about.html" class="sidebar-link" data-i18n="nav.about">About Engine</a>
@@ -181,6 +182,14 @@
             <p data-i18n="dash.vivaDesc">A real-time oral exam spanning a custom cluster of chapters.</p>
         </div>
         <button class="btn-play session-btn" onclick="goTo('Viva.html')" data-i18n="dash.setup">Setup (-10 KP)</button>
+    </div>
+
+    <div class="mode-card">
+        <div class="mode-info">
+            <h3>✧ Hanja Grimoire</h3>
+            <p data-i18n="grimoire.subtitle">Two bindings. One book. Which shall you open?</p>
+        </div>
+        <button class="btn-play gr-free-entry" onclick="goTo('grimoire.html')" data-i18n="grimoire.enter">Open the Diary</button>
     </div>
 
 </div>
@@ -287,6 +296,7 @@
 
     if (!UNLIMITED && kpBalance < 10) {
         document.getElementById('kp-warning').style.display = 'block';
+        // The Grimoire is a free exploration module — never gate it behind KP.
         document.querySelectorAll('.session-btn').forEach(btn => btn.disabled = true);
     }
 

@@ -28,8 +28,23 @@ if (!window.__brevityAuthLoaded) {
         SUPABASE_ANON_KEY: "sb_publishable_awRlrxnsIcR9IfoODAJKzQ_iaTKlAXN",
         LOGIN_PAGE: "index.html",
         RETRY_ATTEMPTS: 3,
-        RETRY_DELAY_MS: 1000
+        RETRY_DELAY_MS: 1000,
+
+        // --- Brevity Companion backend (single v2.0 Hugging Face Space) ---
+        // One Space hosts all three engines (Practice / Viva / Casual) behind
+        // mode-prefixed routes (/api/v1/{mode}/...). Set the base URL HF gives
+        // you here (no trailing slash). connect.html appends the mode + path.
+        // Leave blank until the Space is live.
+        BACKEND: "" // e.g. https://YOURUSER-brevity-companion.hf.space
     };
+
+    // Resolve the base URL for a given session mode, or null if not configured.
+    // v2.0 uses one backend for every mode, so we ignore `mode` and return the
+    // single configured URL (normalized without a trailing slash).
+    function backendUrlFor(mode) {
+        const url = (typeof CONFIG.BACKEND === "string" ? CONFIG.BACKEND : "").trim();
+        return url ? url.replace(/\/+$/, "") : null;
+    }
 
     /* -----------------------------------------------------------------
        TASK 7 — Development-only debug logging.
@@ -185,6 +200,10 @@ if (!window.__brevityAuthLoaded) {
         // Supabase user before any page logic runs.
         await applyAdminFlag(user);
 
+        // Expose the signed-in user so experience pages (e.g. the Grimoire)
+        // can greet by name. Never called before requireAuth() resolves.
+        window.__brevityUser = user;
+
         return user;
     }
 
@@ -281,4 +300,5 @@ if (!window.__brevityAuthLoaded) {
     window.logout = logout;
     window.applyAdminFlag = applyAdminFlag;
     window.kpUnlimited = kpUnlimited;
+    window.backendUrlFor = backendUrlFor;
 }

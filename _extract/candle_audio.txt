@@ -1,0 +1,2 @@
+=== candle.mp3 context ===
+okCover:"assets/diary/cover.png",bookPage:"assets/diary/page.png",bookCandle:"assets/diary/candle.png",ambience:"assets/audio/library.mp3",sfxPage:"assets/audio/page-turn.mp3",sfxCandle:"assets/audio/candle.mp3",sfxInk:"assets/audio/ink.mp3",idleGrimoire2:"grimoire cloud video storage/grimoire2.apng",idleGrimoire3:"gri

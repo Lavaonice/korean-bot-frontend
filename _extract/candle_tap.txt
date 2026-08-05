@@ -1,0 +1,2 @@
+=== onCandleTap usage ===
+eEventListener("resize",f),window.removeEventListener("mousemove",y)}},[]),{dustRef:e,inkRef:n,brushRef:t}}function tp({onCandleTap:e,onReturn:n}){const{dustRef:t,inkRef:r,brushRef:l}=np(),i=g.useRef(null),o=g.useRef(null),u=g.useRef(!1),s=g.useRef(!1);g.useEffect(()=>{const h=i.current,m=o.current;if(!h||!m)return;const f=(_,d)=>{h.style.left=_+"px",h.style.top=d+"px",m.style.
