@@ -266,6 +266,11 @@
         // ==========================================
         const authUser = window.__brevityUser || (await window.__authPromise);
 
+        // Global backend state variables (declared at top to avoid TDZ ReferenceError)
+        var currentSessionId = null;
+        var currentBackend = "https://lavaonice-practice-mood.hf.space";
+        var authToken = null;
+
         // If requireAuth redirected (no session), stop here.
         if (!authUser) return;
 
@@ -516,9 +521,6 @@
         // ==========================================
         // The backend validates the Supabase JWT on every protected route, so
         // we forward the current session's access token as a Bearer header.
-        let currentSessionId = null;     // assigned by /session/start
-        let currentBackend = null;       // base URL for this mode
-        let authToken = null;            // Supabase access token
 
         function getAuthHeaders() {
             const headers = { "Content-Type": "application/json" };
