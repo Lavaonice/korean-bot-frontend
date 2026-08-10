@@ -9,8 +9,8 @@
     <script src="i18n.js"></script>
     <script src="auth.js"></script>
     <script>
-        // Auth gate — protected page. Validates the real Supabase session.
-        requireAuth();
+        // Auth gate — protected page. Single authentication promise to avoid double execution state locks.
+        window.__authPromise = requireAuth();
     </script>
     <style>
         :root {
@@ -268,9 +268,9 @@
     <script>
     (async () => {
         // ==========================================
-        // 0. AUTH GATE — only logged-in users may enter a session
+        // 0. AUTH GATE — reuse single auth promise to avoid state locks
         // ==========================================
-        const authUser = await requireAuth();
+        const authUser = window.__brevityUser || (await window.__authPromise);
 
         // If requireAuth redirected (no session), stop here.
         if (!authUser) return;
