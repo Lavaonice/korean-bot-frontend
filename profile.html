@@ -9,6 +9,10 @@
     <script src="theme.js"></script>
     <script src="i18n.js"></script>
     <script src="auth.js"></script>
+    <script>
+        // Auth gate — protected page. Validates the real Supabase session.
+        requireAuth();
+    </script>
     <style>
         :root {
             --primary-bg: #FFFFFF;

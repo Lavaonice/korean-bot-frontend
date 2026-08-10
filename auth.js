@@ -30,17 +30,11 @@ if (!window.__brevityAuthLoaded) {
         RETRY_ATTEMPTS: 3,
         RETRY_DELAY_MS: 1000,
 
-        // --- Brevity Companion backend (single v2.0 Hugging Face Space) ---
-        // One Space hosts all three engines (Practice / Viva / Casual) behind
-        // mode-prefixed routes (/api/v1/{mode}/...). Set the base URL HF gives
-        // you here (no trailing slash). connect.html appends the mode + path.
-        // Leave blank until the Space is live.
-        BACKEND: "" // e.g. https://YOURUSER-brevity-companion.hf.space
+        // Set live Hugging Face Space backend URL
+        BACKEND: "https://lavaonice-practice-mood.hf.space"
     };
 
     // Resolve the base URL for a given session mode, or null if not configured.
-    // v2.0 uses one backend for every mode, so we ignore `mode` and return the
-    // single configured URL (normalized without a trailing slash).
     function backendUrlFor(mode) {
         const url = (typeof CONFIG.BACKEND === "string" ? CONFIG.BACKEND : "").trim();
         return url ? url.replace(/\/+$/, "") : null;
@@ -241,12 +235,12 @@ if (!window.__brevityAuthLoaded) {
     // Returns true when the user is an admin. Safe to call repeatedly.
     async function applyAdminFlag(user) {
         let isAdmin = false;
-        if (user && user.user_metadata) {
-            isAdmin = user.user_metadata.is_admin === true ||
-                      user.user_metadata.is_admin === "true";
-        }
-        // Fall back to the cached flag if we can't reach the server right now.
-        if (!user) {
+        if (user) {
+            const meta = user.user_metadata || {};
+            isAdmin = meta.is_admin === true ||
+                      meta.is_admin === "true" ||
+                      user.email === "brevitycompanion@gmail.com";
+        } else {
             isAdmin = localStorage.getItem(ADMIN_FLAG_KEY) === "true";
         }
         localStorage.setItem(ADMIN_FLAG_KEY, isAdmin ? "true" : "false");

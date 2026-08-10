@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="store.title">Store - Brevity Companion</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="theme.js"></script>
+<script src="i18n.js"></script>
+<script src="auth.js"></script>
+<script>
+    // Auth gate — protected page. Validates the real Supabase session.
+    requireAuth();
+</script>
     <style>
         :root { 
             --primary-bg: #FFFFFF; --secondary-bg: #F5F5F5;
