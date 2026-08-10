@@ -35,7 +35,7 @@
             document.body.appendChild(btn);
         }
 
-        // 3. Intro Video Autoplay Safeguard & Fast Fallback (Fixes video getting stuck)
+        // 3. Intro Video Autoplay Safeguard (Allows full video playback)
         function setupVideoSafeguard() {
             const video = document.getElementById("intro-video");
             const skipBtn = document.getElementById("skip-intro-btn");
@@ -46,21 +46,21 @@
                 video.setAttribute("webkit-playsinline", "");
                 video.setAttribute("autoplay", "");
 
-                // Force play
+                // Ensure video plays smoothly
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(function () {
-                        // Autoplay blocked/failed -> trigger skip button immediately
+                        // Autoplay blocked by browser policy -> skip gracefully
                         if (skipBtn) skipBtn.click();
                     });
                 }
 
-                // If video freezes or takes longer than 2.5s on mobile, auto-skip
+                // Generous safety fallback (12s) only if video fails to progress or hangs indefinitely
                 const fallbackTimer = setTimeout(function () {
-                    if (video && !video.ended && skipBtn) {
+                    if (video && !video.ended && video.paused && skipBtn) {
                         skipBtn.click();
                     }
-                }, 2500);
+                }, 12000);
 
                 video.addEventListener("ended", function () {
                     clearTimeout(fallbackTimer);
