@@ -233,7 +233,7 @@ if (!window.__brevityAuthLoaded) {
             const meta = user.user_metadata || {};
             isAdmin = meta.is_admin === true ||
                       meta.is_admin === "true" ||
-                      user.email === "brevitycompanion@gmail.com";
+                      (user.email && user.email.toLowerCase() === "brevitycompanion@gmail.com");
         } else {
             isAdmin = localStorage.getItem(ADMIN_FLAG_KEY) === "true";
         }

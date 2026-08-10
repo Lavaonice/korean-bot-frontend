@@ -671,12 +671,18 @@
                 const meta = user.user_metadata || {};
                 if (meta.full_name) profile.name = meta.full_name;
                 if (user.email) profile.email = user.email;
-                if (meta.plan) profile.plan = meta.plan;
-                // Admin role from the Supabase `is_admin` flag (mirrored into
-                // localStorage by auth.js), used to flag the plan as Admin.
-                if (meta.is_admin === true || meta.is_admin === "true" || isAdmin) {
+
+                const realIsAdmin = await window.applyAdminFlag(user);
+                const isPremium = localStorage.getItem('is_premium') === 'true' || meta.is_premium === true || meta.plan === 'Premium';
+
+                if (realIsAdmin) {
                     profile.plan = 'Admin';
+                } else if (isPremium) {
+                    profile.plan = 'Premium';
+                } else {
+                    profile.plan = 'Free';
                 }
+
                 if (meta.gender) profile.gender = meta.gender;
                 if (meta.dob) profile.dob = meta.dob;
                 if (meta.city) profile.city = meta.city;
