@@ -112,6 +112,7 @@
             "store.confirmTopUpSub": "Kimchi Points are added to your account instantly after payment.",
             "store.confirmPremium": "Confirm Premium Pass",
             "store.confirmPremiumSub": "Premium activates instantly and lasts 7 days from purchase.",
+            "store.total": "Total",
             "store.payRazorpay": "Pay with Razorpay",
             "store.modalNote": "Secure 256-bit encrypted checkout via Razorpay. Supports UPI, Credit/Debit Cards, NetBanking, and Wallets.",
             "store.cancel": "Cancel",
