@@ -1,0 +1,86 @@
+/* =====================================================================
+   Hanja Grimoire — Mobile UI & Performance Optimizations
+   ===================================================================== */
+
+@media (max-width: 760px) {
+  /* 1. Fix Back / Return Taskbar positioning on mobile so it NEVER blocks the book or judge verdict */
+  #return-taskbar {
+    position: fixed !important;
+    left: 12px !important;
+    top: 12px !important;
+    bottom: auto !important;
+    transform: none !important;
+    padding: 7px 14px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    z-index: 999 !important;
+    border-radius: 18px !important;
+    background: rgba(22, 14, 8, 0.94) !important;
+    border: 1px solid rgba(243, 234, 210, 0.5) !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.6) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  /* 2. Dedicated 1-Tap Settings Button at top-right for mobile */
+  #mobile-settings-btn {
+    position: fixed !important;
+    right: 12px !important;
+    top: 12px !important;
+    z-index: 999 !important;
+    padding: 7px 14px !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    color: #f3ead2 !important;
+    background: rgba(22, 14, 8, 0.94) !important;
+    border: 1px solid rgba(243, 234, 210, 0.5) !important;
+    border-radius: 18px !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.6) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  /* 3. Candle single-click / tap optimization */
+  #candle {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    z-index: 80 !important;
+    filter: none !important; /* Disable heavy drop-shadow filter on mobile GPUs */
+  }
+
+  /* 4. Canvas handwriting responsiveness (smooth 60fps) */
+  #ink-canvas, #hanzi-mount, #quiz-canvas {
+    touch-action: none !important;
+    will-change: transform !important;
+  }
+
+  /* 5. Judge verdict positioning */
+  #judge-verdict {
+    bottom: 2% !important;
+    padding: 10px 14px !important;
+    font-size: 0.88rem !important;
+    max-height: 38vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* 6. Skip intro button top priority on phone */
+  #skip-intro-btn {
+    z-index: 9999 !important;
+    top: 12px !important;
+    right: 12px !important;
+    font-size: 0.9rem !important;
+    padding: 8px 16px !important;
+    background: rgba(0,0,0,0.85) !important;
+    border: 1px solid rgba(255,255,255,0.5) !important;
+  }
+
+  /* 7. Performance tweaks for mobile GPUs */
+  #candle-light {
+    animation: none !important;
+    opacity: 0.8 !important;
+  }
+}
