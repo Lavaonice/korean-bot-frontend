@@ -211,12 +211,6 @@
 </head>
 <body>
 
-    <!-- Supabase + shared auth layer (validates the real session) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="theme.js"></script>
-    <script src="i18n.js"></script>
-    <script src="auth.js"></script>
-
     <!-- ==========================================
          SCREEN 1: QUEUE & INITIALIZATION PIPELINE
          ========================================== -->
@@ -519,19 +513,21 @@
 
         // Resolve the active Supabase token + the correct Space URL for this mode.
         async function initBackendConnection() {
+            const activeMode = (sessionConfig && sessionConfig.mode) ? sessionConfig.mode : "practice";
             currentBackend = (typeof backendUrlFor === "function")
-                ? backendUrlFor(sessionConfig.mode) : "https://lavaonice-practice-mood.hf.space";
+                ? backendUrlFor(activeMode) : "https://lavaonice-practice-mood.hf.space";
             if (!currentBackend) {
                 currentBackend = "https://lavaonice-practice-mood.hf.space";
             }
 
             try {
-                const getSessionPromise = (window.supabaseClient && window.supabaseClient.auth)
-                    ? window.supabaseClient.auth.getSession()
-                    : Promise.resolve({ data: { session: null } });
-                const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1500));
-                const res = await Promise.race([getSessionPromise, timeoutPromise]);
-                authToken = res && res.data && res.data.session ? res.data.session.access_token : null;
+                const client = window.supabaseClient || window.__brevitySupabaseClient;
+                if (client && client.auth) {
+                    const getSessionPromise = client.auth.getSession();
+                    const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1000));
+                    const res = await Promise.race([getSessionPromise, timeoutPromise]);
+                    authToken = res && res.data && res.data.session ? res.data.session.access_token : null;
+                }
             } catch (e) {
                 authToken = null;
             }
