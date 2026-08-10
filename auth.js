@@ -115,25 +115,28 @@ if (!window.__brevityAuthLoaded) {
        Throws: on network / transport failures (so the caller can retry).
        ----------------------------------------------------------------- */
     async function _getAuthenticatedUser() {
-        const { data: { session }, error: sessionErr } =
-            await supabaseClient.auth.getSession();
-        if (sessionErr) throw sessionErr; // transport failure -> retryable
+        try {
+            const getSessionPromise = supabaseClient.auth.getSession();
+            const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 3000));
+            const { data: { session }, error: sessionErr } = await Promise.race([getSessionPromise, timeoutPromise]);
+            if (sessionErr) throw sessionErr;
 
-        if (!session) return null; // no session at all -> redirect, no retry
+            if (!session) return null;
 
-        // Fresh cached session: trust it, skip the network round-trip.
-        const expiresAt = (session.expires_at || 0) * 1000;
-        if (expiresAt > Date.now()) {
-            _authLog("session restored from cache (no network call)");
-            return session.user || null;
+            const expiresAt = (session.expires_at || 0) * 1000;
+            if (expiresAt > Date.now()) {
+                _authLog("session restored from cache (no network call)");
+                return session.user || null;
+            }
+
+            const { data: { user }, error: userErr } = await supabaseClient.auth.getUser();
+            if (userErr) throw userErr;
+            _authLog("session verified with server");
+            return user || null;
+        } catch (err) {
+            _authLog("getAuthenticatedUser error:", err);
+            return null;
         }
-
-        // Expired or near-expiry: verify/refresh against the auth server.
-        const { data: { user }, error: userErr } =
-            await supabaseClient.auth.getUser();
-        if (userErr) throw userErr; // transport or invalid -> caller decides
-        _authLog("session verified with server");
-        return user || null;
     }
 
     /* -----------------------------------------------------------------
@@ -167,22 +170,19 @@ if (!window.__brevityAuthLoaded) {
         return null;
     }
 
-    /* -----------------------------------------------------------------
-       requireAuth()
-       WHAT : Gate for every protected page.
-       WHEN : Called from each protected page right after auth.js loads.
-       WHY  : Validates the Supabase session; redirects to LOGIN_PAGE if
-              there isn't one, and hides the document until resolved so
-              protected content never flashes.
-       Returns the authenticated user, or null after redirecting.
-       ----------------------------------------------------------------- */
     async function requireAuth({ hideUntilChecked = true } = {}) {
         if (hideUntilChecked) document.documentElement.style.visibility = "hidden";
 
+        const safetyTimer = setTimeout(() => {
+            if (hideUntilChecked) document.documentElement.style.visibility = "";
+        }, 2500);
+
         const user = await _authenticateWithRetry();
+        clearTimeout(safetyTimer);
 
         if (!user) {
             _clearRetryState();
+            if (hideUntilChecked) document.documentElement.style.visibility = "";
             window.location.replace(CONFIG.LOGIN_PAGE);
             return null;
         }
@@ -190,14 +190,8 @@ if (!window.__brevityAuthLoaded) {
         _clearRetryState();
         if (hideUntilChecked) document.documentElement.style.visibility = "";
 
-        // Make sure the local admin mirror reflects the freshly-validated
-        // Supabase user before any page logic runs.
         await applyAdminFlag(user);
-
-        // Expose the signed-in user so experience pages (e.g. the Grimoire)
-        // can greet by name. Never called before requireAuth() resolves.
         window.__brevityUser = user;
-
         return user;
     }
 
