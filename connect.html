@@ -342,59 +342,74 @@
             const tr = (key, fallback) => (typeof window.t === "function" ? window.t(key) : fallback);
             const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
+            console.log("[brevity-pipeline] 🚀 Initializing session pipeline...");
             loadingScreen.classList.remove('hidden');
             sessionScreen.classList.add('hidden');
 
             // STEP 1: Verifying Subscription
+            console.log("[brevity-pipeline] 1/5 Verifying Subscription & Supabase session...");
             setStepStatus('step-1', 'active');
             await initBackendConnection();
-            await delay(400);
+            await delay(300);
             setStepStatus('step-1', 'done');
+            console.log("[brevity-pipeline] ✓ Step 1 Complete (Auth verified).");
 
             // STEP 2: Reserving Execution Slot
+            console.log("[brevity-pipeline] 2/5 Requesting backend execution slot from", currentBackend);
             setStepStatus('step-2', 'active');
             const slotStartResult = await startBackendSessionWithResult();
             if (!slotStartResult.ok) {
                 if (slotStartResult.queued) {
+                    console.log("[brevity-pipeline] Slot queued. Waiting for free slot...");
                     document.getElementById('loader-title').innerText = tr('connect.serverBusy', "Server Busy");
                     document.getElementById('loader-subtitle').innerText = tr('connect.queueWait', "Waiting for slot...");
                     queuePosUI.classList.remove('hidden');
                     await pollQueue();
                 } else {
-                    console.warn("[brevity] backend slot warning:", slotStartResult.error);
+                    console.warn("[brevity-pipeline] Backend slot warning:", slotStartResult.error);
                 }
+            } else {
+                console.log("[brevity-pipeline] ✓ Step 2 Complete (Slot reserved). Session ID:", currentSessionId);
             }
-            await delay(500);
+            await delay(400);
             setStepStatus('step-2', 'done');
 
             // STEP 3: Loading Yonsei Curriculum
+            console.log("[brevity-pipeline] 3/5 Loading Yonsei Curriculum payload...");
             setStepStatus('step-3', 'active');
-            await delay(400);
+            await delay(300);
             setStepStatus('step-3', 'done');
+            console.log("[brevity-pipeline] ✓ Step 3 Complete (Curriculum ready).");
 
             // STEP 4: Compiling AI Prompt (Pre-computing)
+            console.log("[brevity-pipeline] 4/5 Pre-computing AI Prompt context...");
             setStepStatus('step-4', 'active');
-            await delay(400);
+            await delay(300);
             setStepStatus('step-4', 'done');
+            console.log("[brevity-pipeline] ✓ Step 4 Complete (Prompt compiled).");
 
             // STEP 5: Connecting Speech Recognition
+            console.log("[brevity-pipeline] 5/5 Initializing speech recognition & mic permission...");
             setStepStatus('step-5', 'active');
             const micGranted = await getMicPermission();
-            await delay(300);
+            await delay(200);
             if (!micGranted) {
+                console.warn("[brevity-pipeline] Mic permission pending user interaction.");
                 setStepStatus('step-5', 'error');
                 document.getElementById('loader-title').innerText = tr('connect.micBlocked', "Microphone Notice");
                 document.getElementById('loader-subtitle').innerText = tr('connect.micAllow', "Click mic to enable audio");
             } else {
                 setStepStatus('step-5', 'done');
+                console.log("[brevity-pipeline] ✓ Step 5 Complete (Mic connected).");
             }
 
             // Ready state: show completed checks
+            console.log("[brevity-pipeline] 🎉 All steps complete! Entering session room...");
             document.getElementById('loader-icon').classList.add('ready');
             document.getElementById('loader-title').innerText = tr('connect.ready', "Ready!");
             document.getElementById('loader-subtitle').innerText = tr('connect.entering', "Entering session...");
 
-            await delay(800);
+            await delay(600);
             loadingScreen.classList.add('hidden');
             sessionScreen.classList.remove('hidden');
             addChatBubble(meta.opener, 'ai', meta.scenario);
