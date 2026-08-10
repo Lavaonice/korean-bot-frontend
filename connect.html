@@ -286,9 +286,8 @@
         }
 
         if (!sessionConfig || !sessionConfig.mode) {
-            // No one paid to get here — bounce back to the dashboard rather
-            // than showing a broken/empty session.
-            window.location.href = "dashboard.html";
+            // Default fallback session so refreshing or direct navigation never freezes or breaks
+            sessionConfig = { mode: "practice", chapter: 1 };
         }
 
         const MODE_LABELS = { practice: "Practice Mode", viva: "Viva Mode", casual: "Casual Mode" };
