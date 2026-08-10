@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="store.title">Store - Brevity Companion</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
 <script src="auth.js"></script>
@@ -339,13 +340,16 @@
         .modal-sub { color: #888; font-size: 0.85rem; margin-bottom: 20px; }
         .order-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
         .order-row.total { font-weight: 700; color: var(--accent-main); border-bottom: none; padding-top: 14px; font-size: 1.05rem; }
-        .phonepe-btn {
-            width: 100%; margin-top: 22px; background: #5F259F; color: white;
-            border: none; padding: 14px; border-radius: 8px; font-weight: 700;
-            font-size: 1rem; cursor: pointer; display: flex; align-items: center;
+        .razorpay-btn {
+            width: 100%; margin-top: 22px;
+            background: linear-gradient(135deg, #0c2340 0%, #1a365d 100%); color: white;
+            border: 1px solid #2b4c7e; padding: 14px; border-radius: 8px; font-weight: 700;
+            font-size: 1.05rem; cursor: pointer; display: flex; align-items: center;
             justify-content: center; gap: 8px; transition: 0.2s;
+            box-shadow: 0 4px 14px rgba(12, 35, 64, 0.35);
         }
-        .phonepe-btn:hover { background: #4d1f80; }
+        .razorpay-btn:hover { background: linear-gradient(135deg, #1a365d 0%, #2b4c7e 100%); transform: translateY(-1px); }
+        .razorpay-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .modal-note {
             font-size: 0.78rem; color: #999; text-align: center; margin-top: 14px; line-height: 1.4;
         }
@@ -552,10 +556,10 @@
 
             <div id="order-rows"></div>
 
-            <button class="phonepe-btn" onclick="payWithPhonePe()" data-i18n="store.payPhonePe">
-                Pay with PhonePe
+            <button class="razorpay-btn" id="pay-btn" onclick="payWithRazorpay()" data-i18n="store.payRazorpay">
+                Pay with Razorpay
             </button>
-            <p class="modal-note" data-i18n="store.modalNote">You'll be redirected to PhonePe to complete payment securely. Your balance updates automatically once payment is confirmed.</p>
+            <p class="modal-note" data-i18n="store.modalNote">Secure 256-bit encrypted checkout via Razorpay. Supports UPI, Credit/Debit Cards, NetBanking, and Wallets.</p>
             <button class="modal-close" onclick="closeCheckout()" data-i18n="store.cancel">Cancel</button>
         </div>
     </div>
@@ -666,18 +670,124 @@
             pendingOrder = null;
         }
 
-        function payWithPhonePe() {
+        async function payWithRazorpay() {
             if (!pendingOrder) return;
+            const btn = document.getElementById('pay-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Initializing Razorpay...';
+            }
 
-            // PhonePe Payment Gateway integration point.
-            // Once merchant onboarding is approved, this will call the PhonePe
-            // Standard Checkout API to create an order and redirect the user
-            // to the PhonePe payment page, then verify the callback server-side
-            // before crediting the account.
-            //
-            // For now (pending merchant approval), purchases are not yet live.
-            alert(t('store.payLaunching'));
-            closeCheckout();
+            const backendUrl = "https://lavaonice-practice-mood.hf.space";
+
+            try {
+                // Step 1: Call backend endpoint to create order
+                const res = await fetch(backendUrl + "/api/create-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        amount: pendingOrder.amount,
+                        item_type: pendingOrder.type,
+                        label: pendingOrder.label
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.order_id) {
+                    throw new Error(data.detail || "Failed to create Razorpay order");
+                }
+
+                // Get current user email for prefill
+                let userEmail = "";
+                if (window.supabase) {
+                    try {
+                        const { data: { user } } = await window.supabase.auth.getUser();
+                        if (user) userEmail = user.email || "";
+                    } catch (e) {}
+                }
+
+                // Step 2: Open Razorpay modal with order_id
+                const options = {
+                    "key": data.key_id || "rzp_test_TODCL7Z5BeDndC",
+                    "amount": data.amount,
+                    "currency": data.currency || "INR",
+                    "name": "Brevity Companion",
+                    "description": pendingOrder.label,
+                    "order_id": data.order_id,
+                    "handler": async function (response) {
+                        // Step 3: Call backend endpoint to verify payment signature
+                        if (btn) btn.innerText = 'Verifying Payment...';
+                        try {
+                            const verifyRes = await fetch(backendUrl + "/api/verify-payment", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    item_type: pendingOrder.type,
+                                    item_amount: pendingOrder.amount
+                                })
+                            });
+
+                            const verifyData = await verifyRes.json();
+                            if (verifyRes.ok && verifyData.success) {
+                                alert("🎉 Payment Successful! Your order has been credited.");
+                                if (pendingOrder.type === 'kp') {
+                                    let currentKp = parseInt(localStorage.getItem('kimchi_points') || '0');
+                                    let newKp = currentKp + pendingOrder.amount;
+                                    localStorage.setItem('kimchi_points', newKp.toString());
+                                    document.getElementById('current-kp').innerText = window.kpUnlimited && window.kpUnlimited() ? '∞' : newKp;
+                                } else if (pendingOrder.type === 'premium') {
+                                    localStorage.setItem('is_premium', 'true');
+                                    alert("🌟 Premium Pass Activated for 7 Days!");
+                                }
+                                closeCheckout();
+                            } else {
+                                alert("⚠️ Payment verification failed: " + (verifyData.detail || "Invalid signature"));
+                            }
+                        } catch (err) {
+                            alert("Error verifying payment: " + err.message);
+                        } finally {
+                            if (btn) {
+                                btn.disabled = false;
+                                btn.innerText = "Pay with Razorpay";
+                            }
+                        }
+                    },
+                    "prefill": {
+                        "email": userEmail
+                    },
+                    "theme": {
+                        "color": "#FF7043"
+                    },
+                    "modal": {
+                        "ondismiss": function() {
+                            if (btn) {
+                                btn.disabled = false;
+                                btn.innerText = "Pay with Razorpay";
+                            }
+                        }
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.on('payment.failed', function (response) {
+                    alert("❌ Payment Failed: " + (response.error.description || "Transaction cancelled or declined"));
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerText = "Pay with Razorpay";
+                    }
+                });
+                rzp.open();
+
+            } catch (err) {
+                alert("Razorpay Checkout Error: " + err.message);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = "Pay with Razorpay";
+                }
+            }
         }
     </script>
 </body>
