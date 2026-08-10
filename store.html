@@ -345,8 +345,13 @@
         }
 
         /* Razorpay SDK Overlay Glassmorphism Blur */
-        .razorpay-container,
         iframe.razorpay-checkout-frame {
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+        .razorpay-container,
+        div[class*="razorpay"],
+        body > iframe[src*="razorpay"] {
             background-color: rgba(0, 0, 0, 0.65) !important;
             backdrop-filter: blur(12px) !important;
             -webkit-backdrop-filter: blur(12px) !important;
@@ -796,6 +801,22 @@
                     }
                 });
                 rzp.open();
+
+                // Dynamic Glassmorphism Overlay Enforcer for Razorpay iframe & backdrop
+                const applyGlassOverlay = () => {
+                    const frames = document.querySelectorAll('iframe.razorpay-checkout-frame, iframe[src*="razorpay"]');
+                    frames.forEach(f => {
+                        f.style.setProperty('background', 'transparent', 'important');
+                        f.style.setProperty('background-color', 'transparent', 'important');
+                        if (f.parentElement) {
+                            f.parentElement.style.setProperty('background-color', 'rgba(0,0,0,0.68)', 'important');
+                            f.parentElement.style.setProperty('backdrop-filter', 'blur(12px)', 'important');
+                            f.parentElement.style.setProperty('-webkit-backdrop-filter', 'blur(12px)', 'important');
+                        }
+                    });
+                };
+                const glassTimer = setInterval(applyGlassOverlay, 80);
+                setTimeout(() => clearInterval(glassTimer), 4000);
 
             } catch (err) {
                 alert("Razorpay Checkout Error: " + err.message);
