@@ -419,6 +419,15 @@
             sessionScreen.classList.remove('hidden');
             addChatBubble(meta.opener, 'ai', meta.scenario);
             startSessionTimer();
+
+            // Trigger backend initial spoken turn so AI teacher speaks the opening greeting aloud
+            if (currentSessionId) {
+                sendTurnToBackend({ text: "안녕하세요! (Hello!)" }).then(res => {
+                    if (res && res.audio) {
+                        playMp3(res.audio);
+                    }
+                });
+            }
         }
 
         function checkIfSlotsAreFull() {
