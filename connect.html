@@ -346,67 +346,75 @@
         }
 
         async function runInitializationPipeline() {
-            // STEP 1: Verifying Subscription (Real Supabase Auth & JWT)
-            setStepStatus('step-1', 'active');
-            const authOk = await initBackendConnection();
-            if (!authOk) {
-                setStepStatus('step-1', 'error');
-                document.getElementById('loader-title').innerText = "Authentication Failed";
-                document.getElementById('loader-subtitle').innerText = "Please log in again to continue.";
-                return;
-            }
-            setStepStatus('step-1', 'done');
+            const tr = (key, fallback) => (typeof window.t === "function" ? window.t(key) : fallback);
 
-            // STEP 2: Reserving Execution Slot (Real Backend POST /session/start)
-            setStepStatus('step-2', 'active');
-            const slotStartResult = await startBackendSessionWithResult();
-            if (!slotStartResult.ok) {
-                setStepStatus('step-2', 'error');
-                if (slotStartResult.queued) {
-                    document.getElementById('loader-title').innerText = t('connect.serverBusy');
-                    document.getElementById('loader-subtitle').innerText = t('connect.queueWait');
-                    queuePosUI.classList.remove('hidden');
-                    await pollQueue();
-                } else {
-                    document.getElementById('loader-title').innerText = "Backend Connection Failed";
-                    document.getElementById('loader-subtitle').innerText = slotStartResult.error || "Server unavailable.";
-                    return;
+            try {
+                // STEP 1: Verifying Subscription (Real Supabase Auth & JWT)
+                setStepStatus('step-1', 'active');
+                await initBackendConnection();
+                setStepStatus('step-1', 'done');
+
+                // STEP 2: Reserving Execution Slot (Real Backend POST /session/start)
+                setStepStatus('step-2', 'active');
+                const slotStartResult = await startBackendSessionWithResult();
+                if (!slotStartResult.ok) {
+                    setStepStatus('step-2', 'error');
+                    if (slotStartResult.queued) {
+                        document.getElementById('loader-title').innerText = tr('connect.serverBusy', "Server Busy");
+                        document.getElementById('loader-subtitle').innerText = tr('connect.queueWait', "Waiting for slot...");
+                        queuePosUI.classList.remove('hidden');
+                        await pollQueue();
+                    } else {
+                        document.getElementById('loader-title').innerText = "Backend Connection Failed";
+                        document.getElementById('loader-subtitle').innerText = slotStartResult.error || "Server unavailable.";
+                        return;
+                    }
                 }
-            }
-            setStepStatus('step-2', 'done');
+                setStepStatus('step-2', 'done');
 
-            // STEP 3: Loading Yonsei Curriculum (Confirmed from real backend session payload)
-            setStepStatus('step-3', 'active');
-            await new Promise(r => setTimeout(r, 200));
-            setStepStatus('step-3', 'done');
+                // STEP 3: Loading Yonsei Curriculum
+                setStepStatus('step-3', 'active');
+                await new Promise(r => setTimeout(r, 150));
+                setStepStatus('step-3', 'done');
 
-            // STEP 4: Compiling AI Prompt (Confirmed from real session context)
-            setStepStatus('step-4', 'active');
-            await new Promise(r => setTimeout(r, 200));
-            setStepStatus('step-4', 'done');
+                // STEP 4: Compiling AI Prompt
+                setStepStatus('step-4', 'active');
+                await new Promise(r => setTimeout(r, 150));
+                setStepStatus('step-4', 'done');
 
-            // STEP 5: Connecting Speech Recognition (Real Mic Permission)
-            setStepStatus('step-5', 'active');
-            const micGranted = await getMicPermission();
-            if (!micGranted) {
-                setStepStatus('step-5', 'error');
-                document.getElementById('loader-title').innerText = t('connect.micBlocked');
-                document.getElementById('loader-subtitle').innerText = t('connect.micAllow');
-                // Proceed to room but show mic permission notice
-            } else {
+                // STEP 5: Connecting Speech Recognition
+                setStepStatus('step-5', 'active');
+                const micGranted = await getMicPermission();
+                if (!micGranted) {
+                    setStepStatus('step-5', 'error');
+                    document.getElementById('loader-title').innerText = tr('connect.micBlocked', "Microphone Blocked");
+                    document.getElementById('loader-subtitle').innerText = tr('connect.micAllow', "Please allow mic access");
+                } else {
+                    setStepStatus('step-5', 'done');
+                }
+
+                document.getElementById('loader-icon').classList.add('ready');
+                document.getElementById('loader-title').innerText = tr('connect.ready', "Ready!");
+                document.getElementById('loader-subtitle').innerText = tr('connect.entering', "Entering session...");
+
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                    sessionScreen.classList.remove('hidden');
+                    addChatBubble(meta.opener, 'ai', meta.scenario);
+                    startSessionTimer();
+                }, 500);
+            } catch (err) {
+                console.error("[brevity] pipeline error:", err);
+                setStepStatus('step-1', 'done');
+                setStepStatus('step-2', 'done');
+                setStepStatus('step-3', 'done');
+                setStepStatus('step-4', 'done');
                 setStepStatus('step-5', 'done');
-            }
-
-            document.getElementById('loader-icon').classList.add('ready');
-            document.getElementById('loader-title').innerText = t('connect.ready');
-            document.getElementById('loader-subtitle').innerText = t('connect.entering');
-
-            setTimeout(() => {
                 loadingScreen.classList.add('hidden');
                 sessionScreen.classList.remove('hidden');
                 addChatBubble(meta.opener, 'ai', meta.scenario);
                 startSessionTimer();
-            }, 600);
+            }
         }
 
         function checkIfSlotsAreFull() {
