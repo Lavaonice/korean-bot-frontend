@@ -35,10 +35,9 @@
             document.body.appendChild(btn);
         }
 
-        // 3. Intro Video Autoplay Safeguard (Allows full video playback)
+        // 3. Intro Video Autoplay Safeguard (Allows 100% uninterrupted full video playback)
         function setupVideoSafeguard() {
             const video = document.getElementById("intro-video");
-            const skipBtn = document.getElementById("skip-intro-btn");
 
             if (video) {
                 video.muted = true;
@@ -50,21 +49,9 @@
                 const playPromise = video.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(function () {
-                        // Autoplay blocked by browser policy -> skip gracefully
-                        if (skipBtn) skipBtn.click();
+                        // Ignore autoplay policy restriction; video will play on user interaction
                     });
                 }
-
-                // Generous safety fallback (12s) only if video fails to progress or hangs indefinitely
-                const fallbackTimer = setTimeout(function () {
-                    if (video && !video.ended && video.paused && skipBtn) {
-                        skipBtn.click();
-                    }
-                }, 12000);
-
-                video.addEventListener("ended", function () {
-                    clearTimeout(fallbackTimer);
-                });
             }
         }
 
