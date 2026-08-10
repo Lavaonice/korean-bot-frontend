@@ -360,27 +360,72 @@
             -webkit-backdrop-filter: blur(12px) !important;
         }
 
-        .modal-box h3 { color: var(--accent-main); font-size: 1.2rem; margin-bottom: 4px; }
-        .modal-sub { color: #888; font-size: 0.85rem; margin-bottom: 20px; }
-        .order-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-        .order-row.total { font-weight: 700; color: var(--accent-main); border-bottom: none; padding-top: 14px; font-size: 1.05rem; }
-        .razorpay-btn {
-            width: 100%; margin-top: 22px;
-            background: linear-gradient(135deg, #0c2340 0%, #1a365d 100%); color: white;
-            border: 1px solid #2b4c7e; padding: 14px; border-radius: 8px; font-weight: 700;
-            font-size: 1.05rem; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; gap: 8px; transition: 0.2s;
-            box-shadow: 0 4px 14px rgba(12, 35, 64, 0.35);
+        .modal-box h3 {
+            color: #FFFFFF;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
         }
-        .razorpay-btn:hover { background: linear-gradient(135deg, #1a365d 0%, #2b4c7e 100%); transform: translateY(-1px); }
-        .razorpay-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .modal-sub {
+            color: #A0AEC0;
+            font-size: 0.88rem;
+            margin-bottom: 22px;
+            line-height: 1.45;
+        }
+        .order-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            color: #E2E8F0;
+        }
+        .order-row span:last-child {
+            font-weight: 700;
+            color: #FFB74D;
+        }
+        .order-row.total {
+            background: linear-gradient(135deg, rgba(255, 112, 67, 0.15) 0%, rgba(255, 183, 77, 0.15) 100%);
+            border: 1px solid rgba(255, 112, 67, 0.35);
+            padding: 14px 16px; margin-top: 12px; margin-bottom: 0;
+        }
+        .order-row.total span:first-child {
+            font-weight: 700;
+            color: #FFFFFF;
+            font-size: 1.05rem;
+        }
+        .order-row.total span:last-child {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--store-highlight);
+        }
+        .razorpay-btn {
+            width: 100%; margin-top: 24px;
+            background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
+            color: white;
+            border: none; padding: 15px; border-radius: 12px; font-weight: 800;
+            font-size: 1.08rem; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px; transition: all 0.2s ease;
+            box-shadow: 0 6px 20px rgba(255, 112, 67, 0.4);
+            letter-spacing: 0.3px;
+        }
+        .razorpay-btn:hover {
+            background: linear-gradient(135deg, #FF8A65 0%, #FF7043 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 112, 67, 0.6);
+        }
+        .razorpay-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
         .modal-note {
-            font-size: 0.78rem; color: #999; text-align: center; margin-top: 14px; line-height: 1.4;
+            font-size: 0.78rem; color: #718096; text-align: center; margin-top: 16px; line-height: 1.45;
         }
         .modal-close {
-            background: none; border: none; color: #999; font-size: 0.85rem;
-            cursor: pointer; display: block; margin: 10px auto 0; text-decoration: underline;
+            background: none; border: none; color: #A0AEC0; font-size: 0.88rem;
+            cursor: pointer; display: block; margin: 12px auto 0; text-decoration: underline;
+            transition: color 0.2s ease;
         }
+        .modal-close:hover { color: #FFFFFF; }
 
         /* --- Tablet --- */
         @media (max-width: 768px) {
