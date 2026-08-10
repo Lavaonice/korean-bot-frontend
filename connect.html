@@ -533,7 +533,8 @@
                 if (sessionConfig.mode === "practice" && sessionConfig.chapter) {
                     body.chapters = [sessionConfig.chapter];
                 }
-                const res = await fetch(currentBackend + "/api/v1/session/start", {
+                const mode = sessionConfig.mode || "practice";
+                const res = await fetch(currentBackend + "/api/v1/" + mode + "/session/start", {
                     method: "POST",
                     headers: getAuthHeaders(),
                     body: JSON.stringify(body)
@@ -544,6 +545,9 @@
                     return false;
                 }
                 currentSessionId = json.data.session_id;
+                if (json.data.audio) {
+                    playMp3(json.data.audio);
+                }
                 return true;
             } catch (err) {
                 console.error("[brevity] session/start error", err);
@@ -565,7 +569,8 @@
                 bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
             }
             const b64 = btoa(bin);
-            const res = await fetch(currentBackend + "/api/v1/conversation/message", {
+            const mode = sessionConfig.mode || "practice";
+            const res = await fetch(currentBackend + "/api/v1/" + mode + "/conversation/message", {
                 method: "POST",
                 headers: getAuthHeaders(),
                 body: JSON.stringify({ session: currentSessionId, audio: b64 })
@@ -585,7 +590,8 @@
         async function endBackendSession() {
             if (!currentBackend || !currentSessionId) return;
             try {
-                await fetch(currentBackend + "/api/v1/session/end", {
+                const mode = sessionConfig.mode || "practice";
+                await fetch(currentBackend + "/api/v1/" + mode + "/session/end", {
                     method: "POST",
                     headers: getAuthHeaders(),
                     body: JSON.stringify({ session: currentSessionId })
@@ -627,11 +633,11 @@
         }
 
         async function startRecording() {
-            if (!micReady) {
-                statusText.innerText = t('connect.micNotAvail');
-                return;
-            }
             try {
+                if (!speechStream || !speechStream.active || speechStream.getAudioTracks().some(t => t.readyState === 'ended')) {
+                    speechStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    micReady = true;
+                }
                 mediaRecorder = new MediaRecorder(speechStream);
                 audioChunks = [];
 
@@ -664,11 +670,8 @@
                 isRecording = true;
                 micBtn.classList.add('recording');
                 statusText.innerText = t('connect.listening');
-
-                mediaRecorder.stream.getAudioTracks().forEach(track => {
-                    mediaRecorder.addEventListener('stop', () => track.stop());
-                });
             } catch (err) {
+                console.error("[brevity] recError", err);
                 statusText.innerText = t('connect.recError');
             }
         }
