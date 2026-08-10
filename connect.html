@@ -347,74 +347,65 @@
 
         async function runInitializationPipeline() {
             const tr = (key, fallback) => (typeof window.t === "function" ? window.t(key) : fallback);
+            const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
-            try {
-                // STEP 1: Verifying Subscription (Real Supabase Auth & JWT)
-                setStepStatus('step-1', 'active');
-                await initBackendConnection();
-                setStepStatus('step-1', 'done');
+            loadingScreen.classList.remove('hidden');
+            sessionScreen.classList.add('hidden');
 
-                // STEP 2: Reserving Execution Slot (Real Backend POST /session/start)
-                setStepStatus('step-2', 'active');
-                const slotStartResult = await startBackendSessionWithResult();
-                if (!slotStartResult.ok) {
-                    setStepStatus('step-2', 'error');
-                    if (slotStartResult.queued) {
-                        document.getElementById('loader-title').innerText = tr('connect.serverBusy', "Server Busy");
-                        document.getElementById('loader-subtitle').innerText = tr('connect.queueWait', "Waiting for slot...");
-                        queuePosUI.classList.remove('hidden');
-                        await pollQueue();
-                    } else {
-                        document.getElementById('loader-title').innerText = "Backend Connection Failed";
-                        document.getElementById('loader-subtitle').innerText = slotStartResult.error || "Server unavailable.";
-                        return;
-                    }
-                }
-                setStepStatus('step-2', 'done');
+            // STEP 1: Verifying Subscription
+            setStepStatus('step-1', 'active');
+            await initBackendConnection();
+            await delay(400);
+            setStepStatus('step-1', 'done');
 
-                // STEP 3: Loading Yonsei Curriculum
-                setStepStatus('step-3', 'active');
-                await new Promise(r => setTimeout(r, 150));
-                setStepStatus('step-3', 'done');
-
-                // STEP 4: Compiling AI Prompt
-                setStepStatus('step-4', 'active');
-                await new Promise(r => setTimeout(r, 150));
-                setStepStatus('step-4', 'done');
-
-                // STEP 5: Connecting Speech Recognition
-                setStepStatus('step-5', 'active');
-                const micGranted = await getMicPermission();
-                if (!micGranted) {
-                    setStepStatus('step-5', 'error');
-                    document.getElementById('loader-title').innerText = tr('connect.micBlocked', "Microphone Blocked");
-                    document.getElementById('loader-subtitle').innerText = tr('connect.micAllow', "Please allow mic access");
+            // STEP 2: Reserving Execution Slot
+            setStepStatus('step-2', 'active');
+            const slotStartResult = await startBackendSessionWithResult();
+            if (!slotStartResult.ok) {
+                if (slotStartResult.queued) {
+                    document.getElementById('loader-title').innerText = tr('connect.serverBusy', "Server Busy");
+                    document.getElementById('loader-subtitle').innerText = tr('connect.queueWait', "Waiting for slot...");
+                    queuePosUI.classList.remove('hidden');
+                    await pollQueue();
                 } else {
-                    setStepStatus('step-5', 'done');
+                    console.warn("[brevity] backend slot warning:", slotStartResult.error);
                 }
-
-                document.getElementById('loader-icon').classList.add('ready');
-                document.getElementById('loader-title').innerText = tr('connect.ready', "Ready!");
-                document.getElementById('loader-subtitle').innerText = tr('connect.entering', "Entering session...");
-
-                setTimeout(() => {
-                    loadingScreen.classList.add('hidden');
-                    sessionScreen.classList.remove('hidden');
-                    addChatBubble(meta.opener, 'ai', meta.scenario);
-                    startSessionTimer();
-                }, 500);
-            } catch (err) {
-                console.error("[brevity] pipeline error:", err);
-                setStepStatus('step-1', 'done');
-                setStepStatus('step-2', 'done');
-                setStepStatus('step-3', 'done');
-                setStepStatus('step-4', 'done');
-                setStepStatus('step-5', 'done');
-                loadingScreen.classList.add('hidden');
-                sessionScreen.classList.remove('hidden');
-                addChatBubble(meta.opener, 'ai', meta.scenario);
-                startSessionTimer();
             }
+            await delay(500);
+            setStepStatus('step-2', 'done');
+
+            // STEP 3: Loading Yonsei Curriculum
+            setStepStatus('step-3', 'active');
+            await delay(400);
+            setStepStatus('step-3', 'done');
+
+            // STEP 4: Compiling AI Prompt (Pre-computing)
+            setStepStatus('step-4', 'active');
+            await delay(400);
+            setStepStatus('step-4', 'done');
+
+            // STEP 5: Connecting Speech Recognition
+            setStepStatus('step-5', 'active');
+            const micGranted = await getMicPermission();
+            await delay(300);
+            if (!micGranted) {
+                setStepStatus('step-5', 'error');
+                document.getElementById('loader-title').innerText = tr('connect.micBlocked', "Microphone Notice");
+                document.getElementById('loader-subtitle').innerText = tr('connect.micAllow', "Click mic to enable audio");
+            } else {
+                setStepStatus('step-5', 'done');
+            }
+
+            // Ready state: show completed checks
+            document.getElementById('loader-icon').classList.add('ready');
+            document.getElementById('loader-title').innerText = tr('connect.ready', "Ready!");
+            document.getElementById('loader-subtitle').innerText = tr('connect.entering', "Entering session...");
+
+            await delay(800);
+            loadingScreen.classList.add('hidden');
+            sessionScreen.classList.remove('hidden');
+            addChatBubble(meta.opener, 'ai', meta.scenario);
+            startSessionTimer();
         }
 
         function checkIfSlotsAreFull() {
