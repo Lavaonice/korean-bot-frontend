@@ -522,38 +522,45 @@
         // Resolve the active Supabase token + the correct Space URL for this mode.
         async function initBackendConnection() {
             currentBackend = (typeof backendUrlFor === "function")
-                ? backendUrlFor(sessionConfig.mode) : null;
+                ? backendUrlFor(sessionConfig.mode) : "https://lavaonice-practice-mood.hf.space";
+            if (!currentBackend) {
+                currentBackend = "https://lavaonice-practice-mood.hf.space";
+            }
 
             try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                authToken = session ? session.access_token : null;
+                const getSessionPromise = (window.supabaseClient && window.supabaseClient.auth)
+                    ? window.supabaseClient.auth.getSession()
+                    : Promise.resolve({ data: { session: null } });
+                const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1500));
+                const res = await Promise.race([getSessionPromise, timeoutPromise]);
+                authToken = res && res.data && res.data.session ? res.data.session.access_token : null;
             } catch (e) {
                 authToken = null;
             }
 
-            if (!currentBackend) {
-                // No backend configured yet — surface a clear message instead
-                // of silently failing when the user tries to speak.
-                console.warn("[brevity] no backend URL configured for mode", sessionConfig.mode);
-                return false;
-            }
             return true;
         }
 
         // Kick off a session on the backend. Returns detailed result for pipeline step verification.
         async function startBackendSessionWithResult() {
-            if (!currentBackend) return { ok: false, error: "No backend configured" };
+            if (!currentBackend) currentBackend = "https://lavaonice-practice-mood.hf.space";
             try {
                 const body = {};
                 if (sessionConfig.mode === "practice" && sessionConfig.chapter) {
                     body.chapters = [sessionConfig.chapter];
                 }
                 const mode = sessionConfig.mode || "practice";
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+
                 const res = await fetch(currentBackend + "/api/v1/" + mode + "/session/start", {
                     method: "POST",
                     headers: getAuthHeaders(),
-                    body: JSON.stringify(body)
+                    body: JSON.stringify(body),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
+
                 const json = await res.json();
                 if (res.status === 202) {
                     return { ok: false, queued: true, message: "Queue active" };
@@ -569,6 +576,9 @@
                 return { ok: true, data: json.data };
             } catch (err) {
                 console.error("[brevity] session/start error", err);
+                if (err.name === 'AbortError') {
+                    return { ok: false, error: "Connection timed out (server waking up)" };
+                }
                 return { ok: false, error: "Network error connecting to backend" };
             }
         }
