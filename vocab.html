@@ -639,9 +639,16 @@
     }
 
     // =========================================================
-    // STREAK & CALENDAR HABIT ENGINE
+    // STREAK & CALENDAR HABIT ENGINE (LOCAL TIMEZONE ACCURATE)
     // =========================================================
     const STREAK_STORAGE_KEY = 'brevity_vocab_streak_data';
+
+    function getLocalDateKey(dateObj = new Date()) {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
 
     function getStreakData() {
         try {
@@ -654,7 +661,7 @@
 
     function recordTodayActivity() {
         const streakData = getStreakData();
-        const todayStr = new Date().toISOString().split('T')[0];
+        const todayStr = getLocalDateKey();
         streakData[todayStr] = { completed: true, timestamp: Date.now() };
         localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(streakData));
         updateStreakUI();
@@ -665,24 +672,22 @@
         let streak = 0;
         let d = new Date();
 
-        // Check if active today
-        const todayStr = d.toISOString().split('T')[0];
+        const todayStr = getLocalDateKey(d);
         if (data[todayStr] && data[todayStr].completed) {
             streak++;
             d.setDate(d.getDate() - 1);
         } else {
-            // Check if active yesterday to keep streak alive
             const yesterday = new Date(d);
             yesterday.setDate(yesterday.getDate() - 1);
-            const yestStr = yesterday.toISOString().split('T')[0];
+            const yestStr = getLocalDateKey(yesterday);
             if (!data[yestStr] || !data[yestStr].completed) {
-                return 0;
+                return 1; // Default to 1 on active session
             }
             d = yesterday;
         }
 
         while (true) {
-            const dateStr = d.toISOString().split('T')[0];
+            const dateStr = getLocalDateKey(d);
             if (data[dateStr] && data[dateStr].completed) {
                 streak++;
                 d.setDate(d.getDate() - 1);
@@ -690,7 +695,7 @@
                 break;
             }
         }
-        return Math.max(1, streak); // Give minimum 1 day base for active session
+        return Math.max(1, streak);
     }
 
     function updateStreakUI() {
@@ -715,7 +720,7 @@
         for (let i = 0; i < 7; i++) {
             const targetDate = new Date(now);
             targetDate.setDate(now.getDate() - (currentDayOfWeek - i));
-            const dateStr = targetDate.toISOString().split('T')[0];
+            const dateStr = getLocalDateKey(targetDate);
             
             const isCompleted = streakData[dateStr] && streakData[dateStr].completed;
             const isToday = (i === currentDayOfWeek);
@@ -724,8 +729,8 @@
             cell.className = 'day-cell' + (isCompleted ? ' completed' : '') + (isToday ? ' today' : '');
             cell.innerHTML = `
                 <span style="font-weight:700;">${days[i]}</span>
-                <span class="day-icon">${isCompleted ? '<img src="assets/ui/sapphire_flame.png" style="width:16px; height:16px; object-fit:contain;" onerror="this.replaceWith(\'🔷🔥\')">' : '⭕'}</span>
-                <span style="font-size:0.7rem; color:${isToday ? 'var(--sapphire-blue)' : '#999'}; font-weight:${isToday ? 'bold' : 'normal'};">${targetDate.getDate()}</span>
+                <span class="day-icon">${isCompleted ? '<img src="assets/ui/sapphire_flame.png" style="width:20px; height:20px; object-fit:contain;">' : '⭕'}</span>
+                <span style="font-size:0.75rem; color:${isToday ? 'var(--sapphire-blue)' : '#888'}; font-weight:${isToday ? 'bold' : 'normal'};">${targetDate.getDate()}</span>
             `;
             container.appendChild(cell);
         }
@@ -737,7 +742,7 @@
 
         const now = new Date();
         const year = now.getFullYear();
-        const month = now.getMonth(); // 0-indexed
+        const month = now.getMonth();
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         
         document.getElementById('month-calendar-title').innerText = `Habit Consistency (${monthNames[month]} ${year})`;
@@ -751,7 +756,7 @@
         let activeMonthDays = 0;
         container.innerHTML = '';
 
-        // Fill leading blank cells
+        // Fill leading empty cells
         for (let i = 0; i < startDayIndex; i++) {
             const blank = document.createElement('div');
             blank.className = 'month-day-cell empty';
@@ -759,9 +764,10 @@
         }
 
         // Fill days 1..numDays
+        const mStr = String(month + 1).padStart(2, '0');
         for (let d = 1; d <= numDays; d++) {
-            const dateObj = new Date(year, month, d);
-            const dateStr = dateObj.toISOString().split('T')[0];
+            const dStr = String(d).padStart(2, '0');
+            const dateStr = `${year}-${mStr}-${dStr}`;
             const isCompleted = streakData[dateStr] && streakData[dateStr].completed;
             const isToday = (d === now.getDate() && month === now.getMonth() && year === now.getFullYear());
 
@@ -770,8 +776,10 @@
             const cell = document.createElement('div');
             cell.className = 'month-day-cell' + (isCompleted ? ' completed' : '') + (isToday ? ' today' : '');
             cell.innerHTML = `
-                <span style="font-size:0.78rem;">${d}</span>
-                <span>${isCompleted ? '<img src="assets/ui/sapphire_flame.png" style="width:14px; height:14px; object-fit:contain;" onerror="this.replaceWith(\'🔷🔥\')">' : '·'}</span>
+                <span style="font-size:0.8rem; font-weight:700; color:${isToday ? 'var(--sapphire-blue)' : '#444'};">${d}</span>
+                <span style="display:flex; align-items:center; justify-content:center; min-height:22px;">
+                    ${isCompleted ? '<img src="assets/ui/sapphire_flame.png" style="width:20px; height:20px; object-fit:contain;">' : '<span style="color:#CCC; font-size:1rem;">·</span>'}
+                </span>
             `;
             container.appendChild(cell);
         }
