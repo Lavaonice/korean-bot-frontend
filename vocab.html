@@ -41,7 +41,7 @@
     .back-link:hover { color: var(--text-primary); }
 
     .top-right-group { display: flex; align-items: center; gap: 10px; }
-    .streak-badge { display: flex; align-items: center; gap: 6px; background: rgba(31, 111, 235, 0.08); border: 1px solid rgba(31, 111, 235, 0.25); color: var(--sapphire-blue); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
+    .streak-badge { display: flex; align-items: center; gap: 6px; background: rgba(31, 111, 235, 0.08); border: 1px solid rgba(31, 111, 235, 0.25); color: var(--sapphire-blue); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
     .streak-badge img { width: 20px; height: 20px; object-fit: contain; }
     .vkp-badge { background: #FFF0F1; color: var(--kp-color); padding: 6px 12px; border-radius: 20px; font-weight: 700; border: 1px solid #FFD6D9; font-size: 0.85rem; cursor: pointer; }
     .kp-badge { background: #FFF0F1; color: var(--kp-color); padding: 6px 12px; border-radius: 20px; font-weight: 700; border: 1px solid #FFD6D9; font-size: 0.85rem; text-decoration: none; }
@@ -59,9 +59,9 @@
     .view-month-btn:hover { text-decoration: underline; }
 
     .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-    .day-cell { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.78rem; }
-    .day-cell.completed { border-color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.06); }
-    .day-cell.completed .day-icon { color: var(--sapphire-blue); font-weight: bold; }
+    .day-cell { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.78rem; transition: 0.2s; }
+    .day-cell.completed { border-color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.08); }
+    .day-cell.today { border: 2px solid var(--sapphire-blue); }
 
     /* 6 Interactive Mode & Action Boxes */
     .section-title-label { font-size: 1.1rem; font-weight: 800; color: var(--accent-main); margin-top: 4px; }
@@ -182,17 +182,21 @@
     .spinner { width: 44px; height: 44px; border: 4px solid #E1E1E1; border-top: 4px solid var(--sapphire-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    /* Month Calendar Grid in Modal */
+    .month-day-cell { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 6px; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 0.82rem; font-weight: 600; }
+    .month-day-cell.completed { background: rgba(31, 111, 235, 0.08); border-color: var(--sapphire-blue); }
+    .month-day-cell.today { border: 2px solid var(--sapphire-blue); }
+    .month-day-cell.empty { background: transparent; border: none; }
+
     /* Deck list in modal */
     .deck-item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; gap: 12px; }
     .deck-badge-free { font-size: 0.72rem; background: #E1E4E8; color: #444; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
     .deck-badge-custom { font-size: 0.72rem; background: rgba(31, 111, 235, 0.12); color: var(--sapphire-blue); padding: 2px 8px; border-radius: 10px; font-weight: 700; }
 
-    /* Card item in Deck Editor */
     .word-edit-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #FAFAFA; border: 1px solid var(--border-color); border-radius: 6px; }
     .word-action-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 4px; border-radius: 4px; }
     .word-action-btn:hover { background: #EAEAEA; }
 
-    /* Search Result Item */
     .search-result-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
     .search-add-btn { background: var(--sapphire-blue); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
     .search-add-btn:hover { opacity: 0.9; }
@@ -232,9 +236,9 @@
     <div class="top-bar">
         <a href="dashboard.html" class="back-link">← Learning Hub</a>
         <div class="top-right-group">
-            <div class="streak-badge">
+            <div class="streak-badge" onclick="openMonthModal()">
                 <img src="assets/ui/sapphire_flame.png" alt="Sapphire Flame" onerror="this.replaceWith('🔷🔥')">
-                <span id="streak-text">0 Days Streak</span>
+                <span id="streak-text">1 Day Streak</span>
             </div>
             <div class="vkp-badge" onclick="openClaimModal()">
                 <span>🪙</span>
@@ -456,7 +460,7 @@
     </div>
 </div>
 
-<!-- Modal: My Decks Manager (With Edit Deck & Practice) -->
+<!-- Modal: My Decks Manager -->
 <div class="modal-overlay" id="my-decks-modal">
     <div class="modal-box">
         <div class="modal-title"><span>📚</span> My Vocabulary Decks</div>
@@ -493,9 +497,7 @@
             <strong style="font-size:0.92rem;">Enrolled Words (<span id="editor-words-count">0</span>):</strong>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:8px; max-height:240px; overflow-y:auto;" id="editor-words-list">
-            <!-- Rendered by JS -->
-        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; max-height:240px; overflow-y:auto;" id="editor-words-list"></div>
 
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeDeckEditor()">Done</button>
@@ -538,7 +540,7 @@
     </div>
 </div>
 
-<!-- Modal: Search Global Vocab Modal (With Target Deck Selector) -->
+<!-- Modal: Search Global Vocab Modal -->
 <div class="modal-overlay" id="search-vocab-modal">
     <div class="modal-box">
         <div class="modal-title"><span>🔍</span> Search Global Dictionary</div>
@@ -554,11 +556,23 @@
     </div>
 </div>
 
-<!-- Modal: 30-Day Habit Grid -->
+<!-- Modal: 30-Day Month Habit Grid Modal -->
 <div class="modal-overlay" id="month-modal">
-    <div class="modal-box">
-        <div class="modal-title">📅 30-Day Habit Grid</div>
-        <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; margin:10px 0;" id="month-cells"></div>
+    <div class="modal-box" style="max-width: 500px;">
+        <div class="modal-title">
+            <span>📅</span>
+            <span id="month-calendar-title">Habit Consistency (August 2026)</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.88rem; color:var(--text-secondary);">
+            <span>🔷🔥 Sapphire Blue Flame = Daily Session Done</span>
+            <strong id="month-active-count" style="color:var(--sapphire-blue);">1 Day Active</strong>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; text-align:center; font-size:0.78rem; font-weight:700; color:#888; margin-top:8px;">
+            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:6px;" id="month-cells"></div>
+
         <div class="modal-btn-row">
             <button class="modal-btn primary" onclick="document.getElementById('month-modal').classList.remove('open')">Close</button>
         </div>
@@ -600,11 +614,169 @@
         handleVocabSearch();
     }
     function closeSearchVocabModal() { document.getElementById('search-vocab-modal').classList.remove('open'); }
-    function openMonthModal() { document.getElementById('month-modal').classList.add('open'); }
+    function openMonthModal() { 
+        renderMonthCalendar();
+        document.getElementById('month-modal').classList.add('open'); 
+    }
     function closeDeckPicker() { document.getElementById('deck-picker-modal').classList.remove('open'); }
     function closeDeckEditor() { 
         document.getElementById('deck-editor-modal').classList.remove('open'); 
         renderMyDecksList();
+    }
+
+    // =========================================================
+    // USER AUTH & ADMIN INFINITE KP SYNC
+    // =========================================================
+    function syncUserKP() {
+        const isUnlimited = window.kpUnlimited && window.kpUnlimited();
+        const display = document.getElementById('kp-display');
+        if (isUnlimited) {
+            display.innerText = '∞';
+        } else {
+            const val = localStorage.getItem('kimchi_points') || localStorage.getItem('brevity_kp') || '50';
+            display.innerText = val;
+        }
+    }
+
+    // =========================================================
+    // STREAK & CALENDAR HABIT ENGINE
+    // =========================================================
+    const STREAK_STORAGE_KEY = 'brevity_vocab_streak_data';
+
+    function getStreakData() {
+        try {
+            const raw = localStorage.getItem(STREAK_STORAGE_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function recordTodayActivity() {
+        const streakData = getStreakData();
+        const todayStr = new Date().toISOString().split('T')[0];
+        streakData[todayStr] = { completed: true, timestamp: Date.now() };
+        localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(streakData));
+        updateStreakUI();
+    }
+
+    function calculateConsecutiveStreak() {
+        const data = getStreakData();
+        let streak = 0;
+        let d = new Date();
+
+        // Check if active today
+        const todayStr = d.toISOString().split('T')[0];
+        if (data[todayStr] && data[todayStr].completed) {
+            streak++;
+            d.setDate(d.getDate() - 1);
+        } else {
+            // Check if active yesterday to keep streak alive
+            const yesterday = new Date(d);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yestStr = yesterday.toISOString().split('T')[0];
+            if (!data[yestStr] || !data[yestStr].completed) {
+                return 0;
+            }
+            d = yesterday;
+        }
+
+        while (true) {
+            const dateStr = d.toISOString().split('T')[0];
+            if (data[dateStr] && data[dateStr].completed) {
+                streak++;
+                d.setDate(d.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+        return Math.max(1, streak); // Give minimum 1 day base for active session
+    }
+
+    function updateStreakUI() {
+        const streak = calculateConsecutiveStreak();
+        const streakEl = document.getElementById('streak-text');
+        if (streakEl) {
+            streakEl.innerText = `${streak} ${streak === 1 ? 'Day' : 'Days'} Streak`;
+        }
+        renderWeeklyStrip();
+    }
+
+    function renderWeeklyStrip() {
+        const container = document.getElementById('weekly-days-container');
+        if (!container) return;
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const now = new Date();
+        const currentDayOfWeek = (now.getDay() + 6) % 7; // Mon=0, Sun=6
+        const streakData = getStreakData();
+        
+        container.innerHTML = '';
+
+        for (let i = 0; i < 7; i++) {
+            const targetDate = new Date(now);
+            targetDate.setDate(now.getDate() - (currentDayOfWeek - i));
+            const dateStr = targetDate.toISOString().split('T')[0];
+            
+            const isCompleted = streakData[dateStr] && streakData[dateStr].completed;
+            const isToday = (i === currentDayOfWeek);
+
+            const cell = document.createElement('div');
+            cell.className = 'day-cell' + (isCompleted ? ' completed' : '') + (isToday ? ' today' : '');
+            cell.innerHTML = `
+                <span style="font-weight:700;">${days[i]}</span>
+                <span class="day-icon">${isCompleted ? '<img src="assets/ui/sapphire_flame.png" style="width:16px; height:16px; object-fit:contain;" onerror="this.replaceWith(\'🔷🔥\')">' : '⭕'}</span>
+                <span style="font-size:0.7rem; color:${isToday ? 'var(--sapphire-blue)' : '#999'}; font-weight:${isToday ? 'bold' : 'normal'};">${targetDate.getDate()}</span>
+            `;
+            container.appendChild(cell);
+        }
+    }
+
+    function renderMonthCalendar() {
+        const container = document.getElementById('month-cells');
+        if (!container) return;
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth(); // 0-indexed
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        document.getElementById('month-calendar-title').innerText = `Habit Consistency (${monthNames[month]} ${year})`;
+
+        const firstDayOfMonth = new Date(year, month, 1);
+        const lastDayOfMonth = new Date(year, month + 1, 0);
+        const numDays = lastDayOfMonth.getDate();
+        const startDayIndex = (firstDayOfMonth.getDay() + 6) % 7; // Mon=0
+
+        const streakData = getStreakData();
+        let activeMonthDays = 0;
+        container.innerHTML = '';
+
+        // Fill leading blank cells
+        for (let i = 0; i < startDayIndex; i++) {
+            const blank = document.createElement('div');
+            blank.className = 'month-day-cell empty';
+            container.appendChild(blank);
+        }
+
+        // Fill days 1..numDays
+        for (let d = 1; d <= numDays; d++) {
+            const dateObj = new Date(year, month, d);
+            const dateStr = dateObj.toISOString().split('T')[0];
+            const isCompleted = streakData[dateStr] && streakData[dateStr].completed;
+            const isToday = (d === now.getDate() && month === now.getMonth() && year === now.getFullYear());
+
+            if (isCompleted) activeMonthDays++;
+
+            const cell = document.createElement('div');
+            cell.className = 'month-day-cell' + (isCompleted ? ' completed' : '') + (isToday ? ' today' : '');
+            cell.innerHTML = `
+                <span style="font-size:0.78rem;">${d}</span>
+                <span>${isCompleted ? '<img src="assets/ui/sapphire_flame.png" style="width:14px; height:14px; object-fit:contain;" onerror="this.replaceWith(\'🔷🔥\')">' : '·'}</span>
+            `;
+            container.appendChild(cell);
+        }
+
+        document.getElementById('month-active-count').innerText = `${activeMonthDays} ${activeMonthDays === 1 ? 'Day' : 'Days'} Active this Month`;
     }
 
     // User Deck State with initial words
@@ -679,7 +851,6 @@
             searchSelect.appendChild(opt2);
         });
         
-        // Default search target to Custom Deck 1
         if (USER_DECKS[2]) searchSelect.value = USER_DECKS[2].id;
     }
 
@@ -691,7 +862,6 @@
         const container = document.getElementById('deck-picker-list');
         container.innerHTML = '';
 
-        // Daily 50 Mathematically Scheduled Option
         const mathOption = document.createElement('div');
         mathOption.className = 'deck-item-row';
         mathOption.style.borderColor = 'var(--sapphire-blue)';
@@ -942,7 +1112,6 @@
         const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
         if (lines.length === 0) return;
 
-        // Switch to Animated Loading Screen
         document.getElementById('import-modal-content').style.display = 'none';
         document.getElementById('ingest-loading-screen').style.display = 'flex';
         const titleEl = document.getElementById('ingest-status-title');
@@ -991,6 +1160,7 @@
         closeImportModal();
         document.getElementById('import-textarea').value = '';
 
+        recordTodayActivity();
         pendingModeTarget = 'flashcard';
         launchPlayerWithDeck(targetDeck);
     }
@@ -1059,6 +1229,7 @@
         currentCardIdx++; 
         renderFlashcard(); 
         playCurrentAudio();
+        recordTodayActivity();
     }
     function prevFlashcard() { 
         if (currentCardIdx > 0) currentCardIdx--; 
@@ -1120,6 +1291,7 @@
             document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
             document.getElementById('wrong-auto-banner').style.display = 'none';
             document.getElementById('correct-srs-panel').style.display = 'flex';
+            recordTodayActivity();
         } else {
             streakCount = 0;
             document.getElementById('graduation-streak-val').innerText = `0/5 (Reset on mistake)`;
@@ -1134,29 +1306,8 @@
         renderExercise();
     }
 
-    function renderWeeklyStrip(activity = []) {
-        const container = document.getElementById('weekly-days-container');
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        const now = new Date();
-        const currentDayIdx = (now.getDay() + 6) % 7;
-        
-        container.innerHTML = '';
-        days.forEach((day, idx) => {
-            const isCompleted = activity[idx] && activity[idx].completed;
-            const isToday = idx === currentDayIdx;
-            const cell = document.createElement('div');
-            cell.className = 'day-cell' + (isCompleted ? ' completed' : '');
-            cell.innerHTML = `
-                <span>${day}</span>
-                <span class="day-icon">${isCompleted ? '<img src="assets/ui/sapphire_flame.png" style="width:14px; height:14px;" onerror="this.replaceWith(\'🔷🔥\')">' : '⭕'}</span>
-                <span style="font-size:0.7rem; color:${isToday ? 'var(--sapphire-blue)' : '#999'};">${isToday ? 'Today' : ''}</span>
-            `;
-            container.appendChild(cell);
-        });
-    }
-
     // =========================================================
-    // SEARCH GLOBAL DICTIONARY (WITH TARGET DECK SELECTOR)
+    // SEARCH GLOBAL DICTIONARY
     // =========================================================
     const GLOBAL_DICTIONARY = [
         { word: '사랑', meaning: 'love' },
@@ -1217,8 +1368,17 @@
         document.getElementById('claim-modal').classList.remove('open');
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        renderWeeklyStrip([]);
+    window.addEventListener('DOMContentLoaded', async () => {
+        if (window.supabaseClient) {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session && session.user) {
+                    await applyAdminFlag(session.user);
+                }
+            } catch (e) {}
+        }
+        syncUserKP();
+        updateStreakUI();
         renderMyDecksList();
         populateDeckDropdowns();
     });
