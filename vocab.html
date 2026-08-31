@@ -118,10 +118,10 @@
     .struggle-btn { background: #FFF8E6; border: 1px solid #FFE08A; color: #B07800; font-size: 0.82rem; font-weight: 700; padding: 5px 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
     .struggle-btn.active { background: #FFD23F; color: #000; border-color: #B07800; }
 
-    .target-word { font-size: 3rem; font-weight: 800; color: var(--text-primary); margin: 6px 0; text-align: center; }
-    .target-meaning { font-size: 1.35rem; color: var(--text-secondary); text-align: center; }
-    .audio-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--accent-main); padding: 8px 18px; border-radius: 20px; font-size: 0.88rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .audio-btn:hover { background: #EBEBEB; }
+    .target-word { font-size: 3.2rem; font-weight: 800; color: var(--text-primary); margin: 6px 0; text-align: center; }
+    .target-meaning { font-size: 1.4rem; color: var(--text-secondary); text-align: center; }
+    .audio-btn { background: var(--secondary-bg); border: 1px solid var(--border-color); color: var(--accent-main); padding: 10px 22px; border-radius: 20px; font-size: 0.95rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+    .audio-btn:hover { background: #EBEBEB; border-color: var(--accent-main); transform: scale(1.02); }
 
     .card-nav-controls { display: flex; gap: 12px; width: 100%; justify-content: center; margin-top: 10px; }
     .nav-btn { padding: 10px 24px; border-radius: 8px; border: 1px solid var(--border-color); background: #FFFFFF; font-weight: 700; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
@@ -129,14 +129,12 @@
     .nav-btn.primary { background: var(--accent-main); color: #fff; border-color: var(--accent-main); }
     .nav-btn.primary:hover { background: var(--accent-hover); }
 
-    /* =========================================================
-       EXERCISE ENGINE (4 RETRIEVAL DIRECTIONS + AUTOMATIC WRONG AGAIN)
-       ========================================================= */
+    /* Exercise View */
     .exercise-box { border: 1px solid var(--border-color); border-radius: 12px; padding: 32px 26px; display: flex; flex-direction: column; gap: 18px; background: #FFFFFF; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
     .exercise-header-row { display: flex; justify-content: space-between; align-items: center; }
     .exercise-dir-badge { font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.08); padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(31, 111, 235, 0.2); }
     
-    .exercise-question { font-size: 2.3rem; font-weight: 800; color: var(--accent-main); text-align: center; margin: 4px 0; }
+    .exercise-question { font-size: 2.4rem; font-weight: 800; color: var(--accent-main); text-align: center; margin: 4px 0; }
     .exercise-subtext { text-align: center; color: var(--text-secondary); font-size: 0.95rem; margin-top: -4px; }
 
     .exercise-options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
@@ -145,12 +143,10 @@
     .exercise-option-btn.correct { background: #F0FFF4; border-color: var(--success-green); color: var(--success-green); font-weight: bold; }
     .exercise-option-btn.wrong { background: #FFF0F1; border-color: var(--kp-color); color: var(--kp-color); }
 
-    /* Automatic Wrong Feedback Box */
     .wrong-auto-banner { display: none; background: #FFF0F1; border: 1px solid var(--kp-color); border-radius: 8px; padding: 14px 16px; justify-content: space-between; align-items: center; }
     .wrong-auto-text { font-size: 0.92rem; color: var(--kp-color); font-weight: 700; }
     .btn-next-auto { background: var(--kp-color); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
-    /* Correct Answer SRS Retention Panel */
     .correct-srs-panel { display: none; flex-direction: column; gap: 10px; width: 100%; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 4px; }
     .grade-statement { text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--success-green); }
     .positive-rating-row { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -160,7 +156,6 @@
     .pos-rate-btn.good:hover { border-color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.08); color: var(--sapphire-blue); }
     .pos-rate-btn.easy:hover { border-color: var(--success-green); background: #F0FFF4; color: var(--success-green); }
 
-    /* Architecture Features HUD (Mastery Curve + Graduation Streak + Velocity Gauge) */
     .architecture-hud { width: 100%; display: flex; justify-content: space-between; align-items: center; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); }
     .graduation-chip { display: flex; align-items: center; gap: 4px; color: var(--sapphire-blue); }
 
@@ -182,7 +177,11 @@
     .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; outline: none; }
     .import-textarea { width: 100%; height: 130px; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; font-size: 0.95rem; outline: none; }
 
-    /* Deck list in modal */
+    /* Ingestion Loading Overlay */
+    .ingest-loading-box { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 20px; }
+    .spinner { width: 44px; height: 44px; border: 4px solid #E1E1E1; border-top: 4px solid var(--sapphire-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     .deck-item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; }
     .deck-badge-free { font-size: 0.72rem; background: #E1E4E8; color: #444; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
     .deck-badge-custom { font-size: 0.72rem; background: rgba(31, 111, 235, 0.12); color: var(--sapphire-blue); padding: 2px 8px; border-radius: 10px; font-weight: 700; }
@@ -352,7 +351,7 @@
             <div class="target-word" id="fc-word">예약하다</div>
             <button class="audio-btn" onclick="playCurrentAudio()">
                 <span>🔊</span>
-                <span>Listen Pronunciation (Fish Audio S2.1)</span>
+                <span>Listen Pronunciation (Fish Audio / Voice)</span>
             </button>
             <div class="target-meaning" id="fc-meaning">to reserve / make a reservation</div>
 
@@ -375,9 +374,8 @@
             </div>
         </div>
 
-        <!-- Track 2: Retention Exercises Player (4 Retrieval Directions + Auto-Wrong Again) -->
+        <!-- Track 2: Retention Exercises Player -->
         <div class="exercise-box" id="exercise-view" style="display:none;">
-            <!-- Architecture Feature HUD -->
             <div class="architecture-hud">
                 <span class="graduation-chip">🎓 Streak: <strong id="graduation-streak-val">3/5 to Long-Term Memory</strong></span>
                 <span>⚡ Pacing: <span id="pacing-status" style="color:var(--success-green);">Optimal (2.2s)</span></span>
@@ -468,17 +466,27 @@
 
 <!-- Modal: Add Words Modal -->
 <div class="modal-overlay" id="import-modal">
-    <div class="modal-box">
+    <div class="modal-box" id="import-modal-content">
         <div class="modal-title"><span>➕</span> Batch Add Words (Max 30)</div>
-        <p style="font-size:0.88rem; color:var(--text-secondary);">Enter Korean words, one per line. Example: <code>배 - pear</code> or <code>취소하다 : to cancel</code>.</p>
+        <p style="font-size:0.88rem; color:var(--text-secondary);">Enter Korean words, one per line. Example: <code>사랑 - love</code> or <code>행복 - happiness</code>.</p>
         <div style="display:flex; align-items:center; gap:8px;">
             <label style="font-size:0.85rem; font-weight:700;">Target Deck:</label>
             <select class="form-input" id="import-target-deck" style="width:auto; flex:1;"></select>
         </div>
-        <textarea class="import-textarea" id="import-textarea" placeholder="예약하다&#10;취소하다&#10;배 - pear"></textarea>
+        <textarea class="import-textarea" id="import-textarea" placeholder="사랑 - love&#10;행복 - happiness&#10;친구 - friend&#10;학교 - school&#10;약속 - appointment"></textarea>
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeImportModal()">Cancel</button>
-            <button class="modal-btn primary" onclick="submitImport()">Add to Deck</button>
+            <button class="modal-btn primary" onclick="submitImport()">Add to Deck & Practice ➔</button>
+        </div>
+    </div>
+
+    <!-- Ingestion Loading Screen (Appears on submit) -->
+    <div class="modal-box ingest-loading-box" id="ingest-loading-screen" style="display:none;">
+        <div class="spinner"></div>
+        <h3 style="font-size:1.2rem; font-weight:800;" id="ingest-status-title">Ingesting Vocabulary Words...</h3>
+        <p style="font-size:0.88rem; color:var(--text-secondary);" id="ingest-status-desc">Parsing terms and generating voice pronunciation profiles...</p>
+        <div style="width:100%; background:#EAEAEA; border-radius:4px; height:8px; overflow:hidden;">
+            <div id="ingest-progress-bar" style="width: 0%; height:100%; background:var(--sapphire-blue); transition: width 0.3s;"></div>
         </div>
     </div>
 </div>
@@ -525,6 +533,8 @@
     function openClaimModal() { document.getElementById('claim-modal').classList.add('open'); }
     function openImportModal() { 
         populateImportDeckDropdown();
+        document.getElementById('import-modal-content').style.display = 'flex';
+        document.getElementById('ingest-loading-screen').style.display = 'none';
         document.getElementById('import-modal').classList.add('open'); 
     }
     function closeImportModal() { document.getElementById('import-modal').classList.remove('open'); }
@@ -541,17 +551,50 @@
     function openMonthModal() { document.getElementById('month-modal').classList.add('open'); }
     function closeDeckPicker() { document.getElementById('deck-picker-modal').classList.remove('open'); }
 
-    // User Deck State: 2 Common + 2 Free Custom Slots + Unlocked Slots
+    // User Deck State with initial words
     const USER_DECKS = [
-        { id: 'core', name: 'General Core Learning Deck', count: 120, type: 'common_core' },
-        { id: 'weak', name: 'Words I Forget Easily', count: 7, type: 'common_weak' },
-        { id: 'custom_1', name: 'Custom Deck 1', count: 15, type: 'custom' },
-        { id: 'custom_2', name: 'Custom Deck 2', count: 0, type: 'custom' },
-        { id: 'custom_3', name: 'Deck 3', count: 0, type: 'store_unlocked' }
+        { 
+            id: 'core', 
+            name: 'General Core Learning Deck', 
+            type: 'common_core',
+            words: [
+                { word: '예약하다', meaning: 'to reserve / make a reservation', exampleKr: '식당을 미리 예약했어요.', exampleEn: 'I reserved the restaurant in advance.' },
+                { word: '취소하다', meaning: 'to cancel', exampleKr: '회의가 취소되었습니다.', exampleEn: 'The meeting has been cancelled.' },
+                { word: '출발하다', meaning: 'to depart / leave', exampleKr: '기차가 9시에 출발해요.', exampleEn: "The train departs at 9 o'clock." },
+                { word: '도착하다', meaning: 'to arrive', exampleKr: '서울에 곧 도착합니다.', exampleEn: 'We will arrive in Seoul soon.' }
+            ]
+        },
+        { 
+            id: 'weak', 
+            name: 'Words I Forget Easily', 
+            type: 'common_weak',
+            words: [
+                { word: '사과하다', meaning: 'to apologize', exampleKr: '친구에게 사과했습니다.', exampleEn: 'I apologized to my friend.' }
+            ]
+        },
+        { 
+            id: 'custom_1', 
+            name: 'Custom Deck 1', 
+            type: 'custom',
+            words: []
+        },
+        { 
+            id: 'custom_2', 
+            name: 'Custom Deck 2', 
+            type: 'custom',
+            words: []
+        },
+        { 
+            id: 'custom_3', 
+            name: 'Deck 3', 
+            type: 'store_unlocked',
+            words: []
+        }
     ];
 
     let pendingModeTarget = 'flashcard';
     let currentActiveDeck = USER_DECKS[0];
+    let currentDeckCards = USER_DECKS[0].words;
     let currentCardIdx = 0;
     let currentExerciseIdx = 0;
     let streakCount = 3;
@@ -564,6 +607,7 @@
         const container = document.getElementById('deck-picker-list');
         container.innerHTML = '';
 
+        // Daily 50 Mathematically Scheduled Option
         const mathOption = document.createElement('div');
         mathOption.className = 'deck-item-row';
         mathOption.style.borderColor = 'var(--sapphire-blue)';
@@ -572,12 +616,13 @@
                 <strong style="font-size:0.95rem; color:var(--sapphire-blue);">🎯 Daily 50 Batch (Mathematically Scheduled)</strong>
                 <div style="font-size:0.8rem; color:var(--text-secondary);">Calculated across all due words by SRS forgetting curve formula</div>
             </div>
-            <button class="modal-btn primary" onclick="launchPlayerWithDeck({id:'srs50', name:'Daily 50 (Mathematically Scheduled)'})">Launch</button>
+            <button class="modal-btn primary" onclick="launchPlayerWithDeck({id:'srs50', name:'Daily 50 (Mathematically Scheduled)', words: USER_DECKS[0].words})">Launch</button>
         `;
         container.appendChild(mathOption);
 
         USER_DECKS.forEach(deck => {
             const badge = deck.type.startsWith('common') ? '<span class="deck-badge-free">Common</span>' : '<span class="deck-badge-custom">Custom</span>';
+            const count = deck.words ? deck.words.length : 0;
             const row = document.createElement('div');
             row.className = 'deck-item-row';
             row.innerHTML = `
@@ -586,7 +631,7 @@
                         <strong style="font-size:0.95rem;">${deck.name}</strong>
                         ${badge}
                     </div>
-                    <div style="font-size:0.8rem; color:var(--text-secondary);">${deck.count} words</div>
+                    <div style="font-size:0.8rem; color:var(--text-secondary);">${count} words</div>
                 </div>
                 <button class="modal-btn primary" onclick="launchPlayerWithDeck(${JSON.stringify(deck).replace(/"/g, '&quot;')})">Launch</button>
             `;
@@ -598,6 +643,7 @@
 
     function launchPlayerWithDeck(deck) {
         currentActiveDeck = deck;
+        currentDeckCards = (deck.words && deck.words.length > 0) ? deck.words : USER_DECKS[0].words;
         closeDeckPicker();
         
         const badge = document.getElementById('player-active-deck-badge');
@@ -631,6 +677,7 @@
 
         USER_DECKS.forEach(deck => {
             const isCommon = deck.type.startsWith('common');
+            const count = deck.words ? deck.words.length : 0;
             const row = document.createElement('div');
             row.className = 'deck-item-row';
             row.innerHTML = `
@@ -639,11 +686,11 @@
                         <strong style="font-size:1rem;">${deck.name}</strong>
                         ${isCommon ? '<span class="deck-badge-free">Default Common</span>' : '<span class="deck-badge-custom">Custom Slot</span>'}
                     </div>
-                    <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">${deck.count} words enrolled</div>
+                    <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">${count} words enrolled</div>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px;">
                     ${!isCommon ? `<button class="modal-btn secondary" style="padding:6px 12px; font-size:0.82rem;" onclick="renameDeck('${deck.id}')">✏️ Rename</button>` : ''}
-                    <button class="modal-btn primary" style="padding:6px 14px; font-size:0.82rem;" onclick="openDeckPickerFor('flashcard'); closeMyDecksModal();">Practice</button>
+                    <button class="modal-btn primary" style="padding:6px 14px; font-size:0.82rem;" onclick="launchPlayerWithDeck(${JSON.stringify(deck).replace(/"/g, '&quot;')}); closeMyDecksModal();">Practice</button>
                 </div>
             `;
             container.appendChild(row);
@@ -676,9 +723,6 @@
                 <button class="modal-btn secondary" onclick="document.getElementById('create-deck-modal').classList.remove('open')">Cancel</button>
                 <button class="modal-btn primary" onclick="submitNewDeck(${customCount})">Create Deck</button>
             </div>
-            <div style="margin-top:14px; padding:12px; background:var(--secondary-bg); border-radius:8px; font-size:0.85rem; color:var(--text-secondary);">
-                Need more slots? Unlock <strong>Custom Deck Slots</strong> in the <a href="store.html" style="color:var(--kp-color); font-weight:bold;">Store for 25 KP</a>.
-            </div>
         `;
         document.getElementById('create-deck-modal').classList.add('open');
     }
@@ -687,8 +731,8 @@
         const input = document.getElementById('new-deck-input');
         const name = (input.value || '').trim() || `Deck ${currentCount + 1}`;
         const newId = 'custom_' + Date.now();
-        USER_DECKS.push({ id: newId, name: name, count: 0, type: 'custom' });
-        alert(`🎉 Created "${name}"! It is now available in your decks list.`);
+        USER_DECKS.push({ id: newId, name: name, words: [], type: 'custom' });
+        alert(`🎉 Created "${name}"!`);
         document.getElementById('create-deck-modal').classList.remove('open');
     }
 
@@ -703,58 +747,118 @@
         });
     }
 
-    // 4 Retrieval Directions Exercise Pool
-    const EXERCISE_POOL = [
-        {
-            type: 'recognition',
-            dirLabel: 'Direction 1: Recognition (Korean ➔ English)',
-            prompt: '예약하다',
-            subtext: 'Select the correct English definition:',
-            options: ['to cancel', 'to reserve / make a reservation', 'to arrive safely', 'to depart on time'],
-            correct: 1,
-            mastery: 68
-        },
-        {
-            type: 'production',
-            dirLabel: 'Direction 2: Production (English ➔ Korean)',
-            prompt: 'to cancel / withdraw',
-            subtext: 'Select the correct Korean vocabulary word:',
-            options: ['도착하다', '취소하다', '출발하다', '예약하다'],
-            correct: 1,
-            mastery: 45
-        },
-        {
-            type: 'audio_drill',
-            dirLabel: 'Direction 3: Audio Listening Drill (Sound ➔ Korean)',
-            prompt: '🔊 [Audio Prompt: 출발하다]',
-            subtext: 'Listen to the audio pronunciation and identify the spoken Korean word:',
-            options: ['도착하다', '공부하다', '출발하다', '설명하다'],
-            correct: 2,
-            mastery: 72
-        },
-        {
-            type: 'context_cloze',
-            dirLabel: 'Direction 4: Context Cloze Sentence Drill',
-            prompt: '식당에 사람이 많아서 미리 [ ____ ]했어요.',
-            subtext: 'Complete the sentence with the appropriate verb:',
-            options: ['도착', '취소', '예약', '출발'],
-            correct: 2,
-            mastery: 85
+    // =========================================================
+    // DYNAMIC BATCH INGESTION PIPELINE (WITH LOADING SCREEN)
+    // =========================================================
+    async function submitImport() {
+        const text = document.getElementById('import-textarea').value.trim();
+        const targetDeckId = document.getElementById('import-target-deck').value;
+        const targetDeck = USER_DECKS.find(d => d.id === targetDeckId) || USER_DECKS[2];
+
+        if (!text) {
+            alert('Please enter at least one word.');
+            return;
         }
-    ];
 
-    const MATHEMATICAL_50_POOL = [
-        { word: '예약하다', meaning: 'to reserve / make a reservation', exampleKr: '식당을 미리 예약했어요.', exampleEn: 'I reserved the restaurant in advance.' },
-        { word: '취소하다', meaning: 'to cancel', exampleKr: '회의가 취소되었습니다.', exampleEn: 'The meeting has been cancelled.' },
-        { word: '출발하다', meaning: 'to depart / leave', exampleKr: '기차가 9시에 출발해요.', exampleEn: "The train departs at 9 o'clock." },
-        { word: '도착하다', meaning: 'to arrive', exampleKr: '서울에 곧 도착합니다.', exampleEn: 'We will arrive in Seoul soon.' }
-    ];
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length === 0) return;
 
+        // Switch to Animated Loading Screen
+        document.getElementById('import-modal-content').style.display = 'none';
+        document.getElementById('ingest-loading-screen').style.display = 'flex';
+        const titleEl = document.getElementById('ingest-status-title');
+        const descEl = document.getElementById('ingest-status-desc');
+        const barEl = document.getElementById('ingest-progress-bar');
+
+        const newParsedWords = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const pct = Math.round(((i + 1) / lines.length) * 100);
+            barEl.style.width = pct + '%';
+            
+            let korean = line;
+            let meaning = 'Korean vocabulary';
+            if (line.includes('-')) {
+                const parts = line.split('-');
+                korean = parts[0].trim();
+                meaning = parts[1].trim();
+            } else if (line.includes(':')) {
+                const parts = line.split(':');
+                korean = parts[0].trim();
+                meaning = parts[1].trim();
+            }
+
+            titleEl.innerText = `Ingesting Word ${i + 1} of ${lines.length}...`;
+            descEl.innerText = `Adding "${korean}" (${meaning}) & generating audio profile...`;
+
+            newParsedWords.push({
+                word: korean,
+                meaning: meaning,
+                exampleKr: `${korean}을/를 공부하고 있어요.`,
+                exampleEn: `I am studying "${korean}".`
+            });
+
+            // Simulate smooth realistic ingestion pace
+            await new Promise(r => setTimeout(r, 120));
+        }
+
+        // Add into the target deck
+        if (!targetDeck.words) targetDeck.words = [];
+        targetDeck.words = [...targetDeck.words, ...newParsedWords];
+
+        titleEl.innerText = '🎉 Ingestion Complete!';
+        descEl.innerText = `Successfully enrolled ${newParsedWords.length} words into ${targetDeck.name}! Launching practice...`;
+
+        await new Promise(r => setTimeout(r, 600));
+        closeImportModal();
+        document.getElementById('import-textarea').value = '';
+
+        // Automatically launch the player with the new words!
+        pendingModeTarget = 'flashcard';
+        launchPlayerWithDeck(targetDeck);
+    }
+
+    // =========================================================
+    // DUAL-LAYER KOREAN TTS AUDIO ENGINE (NATIVE + BACKEND)
+    // =========================================================
+    function playCurrentAudio() {
+        const item = currentDeckCards[currentCardIdx % currentDeckCards.length] || currentDeckCards[0];
+        const koreanWord = item.word;
+
+        // 1. First try Native Web Speech API (Instant, authentic, zero delay)
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(koreanWord);
+            utterance.lang = 'ko-KR';
+            utterance.rate = 0.85;
+            
+            // Look for a Korean voice
+            const voices = window.speechSynthesis.getVoices();
+            const koVoice = voices.find(v => v.lang.startsWith('ko') || v.name.includes('Korean'));
+            if (koVoice) utterance.voice = koVoice;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 2. Also trigger backend Fish Audio synthesis fallback
+        try {
+            const audio = new Audio(`/api/v1/vocab/tts?text=${encodeURIComponent(koreanWord)}`);
+            audio.play().catch(() => {});
+        } catch (e) {}
+    }
+
+    // =========================================================
+    // FLASHCARD PLAYER
+    // =========================================================
     let isTranslationVisible = false;
 
     function renderFlashcard() {
-        const item = MATHEMATICAL_50_POOL[currentCardIdx % MATHEMATICAL_50_POOL.length];
-        document.getElementById('fc-counter-label').innerText = `Card ${currentCardIdx + 1} of ${MATHEMATICAL_50_POOL.length}`;
+        if (!currentDeckCards || currentDeckCards.length === 0) {
+            currentDeckCards = USER_DECKS[0].words;
+        }
+        const item = currentDeckCards[currentCardIdx % currentDeckCards.length];
+        document.getElementById('fc-counter-label').innerText = `Card ${currentCardIdx + 1} of ${currentDeckCards.length}`;
         document.getElementById('fc-word').innerText = item.word;
         document.getElementById('fc-meaning').innerText = item.meaning;
         document.getElementById('fc-example-kr').innerText = item.exampleKr || '';
@@ -778,37 +882,53 @@
         }
     }
 
-    function nextFlashcard() { currentCardIdx++; renderFlashcard(); }
-    function prevFlashcard() { if (currentCardIdx > 0) currentCardIdx--; renderFlashcard(); }
+    function nextFlashcard() { 
+        currentCardIdx++; 
+        renderFlashcard(); 
+        playCurrentAudio(); // Automatically pronounce on card roll!
+    }
+    function prevFlashcard() { 
+        if (currentCardIdx > 0) currentCardIdx--; 
+        renderFlashcard(); 
+        playCurrentAudio();
+    }
     function toggleStruggle() { document.getElementById('fc-struggle-btn').classList.toggle('active'); }
 
     // =========================================================
-    // EXERCISE ENGINE (AUTOMATIC WRONG MARKING & POSITIVE RATINGS)
+    // EXERCISE ENGINE (DYNAMIC CHOICES FROM DECK)
     // =========================================================
     function renderExercise() {
-        const item = EXERCISE_POOL[currentExerciseIdx % EXERCISE_POOL.length];
-        document.getElementById('ex-counter-label').innerText = `Exercise ${currentExerciseIdx + 1} of ${EXERCISE_POOL.length}`;
-        document.getElementById('ex-dir-label').innerText = item.dirLabel;
-        document.getElementById('ex-question-text').innerText = item.prompt;
-        document.getElementById('ex-subtext').innerText = item.subtext;
+        if (!currentDeckCards || currentDeckCards.length === 0) {
+            currentDeckCards = USER_DECKS[0].words;
+        }
+        const item = currentDeckCards[currentExerciseIdx % currentDeckCards.length];
+        document.getElementById('ex-counter-label').innerText = `Exercise ${currentExerciseIdx + 1} of ${currentDeckCards.length}`;
+        document.getElementById('ex-question-text').innerText = item.word;
+        document.getElementById('ex-subtext').innerText = 'Select the correct English definition:';
+
+        // Build 4 dynamic choices (1 correct + 3 random distractors)
+        const distractors = ['to cancel', 'to study', 'to arrive safely', 'to promise', 'to depart', 'to apologize', 'to love']
+            .filter(d => d !== item.meaning);
+        
+        const choices = [item.meaning, distractors[0], distractors[1], distractors[2]].sort(() => 0.5 - Math.random());
+        const correctIdx = choices.indexOf(item.meaning);
 
         const container = document.getElementById('ex-options-container');
         container.innerHTML = '';
-        item.options.forEach((opt, idx) => {
+        choices.forEach((opt, idx) => {
             const btn = document.createElement('button');
             btn.className = 'exercise-option-btn';
             btn.innerText = `${idx + 1}. ${opt}`;
-            btn.onclick = () => handleExerciseAnswer(idx, item.correct);
+            btn.onclick = () => handleExerciseAnswer(idx, correctIdx);
             container.appendChild(btn);
         });
 
-        // Hide both feedback panels until answer chosen
         document.getElementById('wrong-auto-banner').style.display = 'none';
         document.getElementById('correct-srs-panel').style.display = 'none';
 
         const emaFill = document.getElementById('ema-fill');
         const emaLabel = document.getElementById('ema-pct');
-        const pct = Math.round(item.mastery || 65);
+        const pct = Math.min(100, Math.round(60 + (currentExerciseIdx * 4)));
         emaFill.style.width = pct + '%';
         emaLabel.innerText = pct + '%';
         
@@ -824,13 +944,11 @@
         });
 
         if (selectedIdx === correctIdx) {
-            // Correct: increment streak and reveal 3 Positive SRS Rating buttons
             streakCount = Math.min(5, streakCount + 1);
             document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
             document.getElementById('wrong-auto-banner').style.display = 'none';
             document.getElementById('correct-srs-panel').style.display = 'flex';
         } else {
-            // Wrong: AUTOMATICALLY mark 'Again' in background (no rating buttons needed!)
             streakCount = 0;
             document.getElementById('graduation-streak-val').innerText = `0/5 (Reset on mistake)`;
             document.getElementById('correct-srs-panel').style.display = 'none';
@@ -838,18 +956,10 @@
         }
     }
 
-    function handleCorrectRating(grade) {
-        advanceToNextExercise();
-    }
-
+    function handleCorrectRating(grade) { advanceToNextExercise(); }
     function advanceToNextExercise() {
         currentExerciseIdx++;
         renderExercise();
-    }
-
-    function playCurrentAudio() {
-        const audio = new Audio('https://pub-3dd284d612d54977ac87b96e04f83efb.r2.dev/vocab-audio/ko/sample1.mp3');
-        audio.play().catch(() => {});
     }
 
     function renderWeeklyStrip(activity = []) {
@@ -874,13 +984,16 @@
     }
 
     const GLOBAL_DICTIONARY = [
-        { word: '예약하다', meaning: 'to reserve / make a reservation' },
-        { word: '취소하다', meaning: 'to cancel' },
-        { word: '출발하다', meaning: 'to depart / leave' },
-        { word: '도착하다', meaning: 'to arrive' },
-        { word: '배 (pear)', meaning: 'pear (fruit)' },
-        { word: '사과하다', meaning: 'to apologize' },
-        { word: '공부하다', meaning: 'to study' }
+        { word: '사랑', meaning: 'love' },
+        { word: '행복', meaning: 'happiness' },
+        { word: '친구', meaning: 'friend' },
+        { word: '학교', meaning: 'school' },
+        { word: '약속', meaning: 'appointment / promise' },
+        { word: '여행', meaning: 'travel / trip' },
+        { word: '바다', meaning: 'ocean / sea' },
+        { word: '하늘', meaning: 'sky' },
+        { word: '시간', meaning: 'time' },
+        { word: '마음', meaning: 'heart / mind' }
     ];
 
     function handleVocabSearch() {
@@ -891,14 +1004,15 @@
         results.forEach(item => {
             const row = document.createElement('div');
             row.className = 'search-result-item';
-            row.innerHTML = `<div><strong>${item.word}</strong><div style="font-size:0.82rem; color:var(--text-secondary);">${item.meaning}</div></div><button class="search-add-btn" onclick="alert('Added ${item.word} to deck!')">+ Add</button>`;
+            row.innerHTML = `<div><strong>${item.word}</strong><div style="font-size:0.82rem; color:var(--text-secondary);">${item.meaning}</div></div><button class="search-add-btn" onclick="addGlobalWordToDeck('${item.word}', '${item.meaning}')">+ Add</button>`;
             container.appendChild(row);
         });
     }
 
-    function submitImport() {
-        alert('🎉 Words imported successfully!');
-        closeImportModal();
+    function addGlobalWordToDeck(word, meaning) {
+        USER_DECKS[2].words.push({ word, meaning, exampleKr: `${word}을/를 좋아해요.`, exampleEn: `I like ${meaning}.` });
+        alert(`🎉 Added "${word}" to ${USER_DECKS[2].name}!`);
+        renderMyDecksList();
     }
 
     function executeClaimVKP() {
