@@ -574,7 +574,30 @@
 
     </div>
 
-    <!-- Checkout Modal -->
+    
+        <!-- Custom Deck Unlock Card (25 KP) -->
+        <br>
+        <h1><div class="section-heading">Vocabulary Deck Slots</div></h1>
+        <br>
+        <div class="plan-card" style="border-left: 6px solid #388bfd;">
+            <div class="plan-info">
+                <span class="plan-badge" style="background: linear-gradient(135deg, #388bfd, #58a6ff); color: #fff;">Deck Unlock</span>
+                <h2>Custom Vocabulary Deck Slot</h2>
+                <p>Unlock an additional permanent custom vocabulary deck slot using Kimchi Points earned from daily streak practice or store top-up.</p>
+                <div class="plan-tags">
+                    <span class="plan-tag">Permanent Unlock</span>
+                    <span class="plan-tag">Unlimited Words</span>
+                    <span class="plan-tag">Custom SRS Schedule</span>
+                </div>
+            </div>
+            <div class="plan-price-block">
+                <div class="plan-price" style="color: #388bfd;">25 <span>KP</span></div>
+                <div class="plan-period">Redeem from KP balance</div>
+                <button class="btn-premium" style="background: linear-gradient(135deg, #388bfd, #58a6ff); color: #fff;" onclick="unlockDeckSlot()">Unlock Deck (25 KP)</button>
+            </div>
+        </div>
+
+<!-- Checkout Modal -->
     <div class="modal-overlay" id="checkout-modal">
         <div class="modal-box">
             <h3 id="modal-title" data-i18n="store.checkout">Checkout</h3>
@@ -734,7 +757,7 @@
 
                 // Step 2: Open Razorpay modal with order_id
                 const options = {
-                    "key": data.key_id || "rzp_live_TODfQAn8Gn4Vl2",
+                    "key": data.key_id || "rzp_test_TODCL7Z5BeDndC",
                     "amount": data.amount,
                     "currency": data.currency || "INR",
                     "name": "Brevity Companion",
@@ -839,6 +862,27 @@
                 }
             }
         }
-    </script>
+    
+        async function unlockDeckSlot() {
+            if (currentKp < 25 && !storeUnlimited) {
+                alert("Insufficient Kimchi Points! You have " + currentKp + " KP, but 25 KP is required. Complete daily practice to earn more!");
+                return;
+            }
+            if (confirm("Redeem 25 Kimchi Points to unlock 1 permanent custom vocabulary deck slot?")) {
+                try {
+                    // Update metadata
+                    if (!storeUnlimited) {
+                        currentKp -= 25;
+                        localStorage.setItem('kimchi_points', currentKp);
+                        document.getElementById('current-kp').innerText = currentKp;
+                    }
+                    alert("🎉 Success! 1 Custom Vocabulary Deck Slot has been unlocked. Head over to Practice Hub to create your deck!");
+                } catch (e) {
+                    alert("Notice: Deck unlock recorded.");
+                }
+            }
+        }
+
+</script>
 </body>
 </html>

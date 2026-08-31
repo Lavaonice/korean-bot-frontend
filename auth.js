@@ -289,4 +289,34 @@ if (!window.__brevityAuthLoaded) {
     window.applyAdminFlag = applyAdminFlag;
     window.kpUnlimited = kpUnlimited;
     window.backendUrlFor = backendUrlFor;
+
+    /* -----------------------------------------------------------------
+       apiVocabFetch(endpoint, options)
+       Authenticated API client for Vocabulary System Core (v7.0).
+       Automatically attaches active Supabase JWT Bearer token.
+       ----------------------------------------------------------------- */
+    async function apiVocabFetch(endpoint, options = {}) {
+        const session = (await supabaseClient.auth.getSession()).data.session;
+        const token = session ? session.access_token : "";
+        const base = backendUrlFor("vocab") || "";
+        const url = endpoint.startsWith("http") ? endpoint : `${base}${endpoint}`;
+
+        const headers = {
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+        };
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(url, { ...options, headers });
+        if (res.status === 409) {
+            const conflictData = await res.json().catch(() => ({}));
+            window.dispatchEvent(new CustomEvent("brevity:session_conflict", { detail: conflictData }));
+        }
+        return res;
+    }
+
+    window.apiVocabFetch = apiVocabFetch;
+
 }

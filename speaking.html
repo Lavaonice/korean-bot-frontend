@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title data-i18n="dash.title">Brevity Companion - Master Learning Hub</title>
+<title data-i18n="speaking.title">Brevity Companion - Practice Speaking</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
@@ -34,10 +34,10 @@
 
     .container { width: 100%; max-width: 750px; background: var(--primary-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 40px; margin-left: 0; transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-    .top-bar { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .back-link { color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .back-link:hover { color: var(--text-primary); }
     .kp-badge { background: #FFF0F1; color: var(--kp-color); padding: 8px 15px; border-radius: 20px; font-weight: 700; border: 1px solid #FFD6D9; font-size: 0.9rem; display: inline-block; cursor: pointer; }
-    .bell-btn { position: relative; background: #fff; border: 1px solid var(--border-color); border-radius: 50%; width: 40px; height: 40px; font-size: 1.05rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--kp-color); color: #fff; font-size: 0.65rem; font-weight: 700; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
 
     .dashboard-header { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 24px; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 24px; }
     .title-text { text-align: left; flex: 1; min-width: 0; }
@@ -47,12 +47,12 @@
 
     .mode-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 25px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; transition: transform 0.2s, box-shadow 0.2s; background: #FFFFFF; }
     .mode-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-    .mode-info h3 { color: var(--accent-main); margin-bottom: 8px; font-size: 1.3rem; display: flex; align-items: center; gap: 8px; }
+    .mode-info h3 { color: var(--accent-main); margin-bottom: 8px; font-size: 1.3rem; }
     .mode-info p { color: #555; font-size: 1rem; line-height: 1.4; max-width: 450px; }
 
     .btn-play { background: var(--accent-main); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; margin-left: 15px; }
     .btn-play:hover { background: var(--accent-hover); }
-    .btn-play:disabled { background: #E1E1E1; color: #888; cursor: not-allowed; }
+    .btn-play:disabled { background: #ccc; cursor: not-allowed; }
 
     @media (max-width: 768px) {
         body { padding: 24px 14px; }
@@ -70,7 +70,6 @@
     <div class="sidebar-tab" onclick="toggleSidebar()"></div>
     <h2 style="padding: 0 25px 20px 25px; color: var(--kp-color);" data-i18n="menu">Menu</h2>
     <a href="dashboard.html" class="sidebar-link active">Learning Hub</a>
-    <a href="speaking.html" class="sidebar-link">Practice Speaking</a>
     <a href="vocab.html" class="sidebar-link">Vocabulary SRS Core</a>
     <a href="grimoire.html" class="sidebar-link" data-i18n="grimoire.title">Hanja Grimoire</a>
     <a href="store.html" class="sidebar-link" data-i18n="nav.store">Kimchi Points Store</a>
@@ -87,62 +86,60 @@
 
 <div class="container">
     <div class="top-bar">
+        <a href="dashboard.html" class="back-link">← Back to Hub</a>
         <a href="store.html" style="text-decoration:none;">
             <div class="kp-badge">🪙 <span id="kp-display">0</span> KP</div>
         </a>
-        <button class="bell-btn" onclick="alert('Noticeboard: All systems operational!')" aria-label="Notifications">🔔</button>
     </div>
 
     <div class="dashboard-header">
         <img src="https://pub-7ed39d8007834ea89e05df1ca891808c.r2.dev/tiger1.apng" alt="Brevity Mascot" class="mascot-gif" onerror="this.src='https://placehold.co/300x300?text=Mascot'">
         <div class="title-text">
             <h1>Brevity Companion</h1>
-            <p>Select your Korean learning modality</p>
+            <p>Practice Speaking — Select evaluation mode</p>
         </div>
     </div>
 
-    <!-- 1. Practice Speaking -->
     <div class="mode-card">
         <div class="mode-info">
-            <h3>🗣️ Practice Speaking</h3>
-            <p>Conversational Korean AI engines with speech recognition, oral feedback, and vocal synthesis.</p>
+            <h3>Casual Mode</h3>
+            <p>Relaxed practice, perfect for initial vocabulary familiarization and open conversation.</p>
         </div>
-        <button class="btn-play" onclick="window.location.href='speaking.html'">Choose Engine →</button>
+        <button class="btn-play session-btn" onclick="goTo('casual.html')">Enter (-10 KP)</button>
     </div>
 
-    <!-- 2. Practice Vocabulary (SRS Core) -->
-    <div class="mode-card" style="border-left: 4px solid #1F6FEB;">
-        <div class="mode-info">
-            <h3>🎴 Practice Vocabulary</h3>
-            <p>Spaced Repetition cognitive memory core, 10-card micro-batches, Blue Flame streak, and graduation.</p>
-        </div>
-        <button class="btn-play" style="background:#1F6FEB;" onclick="window.location.href='vocab.html'">Practice Vocab →</button>
-    </div>
-
-    <!-- 3. Practice Hanja -->
     <div class="mode-card">
         <div class="mode-info">
-            <h3>📜 Hanja Grimoire</h3>
-            <p>Master Sino-Korean roots, stroke order dynamics, and AI vision-judged canvas calligraphy.</p>
+            <h3>Practice Mode</h3>
+            <p>Structured drills and exercises based on specific textbook chapters.</p>
         </div>
-        <button class="btn-play" onclick="window.location.href='grimoire.html'">Open Grimoire →</button>
+        <button class="btn-play session-btn" onclick="goTo('practice.html')">Setup (-10 KP)</button>
     </div>
 
-    <!-- 4. Practice Reading (Coming Soon) -->
-    <div class="mode-card" style="opacity: 0.65;">
+    <div class="mode-card">
         <div class="mode-info">
-            <h3>📖 Practice Reading</h3>
-            <p>Contextual graded readers, authentic real-world Korean articles, and instant grammar breakdown.</p>
+            <h3>Viva Simulator</h3>
+            <p>A real-time oral exam spanning a custom cluster of chapters.</p>
         </div>
-        <button class="btn-play" disabled>Coming Soon</button>
+        <button class="btn-play session-btn" onclick="goTo('Viva.html')">Setup (-10 KP)</button>
     </div>
 </div>
 
 <script>
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
     const kpBalance = parseInt(localStorage.getItem('kimchi_points') || '50');
     const UNLIMITED = window.kpUnlimited && window.kpUnlimited();
     document.getElementById('kp-display').innerText = UNLIMITED ? '∞' : kpBalance;
+
+    function goTo(page) {
+        if (UNLIMITED || kpBalance >= 10) {
+            window.location.href = page;
+        } else {
+            alert('Not enough Kimchi Points! (10 KP required per session).');
+            window.location.href = 'store.html';
+        }
+    }
 </script>
 </body>
 </html>
