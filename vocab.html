@@ -632,38 +632,50 @@
     let currentSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
 
     async function logResearchTelemetry(data = {}) {
+        // Retrieve local profile demographic metadata
+        let profileMeta = {};
+        try {
+            profileMeta = JSON.parse(localStorage.getItem('brevity_profile') || '{}');
+        } catch (e) {}
+
         const payload = {
             session_id: currentSessionId,
             timestamp: new Date().toISOString(),
+            gender: profileMeta.gender || 'unspecified',
+            city_region: profileMeta.city || 'unspecified',
+            institute: profileMeta.institute || 'unspecified',
             ...data
         };
 
-        // 1. Save to localStorage research cache (guaranteed local retention)
+        // 1. Save to localStorage research cache
         try {
             const historyKey = 'brevity_research_exercise_logs';
             const existing = JSON.parse(localStorage.getItem(historyKey) || '[]');
             existing.push(payload);
-            // keep latest 500 records locally
             if (existing.length > 500) existing.shift();
             localStorage.setItem(historyKey, JSON.stringify(existing));
         } catch (e) {}
 
-        // 2. Transmit to Supabase user_exercise_history table if logged in
+        // 2. Transmit to Supabase with User ID and demographic cohort tags
         if (window.supabaseClient) {
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (session && session.user) {
+                    const meta = session.user.user_metadata || {};
+                    const userGender = meta.gender || profileMeta.gender || 'unspecified';
+                    const userCity = meta.city || profileMeta.city || 'unspecified';
+
                     await supabaseClient.from('user_exercise_history').insert([{
                         user_id: session.user.id,
                         direction: payload.direction || 'recognition',
-                        user_response: payload.user_answer || '',
+                        user_response: `${payload.user_answer} | gender:${userGender} | loc:${userCity}`,
                         is_correct: payload.is_correct === true,
                         response_time_ms: payload.response_time_ms || 0,
                         created_at: payload.timestamp
                     }]);
                 }
             } catch (err) {
-                // Background telemetry error notice
+                // Telemetry transmission error notice
             }
         }
     }
