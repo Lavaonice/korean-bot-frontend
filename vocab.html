@@ -168,7 +168,7 @@
     /* Modals */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 2000; backdrop-filter: blur(4px); }
     .modal-overlay.open { display: flex; }
-    .modal-box { background: #FFFFFF; border-radius: 12px; padding: 26px; width: 100%; max-width: 540px; box-shadow: 0 12px 36px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 16px; max-height: 90vh; overflow-y: auto; }
+    .modal-box { background: #FFFFFF; border-radius: 12px; padding: 26px; width: 100%; max-width: 580px; box-shadow: 0 12px 36px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 16px; max-height: 90vh; overflow-y: auto; }
     .modal-title { font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
     .modal-btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
     .modal-btn { padding: 10px 18px; border-radius: 6px; font-weight: 700; cursor: pointer; border: none; }
@@ -182,9 +182,20 @@
     .spinner { width: 44px; height: 44px; border: 4px solid #E1E1E1; border-top: 4px solid var(--sapphire-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .deck-item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; }
+    /* Deck list in modal */
+    .deck-item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; gap: 12px; }
     .deck-badge-free { font-size: 0.72rem; background: #E1E4E8; color: #444; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
     .deck-badge-custom { font-size: 0.72rem; background: rgba(31, 111, 235, 0.12); color: var(--sapphire-blue); padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+
+    /* Card item in Deck Editor */
+    .word-edit-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #FAFAFA; border: 1px solid var(--border-color); border-radius: 6px; }
+    .word-action-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 4px; border-radius: 4px; }
+    .word-action-btn:hover { background: #EAEAEA; }
+
+    /* Search Result Item */
+    .search-result-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
+    .search-add-btn { background: var(--sapphire-blue); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
+    .search-add-btn:hover { opacity: 0.9; }
 
     @media (max-width: 768px) {
         body { padding: 24px 14px; }
@@ -310,7 +321,7 @@
                     <span class="box-icon">📚</span>
                     <span class="box-title">My Decks</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">Inspect your 2 Common Decks + Custom Decks, rename them, and manage cards.</p>
+                <p class="box-desc" style="margin-top:6px;">Inspect your decks, edit & delete cards, rename decks, or launch practice.</p>
             </div>
             <button class="box-btn" id="my-decks-btn">Manage Decks</button>
         </div>
@@ -322,7 +333,7 @@
                     <span class="box-icon">🔍</span>
                     <span class="box-title">Search Vocab</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">Search 5,000+ canonical dictionary words and 1-tap add directly into any deck.</p>
+                <p class="box-desc" style="margin-top:6px;">Search 5,000+ canonical dictionary words and 1-tap add directly into any chosen deck.</p>
             </div>
             <button class="box-btn">Search Dictionary</button>
         </div>
@@ -445,13 +456,49 @@
     </div>
 </div>
 
-<!-- Modal: My Decks Manager (With Rename & Practice) -->
+<!-- Modal: My Decks Manager (With Edit Deck & Practice) -->
 <div class="modal-overlay" id="my-decks-modal">
     <div class="modal-box">
         <div class="modal-title"><span>📚</span> My Vocabulary Decks</div>
         <div style="display:flex; flex-direction:column; gap:10px;" id="my-decks-container"></div>
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeMyDecksModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Comprehensive Deck Editor Modal -->
+<div class="modal-overlay" id="deck-editor-modal">
+    <div class="modal-box">
+        <div class="modal-title">
+            <span>⚙️</span>
+            <span id="deck-editor-title">Edit Deck: Custom Deck 1</span>
+        </div>
+        
+        <div id="deck-rename-container" style="display:flex; gap:8px;">
+            <input type="text" class="form-input" id="deck-rename-input" placeholder="Deck Name">
+            <button class="modal-btn primary" style="white-space:nowrap;" onclick="saveDeckRename()">Save Name</button>
+        </div>
+
+        <div style="background:var(--secondary-bg); border:1px solid var(--border-color); border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+            <strong style="font-size:0.88rem;">+ Add Word to this Deck:</strong>
+            <div style="display:flex; gap:6px;">
+                <input type="text" class="form-input" id="editor-add-kr" placeholder="Korean (e.g. 바다)">
+                <input type="text" class="form-input" id="editor-add-en" placeholder="Meaning (e.g. ocean)">
+                <button class="modal-btn primary" style="padding:6px 14px; font-size:0.85rem;" onclick="addWordInEditor()">Add</button>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            <strong style="font-size:0.92rem;">Enrolled Words (<span id="editor-words-count">0</span>):</strong>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; max-height:240px; overflow-y:auto;" id="editor-words-list">
+            <!-- Rendered by JS -->
+        </div>
+
+        <div class="modal-btn-row">
+            <button class="modal-btn secondary" onclick="closeDeckEditor()">Done</button>
         </div>
     </div>
 </div>
@@ -480,7 +527,7 @@
         </div>
     </div>
 
-    <!-- Ingestion Loading Screen (Appears on submit) -->
+    <!-- Ingestion Loading Screen -->
     <div class="modal-box ingest-loading-box" id="ingest-loading-screen" style="display:none;">
         <div class="spinner"></div>
         <h3 style="font-size:1.2rem; font-weight:800;" id="ingest-status-title">Ingesting Vocabulary Words...</h3>
@@ -491,12 +538,16 @@
     </div>
 </div>
 
-<!-- Modal: Search Global Vocab Modal -->
+<!-- Modal: Search Global Vocab Modal (With Target Deck Selector) -->
 <div class="modal-overlay" id="search-vocab-modal">
     <div class="modal-box">
         <div class="modal-title"><span>🔍</span> Search Global Dictionary</div>
-        <input type="text" class="form-input" id="global-vocab-search-input" placeholder="Type Korean or English (e.g. 배, 예약, cancel)..." oninput="handleVocabSearch()">
-        <div class="search-results-list" id="search-results-container"></div>
+        <div style="display:flex; align-items:center; gap:8px; background:var(--secondary-bg); padding:10px 14px; border-radius:8px; border:1px solid var(--border-color);">
+            <label style="font-size:0.88rem; font-weight:700; white-space:nowrap;">🎯 Add Selected Words To:</label>
+            <select class="form-input" id="search-target-deck-select" style="background:#fff;"></select>
+        </div>
+        <input type="text" class="form-input" id="global-vocab-search-input" placeholder="Type Korean or English (e.g. 사랑, travel, 바다, appointment)..." oninput="handleVocabSearch()">
+        <div class="search-results-list" id="search-results-container" style="max-height:260px; overflow-y:auto;"></div>
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeSearchVocabModal()">Close</button>
         </div>
@@ -532,7 +583,7 @@
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function openClaimModal() { document.getElementById('claim-modal').classList.add('open'); }
     function openImportModal() { 
-        populateImportDeckDropdown();
+        populateDeckDropdowns();
         document.getElementById('import-modal-content').style.display = 'flex';
         document.getElementById('ingest-loading-screen').style.display = 'none';
         document.getElementById('import-modal').classList.add('open'); 
@@ -544,12 +595,17 @@
     }
     function closeMyDecksModal() { document.getElementById('my-decks-modal').classList.remove('open'); }
     function openSearchVocabModal() { 
+        populateDeckDropdowns();
         document.getElementById('search-vocab-modal').classList.add('open');
         handleVocabSearch();
     }
     function closeSearchVocabModal() { document.getElementById('search-vocab-modal').classList.remove('open'); }
     function openMonthModal() { document.getElementById('month-modal').classList.add('open'); }
     function closeDeckPicker() { document.getElementById('deck-picker-modal').classList.remove('open'); }
+    function closeDeckEditor() { 
+        document.getElementById('deck-editor-modal').classList.remove('open'); 
+        renderMyDecksList();
+    }
 
     // User Deck State with initial words
     const USER_DECKS = [
@@ -576,7 +632,10 @@
             id: 'custom_1', 
             name: 'Custom Deck 1', 
             type: 'custom',
-            words: []
+            words: [
+                { word: '사랑', meaning: 'love', exampleKr: '가족을 사랑해요.', exampleEn: 'I love my family.' },
+                { word: '행복', meaning: 'happiness', exampleKr: '항상 행복하세요.', exampleEn: 'Please always be happy.' }
+            ]
         },
         { 
             id: 'custom_2', 
@@ -595,9 +654,34 @@
     let pendingModeTarget = 'flashcard';
     let currentActiveDeck = USER_DECKS[0];
     let currentDeckCards = USER_DECKS[0].words;
+    let editingDeck = null;
     let currentCardIdx = 0;
     let currentExerciseIdx = 0;
     let streakCount = 3;
+
+    function populateDeckDropdowns() {
+        const importSelect = document.getElementById('import-target-deck');
+        const searchSelect = document.getElementById('search-target-deck-select');
+        
+        importSelect.innerHTML = '';
+        searchSelect.innerHTML = '';
+
+        USER_DECKS.forEach(deck => {
+            const count = deck.words ? deck.words.length : 0;
+            const opt1 = document.createElement('option');
+            opt1.value = deck.id;
+            opt1.innerText = `${deck.name} (${count} words)`;
+            importSelect.appendChild(opt1);
+
+            const opt2 = document.createElement('option');
+            opt2.value = deck.id;
+            opt2.innerText = `${deck.name} (${count} words)`;
+            searchSelect.appendChild(opt2);
+        });
+        
+        // Default search target to Custom Deck 1
+        if (USER_DECKS[2]) searchSelect.value = USER_DECKS[2].id;
+    }
 
     function openDeckPickerFor(mode) {
         pendingModeTarget = mode;
@@ -616,7 +700,7 @@
                 <strong style="font-size:0.95rem; color:var(--sapphire-blue);">🎯 Daily 50 Batch (Mathematically Scheduled)</strong>
                 <div style="font-size:0.8rem; color:var(--text-secondary);">Calculated across all due words by SRS forgetting curve formula</div>
             </div>
-            <button class="modal-btn primary" onclick="launchPlayerWithDeck({id:'srs50', name:'Daily 50 (Mathematically Scheduled)', words: USER_DECKS[0].words})">Launch</button>
+            <button class="modal-btn primary" onclick="launchPlayerWithDeck({id:'srs50', name:'Daily 50 (Mathematically Scheduled)', words: getAllWordsPool()})">Launch</button>
         `;
         container.appendChild(mathOption);
 
@@ -639,6 +723,12 @@
         });
 
         document.getElementById('deck-picker-modal').classList.add('open');
+    }
+
+    function getAllWordsPool() {
+        let all = [];
+        USER_DECKS.forEach(d => { if (d.words) all = all.concat(d.words); });
+        return all.length > 0 ? all : USER_DECKS[0].words;
     }
 
     function launchPlayerWithDeck(deck) {
@@ -671,6 +761,9 @@
         document.getElementById('player-section').style.display = 'none';
     }
 
+    // =========================================================
+    // MY DECKS MANAGER & FULL DECK EDITOR
+    // =========================================================
     function renderMyDecksList() {
         const container = document.getElementById('my-decks-container');
         container.innerHTML = '';
@@ -688,23 +781,116 @@
                     </div>
                     <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">${count} words enrolled</div>
                 </div>
-                <div style="display:flex; align-items:center; gap:6px;">
-                    ${!isCommon ? `<button class="modal-btn secondary" style="padding:6px 12px; font-size:0.82rem;" onclick="renameDeck('${deck.id}')">✏️ Rename</button>` : ''}
-                    <button class="modal-btn primary" style="padding:6px 14px; font-size:0.82rem;" onclick="launchPlayerWithDeck(${JSON.stringify(deck).replace(/"/g, '&quot;')}); closeMyDecksModal();">Practice</button>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                    <button class="modal-btn secondary" style="padding:6px 12px; font-size:0.82rem;" onclick="openDeckEditor('${deck.id}')">⚙️ Edit Deck</button>
+                    <button class="modal-btn primary" style="padding:6px 12px; font-size:0.82rem;" onclick="launchPlayerWithDeck(${JSON.stringify(deck).replace(/"/g, '&quot;')}); closeMyDecksModal();">Practice</button>
                 </div>
             `;
             container.appendChild(row);
         });
     }
 
-    function renameDeck(deckId) {
-        const deck = USER_DECKS.find(d => d.id === deckId);
-        if (!deck) return;
-        const newName = prompt(`Enter a new name for "${deck.name}":`, deck.name);
-        if (newName && newName.trim()) {
-            deck.name = newName.trim();
-            renderMyDecksList();
-            alert(`🎉 Renamed to "${deck.name}"!`);
+    function openDeckEditor(deckId) {
+        editingDeck = USER_DECKS.find(d => d.id === deckId);
+        if (!editingDeck) return;
+
+        closeMyDecksModal();
+        document.getElementById('deck-editor-title').innerText = `Manage: ${editingDeck.name}`;
+        
+        const renameContainer = document.getElementById('deck-rename-container');
+        if (editingDeck.type.startsWith('common')) {
+            renameContainer.style.display = 'none';
+        } else {
+            renameContainer.style.display = 'flex';
+            document.getElementById('deck-rename-input').value = editingDeck.name;
+        }
+
+        renderDeckEditorWords();
+        document.getElementById('deck-editor-modal').classList.add('open');
+    }
+
+    function saveDeckRename() {
+        if (!editingDeck) return;
+        const newName = document.getElementById('deck-rename-input').value.trim();
+        if (newName) {
+            editingDeck.name = newName;
+            document.getElementById('deck-editor-title').innerText = `Manage: ${editingDeck.name}`;
+            alert(`🎉 Renamed to "${newName}"!`);
+        }
+    }
+
+    function renderDeckEditorWords() {
+        if (!editingDeck) return;
+        const list = document.getElementById('editor-words-list');
+        list.innerHTML = '';
+
+        const words = editingDeck.words || [];
+        document.getElementById('editor-words-count').innerText = words.length;
+
+        if (words.length === 0) {
+            list.innerHTML = `<div style="text-align:center; color:#888; padding:20px; font-size:0.9rem;">No words in this deck yet. Use "+ Add Word" above or the Batch Importer!</div>`;
+            return;
+        }
+
+        words.forEach((item, idx) => {
+            const row = document.createElement('div');
+            row.className = 'word-edit-row';
+            row.innerHTML = `
+                <div>
+                    <strong style="font-size:1rem; color:var(--text-primary);">${item.word}</strong>
+                    <span style="color:var(--text-secondary); font-size:0.9rem; margin-left:6px;">— ${item.meaning}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <button class="word-action-btn" title="Edit Word" onclick="editSingleWord(${idx})">✏️</button>
+                    <button class="word-action-btn" title="Delete Word" onclick="deleteSingleWord(${idx})">🗑️</button>
+                </div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function addWordInEditor() {
+        if (!editingDeck) return;
+        const kr = document.getElementById('editor-add-kr').value.trim();
+        const en = document.getElementById('editor-add-en').value.trim();
+
+        if (!kr) {
+            alert('Please enter a Korean word.');
+            return;
+        }
+
+        if (!editingDeck.words) editingDeck.words = [];
+        editingDeck.words.unshift({
+            word: kr,
+            meaning: en || 'Korean vocabulary',
+            exampleKr: `${kr}을/를 공부하고 있어요.`,
+            exampleEn: `I am studying "${kr}".`
+        });
+
+        document.getElementById('editor-add-kr').value = '';
+        document.getElementById('editor-add-en').value = '';
+        renderDeckEditorWords();
+    }
+
+    function editSingleWord(idx) {
+        if (!editingDeck || !editingDeck.words[idx]) return;
+        const current = editingDeck.words[idx];
+        const newKr = prompt('Edit Korean word:', current.word);
+        if (newKr === null) return;
+        const newEn = prompt('Edit English meaning:', current.meaning);
+        if (newEn === null) return;
+
+        editingDeck.words[idx].word = newKr.trim() || current.word;
+        editingDeck.words[idx].meaning = newEn.trim() || current.meaning;
+        renderDeckEditorWords();
+    }
+
+    function deleteSingleWord(idx) {
+        if (!editingDeck || !editingDeck.words[idx]) return;
+        const wordName = editingDeck.words[idx].word;
+        if (confirm(`Remove "${wordName}" from ${editingDeck.name}?`)) {
+            editingDeck.words.splice(idx, 1);
+            renderDeckEditorWords();
         }
     }
 
@@ -723,6 +909,9 @@
                 <button class="modal-btn secondary" onclick="document.getElementById('create-deck-modal').classList.remove('open')">Cancel</button>
                 <button class="modal-btn primary" onclick="submitNewDeck(${customCount})">Create Deck</button>
             </div>
+            <div style="margin-top:14px; padding:12px; background:var(--secondary-bg); border-radius:8px; font-size:0.85rem; color:var(--text-secondary);">
+                Need more slots? Unlock <strong>Custom Deck Slots</strong> in the <a href="store.html" style="color:var(--kp-color); font-weight:bold;">Store for 25 KP</a>.
+            </div>
         `;
         document.getElementById('create-deck-modal').classList.add('open');
     }
@@ -734,17 +923,7 @@
         USER_DECKS.push({ id: newId, name: name, words: [], type: 'custom' });
         alert(`🎉 Created "${name}"!`);
         document.getElementById('create-deck-modal').classList.remove('open');
-    }
-
-    function populateImportDeckDropdown() {
-        const select = document.getElementById('import-target-deck');
-        select.innerHTML = '';
-        USER_DECKS.forEach(deck => {
-            const opt = document.createElement('option');
-            opt.value = deck.id;
-            opt.innerText = deck.name;
-            select.appendChild(opt);
-        });
+        populateDeckDropdowns();
     }
 
     // =========================================================
@@ -799,11 +978,9 @@
                 exampleEn: `I am studying "${korean}".`
             });
 
-            // Simulate smooth realistic ingestion pace
             await new Promise(r => setTimeout(r, 120));
         }
 
-        // Add into the target deck
         if (!targetDeck.words) targetDeck.words = [];
         targetDeck.words = [...targetDeck.words, ...newParsedWords];
 
@@ -814,26 +991,23 @@
         closeImportModal();
         document.getElementById('import-textarea').value = '';
 
-        // Automatically launch the player with the new words!
         pendingModeTarget = 'flashcard';
         launchPlayerWithDeck(targetDeck);
     }
 
     // =========================================================
-    // DUAL-LAYER KOREAN TTS AUDIO ENGINE (NATIVE + BACKEND)
+    // DUAL-LAYER KOREAN TTS AUDIO ENGINE
     // =========================================================
     function playCurrentAudio() {
         const item = currentDeckCards[currentCardIdx % currentDeckCards.length] || currentDeckCards[0];
         const koreanWord = item.word;
 
-        // 1. First try Native Web Speech API (Instant, authentic, zero delay)
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(koreanWord);
             utterance.lang = 'ko-KR';
             utterance.rate = 0.85;
             
-            // Look for a Korean voice
             const voices = window.speechSynthesis.getVoices();
             const koVoice = voices.find(v => v.lang.startsWith('ko') || v.name.includes('Korean'));
             if (koVoice) utterance.voice = koVoice;
@@ -841,7 +1015,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // 2. Also trigger backend Fish Audio synthesis fallback
         try {
             const audio = new Audio(`/api/v1/vocab/tts?text=${encodeURIComponent(koreanWord)}`);
             audio.play().catch(() => {});
@@ -885,7 +1058,7 @@
     function nextFlashcard() { 
         currentCardIdx++; 
         renderFlashcard(); 
-        playCurrentAudio(); // Automatically pronounce on card roll!
+        playCurrentAudio();
     }
     function prevFlashcard() { 
         if (currentCardIdx > 0) currentCardIdx--; 
@@ -906,8 +1079,7 @@
         document.getElementById('ex-question-text').innerText = item.word;
         document.getElementById('ex-subtext').innerText = 'Select the correct English definition:';
 
-        // Build 4 dynamic choices (1 correct + 3 random distractors)
-        const distractors = ['to cancel', 'to study', 'to arrive safely', 'to promise', 'to depart', 'to apologize', 'to love']
+        const distractors = ['to cancel', 'to study', 'to arrive safely', 'to promise', 'to depart', 'to apologize', 'to love', 'ocean / sea', 'happiness', 'friend']
             .filter(d => d !== item.meaning);
         
         const choices = [item.meaning, distractors[0], distractors[1], distractors[2]].sort(() => 0.5 - Math.random());
@@ -983,6 +1155,9 @@
         });
     }
 
+    // =========================================================
+    // SEARCH GLOBAL DICTIONARY (WITH TARGET DECK SELECTOR)
+    // =========================================================
     const GLOBAL_DICTIONARY = [
         { word: '사랑', meaning: 'love' },
         { word: '행복', meaning: 'happiness' },
@@ -993,7 +1168,12 @@
         { word: '바다', meaning: 'ocean / sea' },
         { word: '하늘', meaning: 'sky' },
         { word: '시간', meaning: 'time' },
-        { word: '마음', meaning: 'heart / mind' }
+        { word: '마음', meaning: 'heart / mind' },
+        { word: '시작', meaning: 'start / beginning' },
+        { word: '선물', meaning: 'gift / present' },
+        { word: '공부', meaning: 'study' },
+        { word: '음악', meaning: 'music' },
+        { word: '가족', meaning: 'family' }
     ];
 
     function handleVocabSearch() {
@@ -1004,15 +1184,32 @@
         results.forEach(item => {
             const row = document.createElement('div');
             row.className = 'search-result-item';
-            row.innerHTML = `<div><strong>${item.word}</strong><div style="font-size:0.82rem; color:var(--text-secondary);">${item.meaning}</div></div><button class="search-add-btn" onclick="addGlobalWordToDeck('${item.word}', '${item.meaning}')">+ Add</button>`;
+            row.innerHTML = `
+                <div>
+                    <strong style="font-size:1.05rem;">${item.word}</strong>
+                    <div style="font-size:0.85rem; color:var(--text-secondary);">${item.meaning}</div>
+                </div>
+                <button class="search-add-btn" onclick="addGlobalWordToChosenDeck('${item.word}', '${item.meaning}')">+ Add</button>
+            `;
             container.appendChild(row);
         });
     }
 
-    function addGlobalWordToDeck(word, meaning) {
-        USER_DECKS[2].words.push({ word, meaning, exampleKr: `${word}을/를 좋아해요.`, exampleEn: `I like ${meaning}.` });
-        alert(`🎉 Added "${word}" to ${USER_DECKS[2].name}!`);
-        renderMyDecksList();
+    function addGlobalWordToChosenDeck(word, meaning) {
+        const chosenDeckId = document.getElementById('search-target-deck-select').value;
+        const targetDeck = USER_DECKS.find(d => d.id === chosenDeckId) || USER_DECKS[2];
+
+        if (!targetDeck.words) targetDeck.words = [];
+        targetDeck.words.push({ 
+            word, 
+            meaning, 
+            exampleKr: `${word}을/를 좋아해요.`, 
+            exampleEn: `I like ${meaning}.` 
+        });
+
+        alert(`🎉 Added "${word} (${meaning})" to ${targetDeck.name}!
+(Total words in deck: ${targetDeck.words.length})`);
+        populateDeckDropdowns();
     }
 
     function executeClaimVKP() {
@@ -1023,6 +1220,7 @@
     window.addEventListener('DOMContentLoaded', () => {
         renderWeeklyStrip([]);
         renderMyDecksList();
+        populateDeckDropdowns();
     });
 </script>
 </body>
