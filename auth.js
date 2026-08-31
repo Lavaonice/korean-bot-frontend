@@ -231,14 +231,10 @@ if (!window.__brevityAuthLoaded) {
         let isAdmin = false;
         if (user) {
             const meta = user.user_metadata || {};
-            const email = (user.email || '').toLowerCase();
+            const email = (user.email || '').toLowerCase().trim();
             isAdmin = meta.is_admin === true ||
                       meta.is_admin === "true" ||
-                      meta.role === "admin" ||
-                      email === "brevitycompanion@gmail.com" ||
-                      email.includes("admin") ||
-                      email.startsWith("pratyush") ||
-                      email === "pratyushyadav2144@gmail.com";
+                      email === "brevitycompanion@gmail.com";
         } else {
             isAdmin = localStorage.getItem(ADMIN_FLAG_KEY) === "true";
         }
