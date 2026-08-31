@@ -237,7 +237,7 @@
         <a href="dashboard.html" class="back-link">← Learning Hub</a>
         <div class="top-right-group">
             <div class="streak-badge" onclick="openMonthModal()">
-                <img src="assets/ui/sapphire_flame.png" alt="Sapphire Flame" onerror="this.replaceWith('🔷🔥')">
+                <img src="assets/ui/sapphire_flame.png" alt="Sapphire Flame" style="width:20px; height:20px; object-fit:contain;">
                 <span id="streak-text">1 Day Streak</span>
             </div>
             <div class="vkp-badge" onclick="openClaimModal()">
@@ -564,7 +564,7 @@
             <span id="month-calendar-title">Habit Consistency (August 2026)</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.88rem; color:var(--text-secondary);">
-            <span>🔷🔥 Sapphire Blue Flame = Daily Session Done</span>
+            <span><img src="assets/ui/sapphire_flame.png" style="width:20px; height:20px; vertical-align:middle; object-fit:contain; margin-right:4px;"> Sapphire Blue Flame = Daily Session Active</span>
             <strong id="month-active-count" style="color:var(--sapphire-blue);">1 Day Active</strong>
         </div>
 
@@ -1377,6 +1377,8 @@
                 }
             } catch (e) {}
         }
+        // Login enables & maintains the daily streak!
+        recordTodayActivity();
         syncUserKP();
         updateStreakUI();
         renderMyDecksList();
