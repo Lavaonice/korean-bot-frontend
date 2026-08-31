@@ -420,13 +420,28 @@
 
             <div class="exercise-header-row">
                 <span class="exercise-dir-badge" id="ex-dir-label">Direction: 1. Recognition (Korean ➔ English)</span>
-                <span class="card-counter-tag" id="ex-counter-label">Exercise 1 of 50</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button type="button" id="hud-format-toggle-btn" onclick="toggleInputFormat()" style="background:var(--secondary-bg); border:1px solid var(--border-color); border-radius:6px; padding:4px 10px; font-size:0.8rem; font-weight:700; cursor:pointer; color:var(--text-secondary);">
+                        🔘 MCQ (Switch to ⌨️ Type)
+                    </button>
+                    <span class="card-counter-tag" id="ex-counter-label">Exercise 1 of 50</span>
+                </div>
             </div>
 
             <div class="exercise-question" id="ex-question-text">예약하다</div>
             <div class="exercise-subtext" id="ex-subtext">Select the correct English definition:</div>
 
+            <!-- 1. Multiple Choice Grid (When MCQ is ON) -->
             <div class="exercise-options-grid" id="ex-options-container"></div>
+
+            <!-- 2. Active Typing Box (When MCQ is OFF) -->
+            <div id="ex-typing-container" style="display:none; flex-direction:column; gap:10px; width:100%;">
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="ex-typing-input" class="form-input" placeholder="Type your answer in Korean or English..." style="font-size:1.1rem; padding:14px 16px; border-radius:8px;" onkeydown="handleTypingKeyDown(event)">
+                    <button class="modal-btn primary" style="padding:12px 24px; font-size:1rem; font-weight:700; white-space:nowrap;" onclick="submitTypingAnswer()">Submit ⏎</button>
+                </div>
+                <div id="typing-answer-feedback" style="display:none; padding:10px 14px; border-radius:6px; font-size:0.92rem; font-weight:700;"></div>
+            </div>
 
             <!-- WRONG ANSWER: AUTOMATIC 'AGAIN' ZERO-CLUTTER BANNER -->
             <div class="wrong-auto-banner" id="wrong-auto-banner">
@@ -476,14 +491,28 @@
         <div class="modal-title"><span id="picker-modal-icon">🎴</span> Select Deck &amp; Exercise Modality</div>
         
         <!-- Exercise Mode Selector (Only shown for Exercise Practice) -->
-        <div id="exercise-mode-selector-panel" style="display:none; background:var(--secondary-bg); border:1px solid var(--border-color); border-radius:8px; padding:14px; flex-direction:column; gap:8px;">
-            <label style="font-size:0.88rem; font-weight:700; color:var(--accent-main);">🎯 Select Exercise Type:</label>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px;">
-                <button type="button" class="mode-pill-btn active" id="pill-mix" onclick="setExerciseSubMode('mix')">🎲 Smart Mix</button>
-                <button type="button" class="mode-pill-btn" id="pill-ko-en" onclick="setExerciseSubMode('ko_to_en')">🇰🇷➔🇬🇧 Ko➔En</button>
-                <button type="button" class="mode-pill-btn" id="pill-en-ko" onclick="setExerciseSubMode('en_to_ko')">🇬🇧➔🇰🇷 En➔Ko</button>
-                <button type="button" class="mode-pill-btn" id="pill-audio" onclick="setExerciseSubMode('audio_drill')">🔊 Audio Drill</button>
-                <button type="button" class="mode-pill-btn" id="pill-context" onclick="setExerciseSubMode('context_cloze')">📝 Context Cloze</button>
+        <div id="exercise-mode-selector-panel" style="display:none; background:var(--secondary-bg); border:1px solid var(--border-color); border-radius:8px; padding:14px; flex-direction:column; gap:12px;">
+            <div>
+                <label style="font-size:0.88rem; font-weight:700; color:var(--accent-main);">🎯 Select Exercise Type:</label>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:6px; margin-top:6px;">
+                    <button type="button" class="mode-pill-btn active" id="pill-mix" onclick="setExerciseSubMode('mix')">🎲 Smart Mix</button>
+                    <button type="button" class="mode-pill-btn" id="pill-ko-en" onclick="setExerciseSubMode('ko_to_en')">🇰🇷➔🇬🇧 Ko➔En</button>
+                    <button type="button" class="mode-pill-btn" id="pill-en-ko" onclick="setExerciseSubMode('en_to_ko')">🇬🇧➔🇰🇷 En➔Ko</button>
+                    <button type="button" class="mode-pill-btn" id="pill-audio" onclick="setExerciseSubMode('audio_drill')">🔊 Audio Drill</button>
+                    <button type="button" class="mode-pill-btn" id="pill-context" onclick="setExerciseSubMode('context_cloze')">📝 Context Cloze</button>
+                </div>
+            </div>
+
+            <!-- MCQ vs Typing Toggle -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px;">
+                <div>
+                    <strong style="font-size:0.88rem; color:var(--text-primary);">Response Format:</strong>
+                    <div style="font-size:0.78rem; color:var(--text-secondary);" id="format-hint-text">Choose between 4-choice buttons or active typing</div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button type="button" class="mode-pill-btn active" id="format-mcq-btn" onclick="setInputFormat('mcq')">🔘 MCQ Mode</button>
+                    <button type="button" class="mode-pill-btn" id="format-typing-btn" onclick="setInputFormat('typing')">⌨️ Typing Mode</button>
+                </div>
             </div>
         </div>
 
@@ -1361,6 +1390,121 @@
     // =========================================================
     // EXERCISE ENGINE (DYNAMIC CHOICES FROM DECK)
     // =========================================================
+
+    let isMcqMode = true; // true = 4-choice buttons, false = text typing
+
+    function setInputFormat(format) {
+        isMcqMode = (format === 'mcq');
+        const mcqBtn = document.getElementById('format-mcq-btn');
+        const typeBtn = document.getElementById('format-typing-btn');
+        if (mcqBtn && typeBtn) {
+            if (isMcqMode) {
+                mcqBtn.classList.add('active');
+                typeBtn.classList.remove('active');
+            } else {
+                mcqBtn.classList.remove('active');
+                typeBtn.classList.add('active');
+            }
+        }
+        updateHudFormatButton();
+    }
+
+    function toggleInputFormat() {
+        isMcqMode = !isMcqMode;
+        setInputFormat(isMcqMode ? 'mcq' : 'typing');
+        renderExercise();
+    }
+
+    function updateHudFormatButton() {
+        const btn = document.getElementById('hud-format-toggle-btn');
+        if (btn) {
+            btn.innerHTML = isMcqMode ? '🔘 MCQ (Switch to ⌨️ Type)' : '⌨️ Typing (Switch to 🔘 MCQ)';
+        }
+    }
+
+    function handleTypingKeyDown(event) {
+        if (event.key === 'Enter') {
+            submitTypingAnswer();
+        }
+    }
+
+    function normalizeTextForEval(text = '') {
+        return text.toLowerCase()
+            .replace(/^(to\s+|a\s+|an\s+|the\s+)/gi, '')
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function submitTypingAnswer() {
+        const inputEl = document.getElementById('ex-typing-input');
+        const feedbackEl = document.getElementById('typing-answer-feedback');
+        const userTyped = (inputEl.value || '').trim();
+
+        if (!userTyped) {
+            inputEl.focus();
+            return;
+        }
+
+        const item = currentDeckCards[currentExerciseIdx % currentDeckCards.length];
+        const responseTimeMs = Date.now() - questionStartTime;
+        let isCorrect = false;
+        let expectedAnswer = '';
+
+        if (activeDirection === 'ko_to_en' || activeDirection === 'audio_drill') {
+            expectedAnswer = item.meaning;
+            // Check against all synonyms in the meaning string (e.g. "to reserve / make a reservation" -> ["reserve", "make a reservation"])
+            const allowedSynonyms = item.meaning.split(/[\/,;]/).map(s => normalizeTextForEval(s));
+            const userNorm = normalizeTextForEval(userTyped);
+            isCorrect = allowedSynonyms.some(syn => syn === userNorm || userNorm.includes(syn) || syn.includes(userNorm));
+        } else {
+            // English to Korean or Context Sentence
+            expectedAnswer = item.word;
+            isCorrect = (normalizeTextForEval(userTyped) === normalizeTextForEval(item.word));
+        }
+
+        inputEl.disabled = true;
+
+        // Log telemetry
+        logResearchTelemetry({
+            word: item.word || '',
+            meaning: item.meaning || '',
+            direction: activeDirection,
+            input_mode: 'typing',
+            is_correct: isCorrect,
+            user_answer: userTyped,
+            correct_answer: expectedAnswer,
+            response_time_ms: responseTimeMs,
+            grade: isCorrect ? 'good' : 'again'
+        });
+
+        if (isCorrect) {
+            feedbackEl.style.display = 'block';
+            feedbackEl.style.background = '#F0FFF4';
+            feedbackEl.style.color = 'var(--success-green)';
+            feedbackEl.style.border = '1px solid var(--success-green)';
+            feedbackEl.innerHTML = `✅ Perfect! "${userTyped}" matches "${expectedAnswer}"`;
+
+            streakCount = Math.min(5, streakCount + 1);
+            document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
+            document.getElementById('wrong-auto-banner').style.display = 'none';
+            document.getElementById('correct-srs-panel').style.display = 'flex';
+            recordTodayActivity();
+        } else {
+            feedbackEl.style.display = 'block';
+            feedbackEl.style.background = '#FFF0F1';
+            feedbackEl.style.color = 'var(--kp-color)';
+            feedbackEl.style.border = '1px solid var(--kp-color)';
+            feedbackEl.innerHTML = `❌ You typed: "${userTyped}" — Correct answer: <strong>"${expectedAnswer}"</strong>`;
+
+            streakCount = 0;
+            document.getElementById('graduation-streak-val').innerText = `0/5 (Reset on mistake)`;
+            document.getElementById('correct-srs-panel').style.display = 'none';
+            document.getElementById('wrong-auto-banner').style.display = 'flex';
+        }
+    }
+
+
     let activeDirection = 'ko_to_en';
 
     function renderExercise() {
@@ -1446,15 +1590,37 @@
             correctIdx = choices.indexOf(item.word);
         }
 
-        const container = document.getElementById('ex-options-container');
-        container.innerHTML = '';
-        choices.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'exercise-option-btn';
-            btn.innerText = `${idx + 1}. ${opt}`;
-            btn.onclick = () => handleExerciseAnswer(idx, correctIdx, choices, item, activeDirection);
-            container.appendChild(btn);
-        });
+        updateHudFormatButton();
+        const mcqContainer = document.getElementById('ex-options-container');
+        const typeContainer = document.getElementById('ex-typing-container');
+        const typingInput = document.getElementById('ex-typing-input');
+        const typingFeedback = document.getElementById('typing-answer-feedback');
+
+        if (isMcqMode) {
+            mcqContainer.style.display = 'grid';
+            typeContainer.style.display = 'none';
+            mcqContainer.innerHTML = '';
+            choices.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'exercise-option-btn';
+                btn.innerText = `${idx + 1}. ${opt}`;
+                btn.onclick = () => handleExerciseAnswer(idx, correctIdx, choices, item, activeDirection);
+                mcqContainer.appendChild(btn);
+            });
+        } else {
+            mcqContainer.style.display = 'none';
+            typeContainer.style.display = 'flex';
+            typingInput.disabled = false;
+            typingInput.value = '';
+            typingFeedback.style.display = 'none';
+            
+            if (activeDirection === 'en_to_ko' || activeDirection === 'context_cloze') {
+                typingInput.placeholder = 'Type the Korean word (e.g. ' + item.word + ')...';
+            } else {
+                typingInput.placeholder = 'Type the English meaning (e.g. ' + item.meaning.split('/')[0].trim() + ')...';
+            }
+            setTimeout(() => typingInput.focus(), 150);
+        }
 
         document.getElementById('wrong-auto-banner').style.display = 'none';
         document.getElementById('correct-srs-panel').style.display = 'none';
