@@ -624,6 +624,50 @@
         renderMyDecksList();
     }
 
+
+    // =========================================================
+    // RESEARCH DATA TELEMETRY (ACADEMIC LOGGING ENGINE)
+    // =========================================================
+    let questionStartTime = Date.now();
+    let currentSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+
+    async function logResearchTelemetry(data = {}) {
+        const payload = {
+            session_id: currentSessionId,
+            timestamp: new Date().toISOString(),
+            ...data
+        };
+
+        // 1. Save to localStorage research cache (guaranteed local retention)
+        try {
+            const historyKey = 'brevity_research_exercise_logs';
+            const existing = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            existing.push(payload);
+            // keep latest 500 records locally
+            if (existing.length > 500) existing.shift();
+            localStorage.setItem(historyKey, JSON.stringify(existing));
+        } catch (e) {}
+
+        // 2. Transmit to Supabase user_exercise_history table if logged in
+        if (window.supabaseClient) {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session && session.user) {
+                    await supabaseClient.from('user_exercise_history').insert([{
+                        user_id: session.user.id,
+                        direction: payload.direction || 'recognition',
+                        user_response: payload.user_answer || '',
+                        is_correct: payload.is_correct === true,
+                        response_time_ms: payload.response_time_ms || 0,
+                        created_at: payload.timestamp
+                    }]);
+                }
+            } catch (err) {
+                // Background telemetry error notice
+            }
+        }
+    }
+
     // =========================================================
     // USER AUTH & ADMIN INFINITE KP SYNC
     // =========================================================
@@ -1250,6 +1294,7 @@
     // EXERCISE ENGINE (DYNAMIC CHOICES FROM DECK)
     // =========================================================
     function renderExercise() {
+        questionStartTime = Date.now(); // Start timer for latency calculation
         if (!currentDeckCards || currentDeckCards.length === 0) {
             currentDeckCards = USER_DECKS[0].words;
         }
@@ -1270,7 +1315,7 @@
             const btn = document.createElement('button');
             btn.className = 'exercise-option-btn';
             btn.innerText = `${idx + 1}. ${opt}`;
-            btn.onclick = () => handleExerciseAnswer(idx, correctIdx);
+            btn.onclick = () => handleExerciseAnswer(idx, correctIdx, choices, item);
             container.appendChild(btn);
         });
 
@@ -1286,7 +1331,12 @@
         document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
     }
 
-    function handleExerciseAnswer(selectedIdx, correctIdx) {
+    function handleExerciseAnswer(selectedIdx, correctIdx, choices = [], item = {}) {
+        const responseTimeMs = Date.now() - questionStartTime;
+        const isCorrect = (selectedIdx === correctIdx);
+        const userChoice = choices[selectedIdx] || '';
+        const correctChoice = choices[correctIdx] || item.meaning || '';
+
         const buttons = document.querySelectorAll('.exercise-option-btn');
         buttons.forEach((btn, idx) => {
             btn.disabled = true;
@@ -1294,7 +1344,19 @@
             else if (idx === selectedIdx) btn.classList.add('wrong');
         });
 
-        if (selectedIdx === correctIdx) {
+        // 📊 Log rich telemetry for research paper
+        logResearchTelemetry({
+            word: item.word || '',
+            meaning: item.meaning || '',
+            direction: 'recognition',
+            is_correct: isCorrect,
+            user_answer: userChoice,
+            correct_answer: correctChoice,
+            response_time_ms: responseTimeMs,
+            grade: isCorrect ? 'good' : 'again'
+        });
+
+        if (isCorrect) {
             streakCount = Math.min(5, streakCount + 1);
             document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
             document.getElementById('wrong-auto-banner').style.display = 'none';
