@@ -209,6 +209,28 @@
         .dashboard-header { gap: 14px; }
         .mascot-gif { width: 110px; }
     }
+
+    .mode-pill-btn {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        background: #FFFFFF;
+        font-size: 0.82rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+        text-align: center;
+        color: var(--text-primary);
+    }
+    .mode-pill-btn:hover {
+        border-color: var(--sapphire-blue);
+    }
+    .mode-pill-btn.active {
+        background: var(--sapphire-blue);
+        color: #FFFFFF;
+        border-color: var(--sapphire-blue);
+    }
+
 </style>
 </head>
 <body>
@@ -451,8 +473,21 @@
 <!-- Modal: Deck Picker Modal for Flashcard / Exercise Launch -->
 <div class="modal-overlay" id="deck-picker-modal">
     <div class="modal-box">
-        <div class="modal-title"><span id="picker-modal-icon">🎴</span> Select Deck to Practice</div>
-        <p style="font-size:0.88rem; color:var(--text-secondary);">Choose which vocabulary pool you want to practice:</p>
+        <div class="modal-title"><span id="picker-modal-icon">🎴</span> Select Deck &amp; Exercise Modality</div>
+        
+        <!-- Exercise Mode Selector (Only shown for Exercise Practice) -->
+        <div id="exercise-mode-selector-panel" style="display:none; background:var(--secondary-bg); border:1px solid var(--border-color); border-radius:8px; padding:14px; flex-direction:column; gap:8px;">
+            <label style="font-size:0.88rem; font-weight:700; color:var(--accent-main);">🎯 Select Exercise Type:</label>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:6px;">
+                <button type="button" class="mode-pill-btn active" id="pill-mix" onclick="setExerciseSubMode('mix')">🎲 Smart Mix</button>
+                <button type="button" class="mode-pill-btn" id="pill-ko-en" onclick="setExerciseSubMode('ko_to_en')">🇰🇷➔🇬🇧 Ko➔En</button>
+                <button type="button" class="mode-pill-btn" id="pill-en-ko" onclick="setExerciseSubMode('en_to_ko')">🇬🇧➔🇰🇷 En➔Ko</button>
+                <button type="button" class="mode-pill-btn" id="pill-audio" onclick="setExerciseSubMode('audio_drill')">🔊 Audio Drill</button>
+                <button type="button" class="mode-pill-btn" id="pill-context" onclick="setExerciseSubMode('context_cloze')">📝 Context Cloze</button>
+            </div>
+        </div>
+
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin-top:4px;">Choose which vocabulary pool to practice:</p>
         <div style="display:flex; flex-direction:column; gap:10px;" id="deck-picker-list"></div>
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeDeckPicker()">Cancel</button>
@@ -918,11 +953,32 @@
         if (USER_DECKS[2]) searchSelect.value = USER_DECKS[2].id;
     }
 
+    let selectedExerciseType = 'mix'; // 'mix' | 'ko_to_en' | 'en_to_ko' | 'audio_drill' | 'context_cloze'
+
+    function setExerciseSubMode(type) {
+        selectedExerciseType = type;
+        const pills = ['mix', 'ko_to_en', 'en_to_ko', 'audio_drill', 'context_cloze'];
+        pills.forEach(p => {
+            const el = document.getElementById('pill-' + (p === 'ko_to_en' ? 'ko-en' : p === 'en_to_ko' ? 'en-ko' : p === 'audio_drill' ? 'audio' : p === 'context_cloze' ? 'context' : 'mix'));
+            if (el) {
+                if (p === type) el.classList.add('active');
+                else el.classList.remove('active');
+            }
+        });
+    }
+
     function openDeckPickerFor(mode) {
         pendingModeTarget = mode;
         const icon = mode === 'flashcard' ? '🎴' : '✍️';
         document.getElementById('picker-modal-icon').innerText = icon;
         
+        const modeSelector = document.getElementById('exercise-mode-selector-panel');
+        if (mode === 'exercise') {
+            modeSelector.style.display = 'flex';
+        } else {
+            modeSelector.style.display = 'none';
+        }
+
         const container = document.getElementById('deck-picker-list');
         container.innerHTML = '';
 
@@ -1305,6 +1361,8 @@
     // =========================================================
     // EXERCISE ENGINE (DYNAMIC CHOICES FROM DECK)
     // =========================================================
+    let activeDirection = 'ko_to_en';
+
     function renderExercise() {
         questionStartTime = Date.now(); // Start timer for latency calculation
         if (!currentDeckCards || currentDeckCards.length === 0) {
@@ -1312,14 +1370,81 @@
         }
         const item = currentDeckCards[currentExerciseIdx % currentDeckCards.length];
         document.getElementById('ex-counter-label').innerText = `Exercise ${currentExerciseIdx + 1} of ${currentDeckCards.length}`;
-        document.getElementById('ex-question-text').innerText = item.word;
-        document.getElementById('ex-subtext').innerText = 'Select the correct English definition:';
 
-        const distractors = ['to cancel', 'to study', 'to arrive safely', 'to promise', 'to depart', 'to apologize', 'to love', 'ocean / sea', 'happiness', 'friend']
-            .filter(d => d !== item.meaning);
-        
-        const choices = [item.meaning, distractors[0], distractors[1], distractors[2]].sort(() => 0.5 - Math.random());
-        const correctIdx = choices.indexOf(item.meaning);
+        // Determine direction based on user's selected mode
+        if (selectedExerciseType === 'mix') {
+            const allModes = ['ko_to_en', 'en_to_ko', 'audio_drill', 'context_cloze'];
+            activeDirection = allModes[currentExerciseIdx % allModes.length];
+        } else {
+            activeDirection = selectedExerciseType;
+        }
+
+        const dirLabel = document.getElementById('ex-dir-label');
+        const questionText = document.getElementById('ex-question-text');
+        const subtext = document.getElementById('ex-subtext');
+        let choices = [];
+        let correctIdx = 0;
+
+        // Get pool of Korean words & English meanings for dynamic distractors
+        const poolWords = getAllWordsPool();
+        const koreanDistractors = poolWords.map(w => w.word).filter(w => w !== item.word);
+        const englishDistractors = poolWords.map(w => w.meaning).filter(m => m !== item.meaning);
+
+        if (activeDirection === 'ko_to_en') {
+            // Mode 1: Korean -> English
+            dirLabel.innerText = 'Direction: 1. 🇰🇷➔🇬🇧 Recognition (Korean ➔ English)';
+            questionText.innerHTML = `<span style="font-size:2.8rem;">${item.word}</span>`;
+            subtext.innerText = 'Select the correct English definition:';
+            
+            const distract = englishDistractors.length >= 3 ? englishDistractors : ['to cancel', 'to study', 'to depart', 'happiness'];
+            choices = [item.meaning, distract[0], distract[1], distract[2]].sort(() => 0.5 - Math.random());
+            correctIdx = choices.indexOf(item.meaning);
+
+        } else if (activeDirection === 'en_to_ko') {
+            // Mode 2: English -> Korean (Production / Vice Versa)
+            dirLabel.innerText = 'Direction: 2. 🇬🇧➔🇰🇷 Production (English ➔ Korean)';
+            questionText.innerHTML = `<span style="font-size:2.2rem; color:var(--text-primary);">${item.meaning}</span>`;
+            subtext.innerText = 'Select the matching Korean word:';
+
+            const distract = koreanDistractors.length >= 3 ? koreanDistractors : ['취소하다', '출발하다', '도착하다', '사랑'];
+            choices = [item.word, distract[0], distract[1], distract[2]].sort(() => 0.5 - Math.random());
+            correctIdx = choices.indexOf(item.word);
+
+        } else if (activeDirection === 'audio_drill') {
+            // Mode 3: Audio Pronunciation Drill
+            dirLabel.innerText = 'Direction: 3. 🔊 Audio Listening Drill';
+            questionText.innerHTML = `
+                <button onclick="playCurrentAudioWord('${item.word}')" style="background:rgba(31,111,235,0.08); border:2px solid var(--sapphire-blue); color:var(--sapphire-blue); padding:12px 26px; border-radius:30px; font-size:1.15rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                    <span>🔊</span> <span>Listen / Replay Spoken Word</span>
+                </button>
+            `;
+            subtext.innerText = 'Listen to the spoken audio and identify the meaning:';
+            
+            // Auto play audio on question reveal
+            playCurrentAudioWord(item.word);
+
+            const distract = englishDistractors.length >= 3 ? englishDistractors : ['to cancel', 'to study', 'to depart', 'happiness'];
+            choices = [item.meaning, distract[0], distract[1], distract[2]].sort(() => 0.5 - Math.random());
+            correctIdx = choices.indexOf(item.meaning);
+
+        } else if (activeDirection === 'context_cloze') {
+            // Mode 4: Context / Sentence Exercise
+            dirLabel.innerText = 'Direction: 4. 📝 Context Sentence Exercise';
+            
+            let clozeSentence = item.exampleKr || `${item.word}을/를 공부해요.`;
+            if (clozeSentence.includes(item.word)) {
+                clozeSentence = clozeSentence.replace(item.word, '<span style="color:var(--sapphire-blue); border-bottom:2px dashed var(--sapphire-blue); padding:0 6px;">[ ? ]</span>');
+            } else {
+                clozeSentence = `[ ? ] — "${item.exampleEn || item.meaning}"`;
+            }
+
+            questionText.innerHTML = `<div style="font-size:1.8rem; font-weight:700;">${clozeSentence}</div>`;
+            subtext.innerHTML = `Fill in the missing word (Meaning: <em>"${item.meaning}"</em>):`;
+
+            const distract = koreanDistractors.length >= 3 ? koreanDistractors : ['취소하다', '출발하다', '도착하다', '사랑'];
+            choices = [item.word, distract[0], distract[1], distract[2]].sort(() => 0.5 - Math.random());
+            correctIdx = choices.indexOf(item.word);
+        }
 
         const container = document.getElementById('ex-options-container');
         container.innerHTML = '';
@@ -1327,7 +1452,7 @@
             const btn = document.createElement('button');
             btn.className = 'exercise-option-btn';
             btn.innerText = `${idx + 1}. ${opt}`;
-            btn.onclick = () => handleExerciseAnswer(idx, correctIdx, choices, item);
+            btn.onclick = () => handleExerciseAnswer(idx, correctIdx, choices, item, activeDirection);
             container.appendChild(btn);
         });
 
@@ -1343,7 +1468,25 @@
         document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
     }
 
-    function handleExerciseAnswer(selectedIdx, correctIdx, choices = [], item = {}) {
+    function playCurrentAudioWord(word) {
+        if (!word) return;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'ko-KR';
+            utterance.rate = 0.85;
+            const voices = window.speechSynthesis.getVoices();
+            const koVoice = voices.find(v => v.lang.startsWith('ko') || v.name.includes('Korean'));
+            if (koVoice) utterance.voice = koVoice;
+            window.speechSynthesis.speak(utterance);
+        }
+        try {
+            const audio = new Audio(`/api/v1/vocab/tts?text=${encodeURIComponent(word)}`);
+            audio.play().catch(() => {});
+        } catch (e) {}
+    }
+
+    function handleExerciseAnswer(selectedIdx, correctIdx, choices = [], item = {}, direction = 'recognition') {
         const responseTimeMs = Date.now() - questionStartTime;
         const isCorrect = (selectedIdx === correctIdx);
         const userChoice = choices[selectedIdx] || '';
@@ -1360,7 +1503,7 @@
         logResearchTelemetry({
             word: item.word || '',
             meaning: item.meaning || '',
-            direction: 'recognition',
+            direction: direction,
             is_correct: isCorrect,
             user_answer: userChoice,
             correct_answer: correctChoice,
