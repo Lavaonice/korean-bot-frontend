@@ -8,6 +8,7 @@
 <script src="theme.js"></script>
 <script src="i18n.js"></script>
 <script src="auth.js"></script>
+<script src="canonical_curricula.js"></script>
 <script>
     // Auth gate — protected page
     requireAuth();
@@ -719,31 +720,33 @@
 
     let USER_DECKS = [];
 
-    function loadUserDecksFromStorage() {
+        function loadUserDecksFromStorage() {
+        const baseCurricula = (window.BREVITY_CANONICAL_DECKS && window.BREVITY_CANONICAL_DECKS.length > 0)
+            ? window.BREVITY_CANONICAL_DECKS
+            : CANONICAL_GLOBAL_DECKS;
+
         try {
             const raw = localStorage.getItem(DECKS_STORAGE_KEY);
             if (raw) {
                 const stored = JSON.parse(raw);
-                // Merge: keep canonical decks up to date, retain user-created & weak decks
-                const canonicalIds = new Set(CANONICAL_GLOBAL_DECKS.map(d => d.id));
+                const canonicalIds = new Set(baseCurricula.map(d => d.id));
                 const userCustomDecks = stored.filter(d => !canonicalIds.has(d.id));
-                // Find custom weak deck if user added words to it
                 const storedWeak = stored.find(d => d.id === 'weak');
-                USER_DECKS = CANONICAL_GLOBAL_DECKS.map(cd => {
-                    if (cd.id === 'weak' && storedWeak && storedWeak.words) {
+
+                USER_DECKS = baseCurricula.map(cd => {
+                    if (cd.id === 'weak' && storedWeak && storedWeak.words && storedWeak.words.length > 0) {
                         return { ...cd, words: storedWeak.words };
                     }
                     return cd;
                 }).concat(userCustomDecks);
             } else {
-                USER_DECKS = JSON.parse(JSON.stringify(CANONICAL_GLOBAL_DECKS));
-                // Add two empty user custom slots
+                USER_DECKS = JSON.parse(JSON.stringify(baseCurricula));
                 USER_DECKS.push({ id: 'custom_1', name: 'Custom Deck 1', type: 'custom', words: [] });
                 USER_DECKS.push({ id: 'custom_2', name: 'Custom Deck 2', type: 'custom', words: [] });
                 saveUserDecksToStorage();
             }
         } catch (e) {
-            USER_DECKS = JSON.parse(JSON.stringify(CANONICAL_GLOBAL_DECKS));
+            USER_DECKS = JSON.parse(JSON.stringify(baseCurricula));
         }
     }
 
