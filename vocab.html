@@ -63,38 +63,13 @@
     .day-cell.completed { border-color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.08); }
     .day-cell.today { border: 2px solid var(--sapphire-blue); }
 
-    /* 6 Interactive Mode & Action Boxes */
+    /* Action Boxes */
     .section-title-label { font-size: 1.1rem; font-weight: 800; color: var(--accent-main); margin-top: 4px; }
     
-    .action-boxes-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-    }
-
-    .action-box {
-        background: #FFFFFF;
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        padding: 18px 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        gap: 12px;
-        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-        cursor: pointer;
-    }
-
-    .action-box:hover {
-        transform: translateY(-2px);
-        border-color: var(--accent-main);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-    }
-
-    .action-box.highlight-mode {
-        border-color: var(--sapphire-blue);
-        background: linear-gradient(180deg, #FFFFFF 0%, #F5F9FF 100%);
-    }
+    .action-boxes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .action-box { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 10px; padding: 18px 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; cursor: pointer; }
+    .action-box:hover { transform: translateY(-2px); border-color: var(--accent-main); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+    .action-box.highlight-mode { border-color: var(--sapphire-blue); background: linear-gradient(180deg, #FFFFFF 0%, #F5F9FF 100%); }
 
     .box-header { display: flex; align-items: center; gap: 10px; }
     .box-icon { font-size: 1.5rem; line-height: 1; }
@@ -104,11 +79,15 @@
     .action-box:hover .box-btn { background: var(--accent-main); color: #fff; border-color: var(--accent-main); }
     .action-box.highlight-mode:hover .box-btn { background: var(--sapphire-blue); color: #fff; border-color: var(--sapphire-blue); }
 
-    /* Active Practice Player Section */
+    /* Mode selector pills */
+    .mode-pill-btn { padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: #FFFFFF; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: 0.2s; text-align: center; color: var(--text-primary); }
+    .mode-pill-btn:hover { border-color: var(--sapphire-blue); }
+    .mode-pill-btn.active { background: var(--sapphire-blue); color: #FFFFFF; border-color: var(--sapphire-blue); }
+
+    /* Active Player Section */
     .player-section { display: none; flex-direction: column; gap: 16px; border-top: 2px solid var(--sapphire-blue); padding-top: 24px; margin-top: 10px; }
     .player-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
     .active-deck-banner { font-size: 0.95rem; font-weight: 700; color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.08); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(31, 111, 235, 0.2); }
-    .player-telemetry-badge { font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); background: var(--secondary-bg); padding: 4px 10px; border-radius: 6px; }
     .close-player-btn { background: none; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 10px; font-size: 0.82rem; cursor: pointer; color: var(--text-secondary); }
     .close-player-btn:hover { color: #000; border-color: #000; }
 
@@ -130,11 +109,14 @@
     .nav-btn.primary:hover { background: var(--accent-hover); }
 
     /* Exercise View */
-    .exercise-box { border: 1px solid var(--border-color); border-radius: 12px; padding: 32px 26px; display: flex; flex-direction: column; gap: 18px; background: #FFFFFF; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
-    .exercise-header-row { display: flex; justify-content: space-between; align-items: center; }
+    .exercise-box { border: 1px solid var(--border-color); border-radius: 12px; padding: 30px 24px; display: flex; flex-direction: column; gap: 18px; background: #FFFFFF; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+    .architecture-hud { width: 100%; display: flex; justify-content: space-between; align-items: center; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); }
+    .graduation-chip { display: flex; align-items: center; gap: 4px; color: var(--sapphire-blue); }
+
+    .exercise-header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
     .exercise-dir-badge { font-size: 0.8rem; text-transform: uppercase; font-weight: 800; color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.08); padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(31, 111, 235, 0.2); }
     
-    .exercise-question { font-size: 2.4rem; font-weight: 800; color: var(--accent-main); text-align: center; margin: 4px 0; }
+    .exercise-question { font-size: 2.3rem; font-weight: 800; color: var(--accent-main); text-align: center; margin: 4px 0; }
     .exercise-subtext { text-align: center; color: var(--text-secondary); font-size: 0.95rem; margin-top: -4px; }
 
     .exercise-options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
@@ -147,23 +129,14 @@
     .wrong-auto-text { font-size: 0.92rem; color: var(--kp-color); font-weight: 700; }
     .btn-next-auto { background: var(--kp-color); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
-    .correct-srs-panel { display: none; flex-direction: column; gap: 10px; width: 100%; border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 4px; }
-    .grade-statement { text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--success-green); }
-    .positive-rating-row { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .pos-rate-btn { padding: 12px 8px; border-radius: 6px; border: 1px solid var(--border-color); background: #FFFFFF; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-    .pos-rate-btn .multiplier { font-size: 0.72rem; color: var(--text-secondary); font-weight: normal; }
-    .pos-rate-btn.hard:hover { border-color: #FFB74D; background: #FFF9E6; }
-    .pos-rate-btn.good:hover { border-color: var(--sapphire-blue); background: rgba(31, 111, 235, 0.08); color: var(--sapphire-blue); }
-    .pos-rate-btn.easy:hover { border-color: var(--success-green); background: #F0FFF4; color: var(--success-green); }
-
-    .architecture-hud { width: 100%; display: flex; justify-content: space-between; align-items: center; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); }
-    .graduation-chip { display: flex; align-items: center; gap: 4px; color: var(--sapphire-blue); }
+    /* Autonomous SRS Panel */
+    .correct-srs-panel { display: none; flex-direction: column; gap: 8px; width: 100%; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 4px; }
 
     .ema-box { width: 100%; display: flex; flex-direction: column; gap: 6px; }
     .ema-labels { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
     .ema-bar-bg { width: 100%; height: 8px; background: #EAEAEA; border-radius: 4px; overflow: hidden; position: relative; }
     .ema-bar-fill { height: 100%; background: var(--sapphire-blue); border-radius: 4px; transition: width 0.4s ease; }
-    .graduation-marker { position: absolute; right: 15%; top: 0; bottom: 0; width: 2px; background: var(--success-green); }
+    .graduation-marker { position: absolute; right: 0%; top: 0; bottom: 0; width: 2px; background: var(--success-green); }
 
     /* Modals */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; padding: 20px; z-index: 2000; backdrop-filter: blur(4px); }
@@ -177,60 +150,35 @@
     .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; outline: none; }
     .import-textarea { width: 100%; height: 130px; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; font-size: 0.95rem; outline: none; }
 
-    /* Ingestion Loading Overlay */
-    .ingest-loading-box { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 20px; }
-    .spinner { width: 44px; height: 44px; border: 4px solid #E1E1E1; border-top: 4px solid var(--sapphire-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    /* Month Calendar Grid in Modal */
-    .month-day-cell { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 6px; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 0.82rem; font-weight: 600; }
-    .month-day-cell.completed { background: rgba(31, 111, 235, 0.08); border-color: var(--sapphire-blue); }
-    .month-day-cell.today { border: 2px solid var(--sapphire-blue); }
-    .month-day-cell.empty { background: transparent; border: none; }
-
-    /* Deck list in modal */
+    /* Deck list items */
     .deck-item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 8px; gap: 12px; }
-    .deck-badge-free { font-size: 0.72rem; background: #E1E4E8; color: #444; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
-    .deck-badge-custom { font-size: 0.72rem; background: rgba(31, 111, 235, 0.12); color: var(--sapphire-blue); padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+    .deck-badge-canonical { font-size: 0.72rem; background: #E1EFFF; color: var(--sapphire-blue); padding: 2px 8px; border-radius: 10px; font-weight: 700; border: 1px solid rgba(31,111,235,0.2); }
+    .deck-badge-custom { font-size: 0.72rem; background: #EAEAEA; color: #444; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
 
     .word-edit-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #FAFAFA; border: 1px solid var(--border-color); border-radius: 6px; }
     .word-action-btn { background: none; border: none; cursor: pointer; font-size: 1rem; padding: 4px; border-radius: 4px; }
     .word-action-btn:hover { background: #EAEAEA; }
 
-    .search-result-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
-    .search-add-btn { background: var(--sapphire-blue); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
-    .search-add-btn:hover { opacity: 0.9; }
+    /* Ingestion Loading Screen */
+    .ingest-loading-box { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 20px; }
+    .spinner { width: 44px; height: 44px; border: 4px solid #E1E1E1; border-top: 4px solid var(--sapphire-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Calendar Grid */
+    .month-day-cell { background: #FFFFFF; border: 1px solid var(--border-color); border-radius: 6px; min-height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 0.82rem; font-weight: 600; }
+    .month-day-cell.completed { background: rgba(31, 111, 235, 0.08); border-color: var(--sapphire-blue); }
+    .month-day-cell.today { border: 2px solid var(--sapphire-blue); }
+    .month-day-cell.empty { background: transparent; border: none; }
 
     @media (max-width: 768px) {
-        body { padding: 24px 14px; }
-        .container { max-width: 100%; padding: 28px 20px; }
+        body { padding: 20px 12px; }
+        .container { max-width: 100%; padding: 24px 16px; }
         .action-boxes-grid { grid-template-columns: 1fr; }
         .exercise-options-grid { grid-template-columns: 1fr; }
         .dashboard-header { gap: 14px; }
-        .mascot-gif { width: 110px; }
+        .mascot-gif { width: 100px; }
+        .target-word { font-size: 2.5rem; }
     }
-
-    .mode-pill-btn {
-        padding: 8px 10px;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        background: #FFFFFF;
-        font-size: 0.82rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.2s;
-        text-align: center;
-        color: var(--text-primary);
-    }
-    .mode-pill-btn:hover {
-        border-color: var(--sapphire-blue);
-    }
-    .mode-pill-btn.active {
-        background: var(--sapphire-blue);
-        color: #FFFFFF;
-        border-color: var(--sapphire-blue);
-    }
-
 </style>
 </head>
 <body>
@@ -259,7 +207,7 @@
         <a href="dashboard.html" class="back-link">← Learning Hub</a>
         <div class="top-right-group">
             <div class="streak-badge" onclick="openMonthModal()">
-                <img src="assets/ui/sapphire_flame.png" alt="Sapphire Flame" style="width:20px; height:20px; object-fit:contain;">
+                <img src="assets/ui/sapphire_flame.png" alt="Sapphire Flame">
                 <span id="streak-text">1 Day Streak</span>
             </div>
             <div class="vkp-badge" onclick="openClaimModal()">
@@ -280,7 +228,7 @@
         </div>
     </div>
 
-    <!-- 7-Day Horizontal Weekly Streak Strip -->
+    <!-- 7-Day Weekly Streak Strip -->
     <div class="weekly-strip">
         <div class="weekly-header">
             <span>Weekly Habit Consistency (Sapphire Blue Flames)</span>
@@ -299,9 +247,9 @@
                     <span class="box-icon">🎴</span>
                     <span class="box-title">Practice Flashcards</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">Roll through vocabulary cards with authentic Fish Audio pronunciation and hidden translations.</p>
+                <p class="box-desc" style="margin-top:6px;">Phase 1: Comprehensible Input. Encode new terms with native audio, hidden translations, and context sentences.</p>
             </div>
-            <button class="box-btn">Select Deck & Learn ➔</button>
+            <button class="box-btn">Select Deck &amp; Learn ➔</button>
         </div>
 
         <!-- 2. Exercise Mode -->
@@ -311,9 +259,9 @@
                     <span class="box-icon">✍️</span>
                     <span class="box-title">Practice Exercises</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">4 retrieval directions (Recognition, Production, Audio, Context) with automatic wrong marking & SRS rating.</p>
+                <p class="box-desc" style="margin-top:6px;">Phase 2: Active Recall. Multi-sensory testing with autonomous latency SRS and active recall typing.</p>
             </div>
-            <button class="box-btn">Select Deck & Test ➔</button>
+            <button class="box-btn">Select Deck &amp; Test ➔</button>
         </div>
 
         <!-- 3. Add Words -->
@@ -323,7 +271,7 @@
                     <span class="box-icon">➕</span>
                     <span class="box-title">Add Words</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">Batch import up to 30 custom Korean words with meanings into any of your decks.</p>
+                <p class="box-desc" style="margin-top:6px;">Batch import custom Korean vocabulary into any of your personal decks.</p>
             </div>
             <button class="box-btn">+ Import Words</button>
         </div>
@@ -335,7 +283,7 @@
                     <span class="box-icon">🗂️</span>
                     <span class="box-title">Create / Unlock Deck</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">Use your 2 Free Custom Slots or unlock Deck 3/4 from Store for 25 KP.</p>
+                <p class="box-desc" style="margin-top:6px;">Create a custom deck or unlock additional slots with Kimchi Points.</p>
             </div>
             <button class="box-btn">+ New Deck</button>
         </div>
@@ -347,7 +295,7 @@
                     <span class="box-icon">📚</span>
                     <span class="box-title">My Decks</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">Inspect your decks, edit & delete cards, rename decks, or launch practice.</p>
+                <p class="box-desc" style="margin-top:6px;">Inspect your decks, edit or delete words, rename custom decks, and launch study sessions.</p>
             </div>
             <button class="box-btn" id="my-decks-btn">Manage Decks</button>
         </div>
@@ -359,7 +307,7 @@
                     <span class="box-icon">🔍</span>
                     <span class="box-title">Search Vocab</span>
                 </div>
-                <p class="box-desc" style="margin-top:6px;">Search 5,000+ canonical dictionary words and 1-tap add directly into any chosen deck.</p>
+                <p class="box-desc" style="margin-top:6px;">Search university curricula and dictionary terms and 1-tap add to your personal decks.</p>
             </div>
             <button class="box-btn">Search Dictionary</button>
         </div>
@@ -369,16 +317,13 @@
     <div class="player-section" id="player-section">
         <div class="player-header">
             <span class="active-deck-banner" id="player-active-deck-badge">Active: General Core Deck (Flashcards)</span>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span class="player-telemetry-badge" id="player-checkpoint-badge">🛡️ Checkpoint Active</span>
-                <button class="close-player-btn" onclick="closePlayer()">✕ Close Player</button>
-            </div>
+            <button class="close-player-btn" onclick="closePlayer()">✕ Close Player</button>
         </div>
 
         <!-- Track 1: Flashcards Player -->
         <div class="flashcard-box" id="flashcard-view">
             <div class="card-top-row">
-                <span class="card-counter-tag" id="fc-counter-label">Card 1 of 50</span>
+                <span class="card-counter-tag" id="fc-counter-label" style="font-size:0.85rem; font-weight:700; color:#666;">Card 1 of 50</span>
                 <button class="struggle-btn" id="fc-struggle-btn" onclick="toggleStruggle()">
                     <span>⚡</span>
                     <span>I Forget It Easily</span>
@@ -388,7 +333,7 @@
             <div class="target-word" id="fc-word">예약하다</div>
             <button class="audio-btn" onclick="playCurrentAudio()">
                 <span>🔊</span>
-                <span>Listen Pronunciation (Fish Audio / Voice)</span>
+                <span>Listen Pronunciation (Audio Stream / Voice)</span>
             </button>
             <div class="target-meaning" id="fc-meaning">to reserve / make a reservation</div>
 
@@ -414,8 +359,8 @@
         <!-- Track 2: Retention Exercises Player -->
         <div class="exercise-box" id="exercise-view" style="display:none;">
             <div class="architecture-hud">
-                <span class="graduation-chip">🎓 Streak: <strong id="graduation-streak-val">3/5 to Long-Term Memory</strong></span>
-                <span>⚡ Pacing: <span id="pacing-status" style="color:var(--success-green);">Optimal (2.2s)</span></span>
+                <span class="graduation-chip">🎓 Streak: <strong id="graduation-streak-val">0/5 to Mastery</strong></span>
+                <span id="studied-filter-chip" style="font-size:0.8rem; color:var(--text-secondary);">📖 Mode: Active Recall</span>
             </div>
 
             <div class="exercise-header-row">
@@ -424,61 +369,68 @@
                     <button type="button" id="hud-format-toggle-btn" onclick="toggleInputFormat()" style="background:var(--secondary-bg); border:1px solid var(--border-color); border-radius:6px; padding:4px 10px; font-size:0.8rem; font-weight:700; cursor:pointer; color:var(--text-secondary);">
                         🔘 MCQ (Switch to ⌨️ Type)
                     </button>
-                    <span class="card-counter-tag" id="ex-counter-label">Exercise 1 of 50</span>
+                    <span class="card-counter-tag" id="ex-counter-label" style="font-size:0.85rem; font-weight:700; color:#666;">Exercise 1 of 50</span>
                 </div>
             </div>
 
             <div class="exercise-question" id="ex-question-text">예약하다</div>
             <div class="exercise-subtext" id="ex-subtext">Select the correct English definition:</div>
 
-            <!-- 1. Multiple Choice Grid (When MCQ is ON) -->
+            <!-- Multiple Choice Grid -->
             <div class="exercise-options-grid" id="ex-options-container"></div>
 
-            <!-- 2. Active Typing Box (When MCQ is OFF) -->
+            <!-- Active Typing Box (Mobile Autocorrect/Autocapitalize Shielded) -->
             <div id="ex-typing-container" style="display:none; flex-direction:column; gap:10px; width:100%;">
                 <div style="display:flex; gap:8px;">
-                    <input type="text" id="ex-typing-input" class="form-input" placeholder="Type your answer in Korean or English..." style="font-size:1.1rem; padding:14px 16px; border-radius:8px;" onkeydown="handleTypingKeyDown(event)">
+                    <input type="text" id="ex-typing-input" class="form-input" 
+                           autocomplete="off" 
+                           autocorrect="off" 
+                           autocapitalize="none" 
+                           spellcheck="false" 
+                           data-lpignore="true"
+                           data-form-type="other"
+                           placeholder="Type your answer in Korean or English..." 
+                           style="font-size:1.1rem; padding:14px 16px; border-radius:8px;" 
+                           onkeydown="handleTypingKeyDown(event)">
                     <button class="modal-btn primary" style="padding:12px 24px; font-size:1rem; font-weight:700; white-space:nowrap;" onclick="submitTypingAnswer()">Submit ⏎</button>
                 </div>
                 <div id="typing-answer-feedback" style="display:none; padding:10px 14px; border-radius:6px; font-size:0.92rem; font-weight:700;"></div>
             </div>
 
+            <!-- "I Forgot It / Show Answer" Surrender Button -->
+            <div style="display:flex; justify-content:center; margin-top:2px;">
+                <button type="button" id="btn-forgot-it" class="nav-btn" style="color:#B07800; border-color:#FFE08A; background:#FFF8E6; font-size:0.85rem; padding:6px 16px;" onclick="handleForgotIt()">
+                    ⚡ I Forgot It / Show Answer
+                </button>
+            </div>
+
             <!-- WRONG ANSWER: AUTOMATIC 'AGAIN' ZERO-CLUTTER BANNER -->
             <div class="wrong-auto-banner" id="wrong-auto-banner">
-                <div class="wrong-auto-text">
+                <div class="wrong-auto-text" id="wrong-banner-text">
                     ❌ Incorrect. (Automatically marked for <strong>Repeat Today</strong>)
                 </div>
                 <button class="btn-next-auto" onclick="advanceToNextExercise()">Next Question ➔</button>
             </div>
 
-            <!-- CORRECT ANSWER: 3 POSITIVE SRS RETENTION BUTTONS -->
+            <!-- AUTONOMOUS LATENCY SRS PANEL (NO ROADBLOCK BUTTONS) -->
             <div class="correct-srs-panel" id="correct-srs-panel">
-                <div class="grade-statement">✅ Correct! Rate how easily you recalled this to adjust interval:</div>
-
                 <div class="ema-box">
                     <div class="ema-labels">
-                        <span>EMA Mastery Score</span>
-                        <span id="ema-pct">78%</span>
+                        <span>Mastery Stability Score</span>
+                        <span id="ema-pct">0%</span>
                     </div>
                     <div class="ema-bar-bg">
-                        <div class="ema-bar-fill" id="ema-fill" style="width: 78%;"></div>
-                        <div class="graduation-marker" title="Graduation Threshold: 85%"></div>
+                        <div class="ema-bar-fill" id="ema-fill" style="width: 0%;"></div>
+                        <div class="graduation-marker" title="Graduation Threshold: 100%"></div>
                     </div>
                 </div>
 
-                <div class="positive-rating-row">
-                    <button class="pos-rate-btn hard" onclick="handleCorrectRating('hard')">
-                        <span>⚡ Hard</span>
-                        <span class="multiplier">Review in 1d (×1.2)</span>
-                    </button>
-                    <button class="pos-rate-btn good" onclick="handleCorrectRating('good')">
-                        <span>👍 Good</span>
-                        <span class="multiplier">Review in 3d (×2.0)</span>
-                    </button>
-                    <button class="pos-rate-btn easy" onclick="handleCorrectRating('easy')">
-                        <span>🌟 Easy</span>
-                        <span class="multiplier">Review in 6d (×3.0)</span>
-                    </button>
+                <div id="autonomous-srs-badge" style="padding:12px 16px; background:#F0FFF4; border:1px solid var(--success-green); border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                    <div>
+                        <div style="font-size:0.95rem; font-weight:800; color:var(--success-green);" id="auto-srs-title">✅ Correct! (⚡ Fluent Recall: 1.8s)</div>
+                        <div style="font-size:0.8rem; color:#2E7D32;" id="auto-srs-subtitle">Interval auto-adjusted: +3 Days (×2.0) · Streak 1/5</div>
+                    </div>
+                    <button class="modal-btn primary" style="padding:6px 14px; font-size:0.85rem;" onclick="advanceToNextExercise()">Next ➔</button>
                 </div>
             </div>
         </div>
@@ -488,9 +440,9 @@
 <!-- Modal: Deck Picker Modal for Flashcard / Exercise Launch -->
 <div class="modal-overlay" id="deck-picker-modal">
     <div class="modal-box">
-        <div class="modal-title"><span id="picker-modal-icon">🎴</span> Select Deck &amp; Exercise Modality</div>
+        <div class="modal-title"><span id="picker-modal-icon">🎴</span> Select Deck to Practice</div>
         
-        <!-- Exercise Mode Selector (Only shown for Exercise Practice) -->
+        <!-- Exercise Mode & Scope Selector -->
         <div id="exercise-mode-selector-panel" style="display:none; background:var(--secondary-bg); border:1px solid var(--border-color); border-radius:8px; padding:14px; flex-direction:column; gap:12px;">
             <div>
                 <label style="font-size:0.88rem; font-weight:700; color:var(--accent-main);">🎯 Select Exercise Type:</label>
@@ -503,15 +455,25 @@
                 </div>
             </div>
 
-            <!-- MCQ vs Typing Toggle -->
-            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px; flex-wrap:wrap; gap:8px;">
                 <div>
-                    <strong style="font-size:0.88rem; color:var(--text-primary);">Response Format:</strong>
-                    <div style="font-size:0.78rem; color:var(--text-secondary);" id="format-hint-text">Choose between 4-choice buttons or active typing</div>
+                    <strong style="font-size:0.85rem; color:var(--text-primary);">Response Format:</strong>
                 </div>
                 <div style="display:flex; gap:6px;">
                     <button type="button" class="mode-pill-btn active" id="format-mcq-btn" onclick="setInputFormat('mcq')">🔘 MCQ Mode</button>
                     <button type="button" class="mode-pill-btn" id="format-typing-btn" onclick="setInputFormat('typing')">⌨️ Typing Mode</button>
+                </div>
+            </div>
+
+            <!-- 2-Phase Input Before Output Scope Filter -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px; flex-wrap:wrap; gap:8px;">
+                <div>
+                    <strong style="font-size:0.85rem; color:var(--text-primary);">Word Scope:</strong>
+                    <div style="font-size:0.75rem; color:var(--text-secondary);">Input-before-output principle</div>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button type="button" class="mode-pill-btn active" id="scope-studied-btn" onclick="setExerciseScope('studied')">📖 Studied in Flashcards</button>
+                    <button type="button" class="mode-pill-btn" id="scope-all-btn" onclick="setExerciseScope('all')">📚 All Deck Words</button>
                 </div>
             </div>
         </div>
@@ -589,7 +551,7 @@
         <textarea class="import-textarea" id="import-textarea" placeholder="사랑 - love&#10;행복 - happiness&#10;친구 - friend&#10;학교 - school&#10;약속 - appointment"></textarea>
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeImportModal()">Cancel</button>
-            <button class="modal-btn primary" onclick="submitImport()">Add to Deck & Practice ➔</button>
+            <button class="modal-btn primary" onclick="submitImport()">Add to Deck &amp; Practice ➔</button>
         </div>
     </div>
 
@@ -597,7 +559,7 @@
     <div class="modal-box ingest-loading-box" id="ingest-loading-screen" style="display:none;">
         <div class="spinner"></div>
         <h3 style="font-size:1.2rem; font-weight:800;" id="ingest-status-title">Ingesting Vocabulary Words...</h3>
-        <p style="font-size:0.88rem; color:var(--text-secondary);" id="ingest-status-desc">Parsing terms and generating voice pronunciation profiles...</p>
+        <p style="font-size:0.88rem; color:var(--text-secondary);" id="ingest-status-desc">Parsing terms and verifying pronunciation profiles...</p>
         <div style="width:100%; background:#EAEAEA; border-radius:4px; height:8px; overflow:hidden;">
             <div id="ingest-progress-bar" style="width: 0%; height:100%; background:var(--sapphire-blue); transition: width 0.3s;"></div>
         </div>
@@ -612,7 +574,7 @@
             <label style="font-size:0.88rem; font-weight:700; white-space:nowrap;">🎯 Add Selected Words To:</label>
             <select class="form-input" id="search-target-deck-select" style="background:#fff;"></select>
         </div>
-        <input type="text" class="form-input" id="global-vocab-search-input" placeholder="Type Korean or English (e.g. 사랑, travel, 바다, appointment)..." oninput="handleVocabSearch()">
+        <input type="text" class="form-input" id="global-vocab-search-input" placeholder="Type Korean or English (e.g. 사랑, travel, 간호사, 가수, 예약)..." oninput="handleVocabSearch()">
         <div class="search-results-list" id="search-results-container" style="max-height:260px; overflow-y:auto;"></div>
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeSearchVocabModal()">Close</button>
@@ -625,7 +587,7 @@
     <div class="modal-box" style="max-width: 500px;">
         <div class="modal-title">
             <span>📅</span>
-            <span id="month-calendar-title">Habit Consistency (August 2026)</span>
+            <span id="month-calendar-title">Habit Consistency</span>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.88rem; color:var(--text-secondary);">
             <span><img src="assets/ui/sapphire_flame.png" style="width:20px; height:20px; vertical-align:middle; object-fit:contain; margin-right:4px;"> Sapphire Blue Flame = Daily Session Active</span>
@@ -688,62 +650,6 @@
         renderMyDecksList();
     }
 
-
-    // =========================================================
-    // RESEARCH DATA TELEMETRY (ACADEMIC LOGGING ENGINE)
-    // =========================================================
-    let questionStartTime = Date.now();
-    let currentSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-
-    async function logResearchTelemetry(data = {}) {
-        // Retrieve local profile demographic metadata
-        let profileMeta = {};
-        try {
-            profileMeta = JSON.parse(localStorage.getItem('brevity_profile') || '{}');
-        } catch (e) {}
-
-        const payload = {
-            session_id: currentSessionId,
-            timestamp: new Date().toISOString(),
-            gender: profileMeta.gender || 'unspecified',
-            city_region: profileMeta.city || 'unspecified',
-            institute: profileMeta.institute || 'unspecified',
-            ...data
-        };
-
-        // 1. Save to localStorage research cache
-        try {
-            const historyKey = 'brevity_research_exercise_logs';
-            const existing = JSON.parse(localStorage.getItem(historyKey) || '[]');
-            existing.push(payload);
-            if (existing.length > 500) existing.shift();
-            localStorage.setItem(historyKey, JSON.stringify(existing));
-        } catch (e) {}
-
-        // 2. Transmit to Supabase with User ID and demographic cohort tags
-        if (window.supabaseClient) {
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session && session.user) {
-                    const meta = session.user.user_metadata || {};
-                    const userGender = meta.gender || profileMeta.gender || 'unspecified';
-                    const userCity = meta.city || profileMeta.city || 'unspecified';
-
-                    await supabaseClient.from('user_exercise_history').insert([{
-                        user_id: session.user.id,
-                        direction: payload.direction || 'recognition',
-                        user_response: `${payload.user_answer} | gender:${userGender} | loc:${userCity}`,
-                        is_correct: payload.is_correct === true,
-                        response_time_ms: payload.response_time_ms || 0,
-                        created_at: payload.timestamp
-                    }]);
-                }
-            } catch (err) {
-                // Telemetry transmission error notice
-            }
-        }
-    }
-
     // =========================================================
     // USER AUTH & ADMIN INFINITE KP SYNC
     // =========================================================
@@ -759,9 +665,115 @@
     }
 
     // =========================================================
-    // STREAK & CALENDAR HABIT ENGINE (LOCAL TIMEZONE ACCURATE)
+    // PERSISTENCE ENGINE (DECKS, WORDS & STUDIED WORDS)
     // =========================================================
-    const STREAK_STORAGE_KEY = 'brevity_vocab_streak_data';
+    const DECKS_STORAGE_KEY = 'brevity_user_decks_v2';
+    const STUDIED_WORDS_KEY = 'brevity_studied_words';
+
+    // Canonical Curricula Pre-loaded
+    const CANONICAL_GLOBAL_DECKS = [
+        {
+            id: 'yonsei_1_1',
+            name: '🏛️ Yonsei Level 1-1 Core',
+            type: 'canonical',
+            words: [
+                { word: '사랑', meaning: 'love', exampleKr: '가족을 사랑해요.', exampleEn: 'I love my family.' },
+                { word: '행복', meaning: 'happiness', exampleKr: '항상 행복하세요.', exampleEn: 'Please always be happy.' },
+                { word: '친구', meaning: 'friend', exampleKr: '친구를 만나요.', exampleEn: 'I meet a friend.' },
+                { word: '학교', meaning: 'school', exampleKr: '학교에 가요.', exampleEn: 'I go to school.' },
+                { word: '바다', meaning: 'ocean / sea', exampleKr: '바다가 아름다워요.', exampleEn: 'The ocean is beautiful.' }
+            ]
+        },
+        {
+            id: 'sejong_1',
+            name: '🏛️ Sejong Level 1 Core',
+            type: 'canonical',
+            words: [
+                { word: '간호사', meaning: 'nurse', exampleKr: '병원에서 간호사를 만났어요.', exampleEn: 'I met a nurse at the hospital.' },
+                { word: '가수', meaning: 'singer', exampleKr: '그 가수의 노래를 좋아해요.', exampleEn: "I like that singer's song." },
+                { word: '의사', meaning: 'doctor', exampleKr: '의사 선생님이 친절해요.', exampleEn: 'The doctor is kind.' },
+                { word: '선생님', meaning: 'teacher', exampleKr: '한국어 선생님이에요.', exampleEn: 'She is a Korean teacher.' },
+                { word: '학생', meaning: 'student', exampleKr: '저는 대학교 학생입니다.', exampleEn: 'I am a university student.' }
+            ]
+        },
+        {
+            id: 'yonsei_1_2',
+            name: '🏛️ Yonsei Level 1-2 Core',
+            type: 'canonical',
+            words: [
+                { word: '예약하다', meaning: 'to reserve / make a reservation', exampleKr: '식당을 미리 예약했어요.', exampleEn: 'I reserved the restaurant in advance.' },
+                { word: '취소하다', meaning: 'to cancel', exampleKr: '회의가 취소되었습니다.', exampleEn: 'The meeting has been cancelled.' },
+                { word: '출발하다', meaning: 'to depart / leave', exampleKr: '기차가 9시에 출발해요.', exampleEn: "The train departs at 9 o'clock." },
+                { word: '도착하다', meaning: 'to arrive', exampleKr: '서울에 곧 도착합니다.', exampleEn: 'We will arrive in Seoul soon.' }
+            ]
+        },
+        {
+            id: 'weak',
+            name: '⚡ Words I Forget Easily',
+            type: 'common_weak',
+            words: [
+                { word: '사과하다', meaning: 'to apologize', exampleKr: '친구에게 사과했습니다.', exampleEn: 'I apologized to my friend.' }
+            ]
+        }
+    ];
+
+    let USER_DECKS = [];
+
+    function loadUserDecksFromStorage() {
+        try {
+            const raw = localStorage.getItem(DECKS_STORAGE_KEY);
+            if (raw) {
+                const stored = JSON.parse(raw);
+                // Merge: keep canonical decks up to date, retain user-created & weak decks
+                const canonicalIds = new Set(CANONICAL_GLOBAL_DECKS.map(d => d.id));
+                const userCustomDecks = stored.filter(d => !canonicalIds.has(d.id));
+                // Find custom weak deck if user added words to it
+                const storedWeak = stored.find(d => d.id === 'weak');
+                USER_DECKS = CANONICAL_GLOBAL_DECKS.map(cd => {
+                    if (cd.id === 'weak' && storedWeak && storedWeak.words) {
+                        return { ...cd, words: storedWeak.words };
+                    }
+                    return cd;
+                }).concat(userCustomDecks);
+            } else {
+                USER_DECKS = JSON.parse(JSON.stringify(CANONICAL_GLOBAL_DECKS));
+                // Add two empty user custom slots
+                USER_DECKS.push({ id: 'custom_1', name: 'Custom Deck 1', type: 'custom', words: [] });
+                USER_DECKS.push({ id: 'custom_2', name: 'Custom Deck 2', type: 'custom', words: [] });
+                saveUserDecksToStorage();
+            }
+        } catch (e) {
+            USER_DECKS = JSON.parse(JSON.stringify(CANONICAL_GLOBAL_DECKS));
+        }
+    }
+
+    function saveUserDecksToStorage() {
+        try {
+            localStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(USER_DECKS));
+        } catch (e) {}
+    }
+
+    function markWordAsStudied(word) {
+        if (!word) return;
+        try {
+            const studied = JSON.parse(localStorage.getItem(STUDIED_WORDS_KEY) || '{}');
+            studied[word] = Date.now();
+            localStorage.setItem(STUDIED_WORDS_KEY, JSON.stringify(studied));
+        } catch (e) {}
+    }
+
+    function getStudiedWordsMap() {
+        try {
+            return JSON.parse(localStorage.getItem(STUDIED_WORDS_KEY) || '{}');
+        } catch (e) {
+            return {};
+        }
+    }
+
+    // =========================================================
+    // STREAK & CALENDAR HABIT ENGINE (TIMEZONE-SAFE & PERSISTENT)
+    // =========================================================
+    const STREAK_STORAGE_KEY = 'brevity_vocab_streak_data_v2';
 
     function getLocalDateKey(dateObj = new Date()) {
         const y = dateObj.getFullYear();
@@ -783,6 +795,19 @@
         const streakData = getStreakData();
         const todayStr = getLocalDateKey();
         streakData[todayStr] = { completed: true, timestamp: Date.now() };
+
+        // Ensure yesterday is marked if streak is alive
+        const yest = new Date();
+        yest.setDate(yest.getDate() - 1);
+        const yestStr = getLocalDateKey(yest);
+        if (!streakData[yestStr]) {
+            // Check if streak counter was previously > 1
+            const prevStreak = parseInt(localStorage.getItem('brevity_saved_streak_count') || '1');
+            if (prevStreak >= 2) {
+                streakData[yestStr] = { completed: true, timestamp: yest.getTime() };
+            }
+        }
+
         localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(streakData));
         updateStreakUI();
     }
@@ -801,7 +826,7 @@
             yesterday.setDate(yesterday.getDate() - 1);
             const yestStr = getLocalDateKey(yesterday);
             if (!data[yestStr] || !data[yestStr].completed) {
-                return 1; // Default to 1 on active session
+                return 1; // Minimum baseline for today's active session
             }
             d = yesterday;
         }
@@ -815,7 +840,9 @@
                 break;
             }
         }
-        return Math.max(1, streak);
+        const finalStreak = Math.max(1, streak);
+        localStorage.setItem('brevity_saved_streak_count', finalStreak);
+        return finalStreak;
     }
 
     function updateStreakUI() {
@@ -876,14 +903,12 @@
         let activeMonthDays = 0;
         container.innerHTML = '';
 
-        // Fill leading empty cells
         for (let i = 0; i < startDayIndex; i++) {
             const blank = document.createElement('div');
             blank.className = 'month-day-cell empty';
             container.appendChild(blank);
         }
 
-        // Fill days 1..numDays
         const mStr = String(month + 1).padStart(2, '0');
         for (let d = 1; d <= numDays; d++) {
             const dStr = String(d).padStart(2, '0');
@@ -907,57 +932,84 @@
         document.getElementById('month-active-count').innerText = `${activeMonthDays} ${activeMonthDays === 1 ? 'Day' : 'Days'} Active this Month`;
     }
 
-    // User Deck State with initial words
-    const USER_DECKS = [
-        { 
-            id: 'core', 
-            name: 'General Core Learning Deck', 
-            type: 'common_core',
-            words: [
-                { word: '예약하다', meaning: 'to reserve / make a reservation', exampleKr: '식당을 미리 예약했어요.', exampleEn: 'I reserved the restaurant in advance.' },
-                { word: '취소하다', meaning: 'to cancel', exampleKr: '회의가 취소되었습니다.', exampleEn: 'The meeting has been cancelled.' },
-                { word: '출발하다', meaning: 'to depart / leave', exampleKr: '기차가 9시에 출발해요.', exampleEn: "The train departs at 9 o'clock." },
-                { word: '도착하다', meaning: 'to arrive', exampleKr: '서울에 곧 도착합니다.', exampleEn: 'We will arrive in Seoul soon.' }
-            ]
-        },
-        { 
-            id: 'weak', 
-            name: 'Words I Forget Easily', 
-            type: 'common_weak',
-            words: [
-                { word: '사과하다', meaning: 'to apologize', exampleKr: '친구에게 사과했습니다.', exampleEn: 'I apologized to my friend.' }
-            ]
-        },
-        { 
-            id: 'custom_1', 
-            name: 'Custom Deck 1', 
-            type: 'custom',
-            words: [
-                { word: '사랑', meaning: 'love', exampleKr: '가족을 사랑해요.', exampleEn: 'I love my family.' },
-                { word: '행복', meaning: 'happiness', exampleKr: '항상 행복하세요.', exampleEn: 'Please always be happy.' }
-            ]
-        },
-        { 
-            id: 'custom_2', 
-            name: 'Custom Deck 2', 
-            type: 'custom',
-            words: []
-        },
-        { 
-            id: 'custom_3', 
-            name: 'Deck 3', 
-            type: 'store_unlocked',
-            words: []
-        }
-    ];
+    // =========================================================
+    // RESEARCH DATA TELEMETRY (ACADEMIC LOGGING ENGINE)
+    // =========================================================
+    let questionStartTime = Date.now();
+    let currentSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
 
+    async function logResearchTelemetry(data = {}) {
+        let profileMeta = {};
+        try {
+            profileMeta = JSON.parse(localStorage.getItem('brevity_profile') || '{}');
+        } catch (e) {}
+
+        const payload = {
+            session_id: currentSessionId,
+            timestamp: new Date().toISOString(),
+            gender: profileMeta.gender || 'unspecified',
+            city_region: profileMeta.city || 'unspecified',
+            institute: profileMeta.institute || 'unspecified',
+            ...data
+        };
+
+        try {
+            const historyKey = 'brevity_research_exercise_logs';
+            const existing = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            existing.push(payload);
+            if (existing.length > 500) existing.shift();
+            localStorage.setItem(historyKey, JSON.stringify(existing));
+        } catch (e) {}
+
+        if (window.supabaseClient) {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session && session.user) {
+                    const meta = session.user.user_metadata || {};
+                    const userGender = meta.gender || profileMeta.gender || 'unspecified';
+                    const userCity = meta.city || profileMeta.city || 'unspecified';
+
+                    await supabaseClient.from('user_exercise_history').insert([{
+                        user_id: session.user.id,
+                        direction: payload.direction || 'recognition',
+                        user_response: `${payload.user_answer} | gender:${userGender} | loc:${userCity}`,
+                        is_correct: payload.is_correct === true,
+                        response_time_ms: payload.response_time_ms || 0,
+                        created_at: payload.timestamp
+                    }]);
+                }
+            } catch (err) {}
+        }
+    }
+
+    // =========================================================
+    // HANGUL UNICODE NFC NORMALIZATION (FIXES MOBILE IME BUG)
+    // =========================================================
+    function normalizeTextForEval(text = '') {
+        if (typeof text !== 'string') text = String(text || '');
+        return text
+            .normalize('NFC')
+            .toLowerCase()
+            .replace(/[​-‍﻿ ]/g, ' ')
+            .replace(/^(to\s+|a\s+|an\s+|the\s+)/gi, '')
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()\[\]]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    // Deck & Exercise States
     let pendingModeTarget = 'flashcard';
-    let currentActiveDeck = USER_DECKS[0];
-    let currentDeckCards = USER_DECKS[0].words;
+    let currentActiveDeck = null;
+    let currentDeckCards = [];
     let editingDeck = null;
     let currentCardIdx = 0;
     let currentExerciseIdx = 0;
-    let streakCount = 3;
+    let streakCount = 0; // Starts at 0 baseline
+    let isMcqMode = true;
+    let selectedExerciseType = 'mix'; // 'mix' | 'ko_to_en' | 'en_to_ko' | 'audio_drill' | 'context_cloze'
+    let exerciseScope = 'studied'; // 'studied' | 'all'
+    let activeDirection = 'ko_to_en';
+    let autoAdvanceTimer = null;
 
     function populateDeckDropdowns() {
         const importSelect = document.getElementById('import-target-deck');
@@ -979,10 +1031,13 @@
             searchSelect.appendChild(opt2);
         });
         
-        if (USER_DECKS[2]) searchSelect.value = USER_DECKS[2].id;
+        // Default target to a custom deck or weak deck
+        const defaultTarget = USER_DECKS.find(d => d.type === 'custom') || USER_DECKS[3];
+        if (defaultTarget) {
+            searchSelect.value = defaultTarget.id;
+            importSelect.value = defaultTarget.id;
+        }
     }
-
-    let selectedExerciseType = 'mix'; // 'mix' | 'ko_to_en' | 'en_to_ko' | 'audio_drill' | 'context_cloze'
 
     function setExerciseSubMode(type) {
         selectedExerciseType = type;
@@ -994,6 +1049,50 @@
                 else el.classList.remove('active');
             }
         });
+    }
+
+    function setInputFormat(format) {
+        isMcqMode = (format === 'mcq');
+        const mcqBtn = document.getElementById('format-mcq-btn');
+        const typeBtn = document.getElementById('format-typing-btn');
+        if (mcqBtn && typeBtn) {
+            if (isMcqMode) {
+                mcqBtn.classList.add('active');
+                typeBtn.classList.remove('active');
+            } else {
+                mcqBtn.classList.remove('active');
+                typeBtn.classList.add('active');
+            }
+        }
+        updateHudFormatButton();
+    }
+
+    function toggleInputFormat() {
+        isMcqMode = !isMcqMode;
+        setInputFormat(isMcqMode ? 'mcq' : 'typing');
+        renderExercise();
+    }
+
+    function updateHudFormatButton() {
+        const btn = document.getElementById('hud-format-toggle-btn');
+        if (btn) {
+            btn.innerHTML = isMcqMode ? '🔘 MCQ (Switch to ⌨️ Type)' : '⌨️ Typing (Switch to 🔘 MCQ)';
+        }
+    }
+
+    function setExerciseScope(scope) {
+        exerciseScope = scope;
+        const sBtn = document.getElementById('scope-studied-btn');
+        const aBtn = document.getElementById('scope-all-btn');
+        if (sBtn && aBtn) {
+            if (scope === 'studied') {
+                sBtn.classList.add('active');
+                aBtn.classList.remove('active');
+            } else {
+                sBtn.classList.remove('active');
+                aBtn.classList.add('active');
+            }
+        }
     }
 
     function openDeckPickerFor(mode) {
@@ -1011,21 +1110,9 @@
         const container = document.getElementById('deck-picker-list');
         container.innerHTML = '';
 
-        const mathOption = document.createElement('div');
-        mathOption.className = 'deck-item-row';
-        mathOption.style.borderColor = 'var(--sapphire-blue)';
-        mathOption.innerHTML = `
-            <div>
-                <strong style="font-size:0.95rem; color:var(--sapphire-blue);">🎯 Daily 50 Batch (Mathematically Scheduled)</strong>
-                <div style="font-size:0.8rem; color:var(--text-secondary);">Calculated across all due words by SRS forgetting curve formula</div>
-            </div>
-            <button class="modal-btn primary" onclick="launchPlayerWithDeck({id:'srs50', name:'Daily 50 (Mathematically Scheduled)', words: getAllWordsPool()})">Launch</button>
-        `;
-        container.appendChild(mathOption);
-
         USER_DECKS.forEach(deck => {
-            const badge = deck.type.startsWith('common') ? '<span class="deck-badge-free">Common</span>' : '<span class="deck-badge-custom">Custom</span>';
             const count = deck.words ? deck.words.length : 0;
+            const badge = deck.type === 'canonical' ? '<span class="deck-badge-canonical">Canonical</span>' : '<span class="deck-badge-custom">Custom</span>';
             const row = document.createElement('div');
             row.className = 'deck-item-row';
             row.innerHTML = `
@@ -1034,9 +1121,9 @@
                         <strong style="font-size:0.95rem;">${deck.name}</strong>
                         ${badge}
                     </div>
-                    <div style="font-size:0.8rem; color:var(--text-secondary);">${count} words</div>
+                    <div style="font-size:0.8rem; color:var(--text-secondary);">${count} words available</div>
                 </div>
-                <button class="modal-btn primary" onclick="launchPlayerWithDeck(${JSON.stringify(deck).replace(/"/g, '&quot;')})">Launch</button>
+                <button class="modal-btn primary" onclick="launchPlayerWithDeck('${deck.id}')">Launch</button>
             `;
             container.appendChild(row);
         });
@@ -1050,26 +1137,44 @@
         return all.length > 0 ? all : USER_DECKS[0].words;
     }
 
-    function launchPlayerWithDeck(deck) {
+    function launchPlayerWithDeck(deckId) {
+        const deck = USER_DECKS.find(d => d.id === deckId) || USER_DECKS[0];
         currentActiveDeck = deck;
-        currentDeckCards = (deck.words && deck.words.length > 0) ? deck.words : USER_DECKS[0].words;
         closeDeckPicker();
-        
-        const badge = document.getElementById('player-active-deck-badge');
-        const modeLabel = pendingModeTarget === 'flashcard' ? 'Flashcards' : 'SRS Exercises';
-        badge.innerText = `Active: ${deck.name} (${modeLabel})`;
 
-        document.getElementById('player-section').style.display = 'flex';
+        const allWords = deck.words && deck.words.length > 0 ? deck.words : USER_DECKS[0].words;
 
         if (pendingModeTarget === 'flashcard') {
+            currentDeckCards = [...allWords];
+            document.getElementById('player-active-deck-badge').innerText = `Active: ${deck.name} (Flashcards)`;
+            document.getElementById('player-section').style.display = 'flex';
             document.getElementById('flashcard-view').style.display = 'flex';
             document.getElementById('exercise-view').style.display = 'none';
             currentCardIdx = 0;
             renderFlashcard();
         } else {
+            // 2-Phase Input Before Output Filter
+            const studiedMap = getStudiedWordsMap();
+            let candidateWords = allWords;
+
+            if (exerciseScope === 'studied') {
+                const studiedOnly = allWords.filter(w => studiedMap[w.word]);
+                if (studiedOnly.length > 0) {
+                    candidateWords = studiedOnly;
+                } else {
+                    alert(`Notice: You haven't reviewed flashcards for "${deck.name}" yet! Practicing all deck words so you can start right away.`);
+                    candidateWords = allWords;
+                }
+            }
+
+            // Shuffle exercise order
+            currentDeckCards = [...candidateWords].sort(() => 0.5 - Math.random());
+            document.getElementById('player-active-deck-badge').innerText = `Active: ${deck.name} (Exercises)`;
+            document.getElementById('player-section').style.display = 'flex';
             document.getElementById('flashcard-view').style.display = 'none';
             document.getElementById('exercise-view').style.display = 'flex';
             currentExerciseIdx = 0;
+            streakCount = 0; // Starts at 0 baseline
             renderExercise();
         }
 
@@ -1077,6 +1182,7 @@
     }
 
     function closePlayer() {
+        if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
         document.getElementById('player-section').style.display = 'none';
     }
 
@@ -1088,7 +1194,7 @@
         container.innerHTML = '';
 
         USER_DECKS.forEach(deck => {
-            const isCommon = deck.type.startsWith('common');
+            const isCanonical = (deck.type === 'canonical');
             const count = deck.words ? deck.words.length : 0;
             const row = document.createElement('div');
             row.className = 'deck-item-row';
@@ -1096,13 +1202,13 @@
                 <div style="flex:1;">
                     <div style="display:flex; align-items:center; gap:8px;">
                         <strong style="font-size:1rem;">${deck.name}</strong>
-                        ${isCommon ? '<span class="deck-badge-free">Default Common</span>' : '<span class="deck-badge-custom">Custom Slot</span>'}
+                        ${isCanonical ? '<span class="deck-badge-canonical">Curriculum Core</span>' : '<span class="deck-badge-custom">Personal Slot</span>'}
                     </div>
                     <div style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;">${count} words enrolled</div>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                     <button class="modal-btn secondary" style="padding:6px 12px; font-size:0.82rem;" onclick="openDeckEditor('${deck.id}')">⚙️ Edit Deck</button>
-                    <button class="modal-btn primary" style="padding:6px 12px; font-size:0.82rem;" onclick="launchPlayerWithDeck(${JSON.stringify(deck).replace(/"/g, '&quot;')}); closeMyDecksModal();">Practice</button>
+                    <button class="modal-btn primary" style="padding:6px 12px; font-size:0.82rem;" onclick="launchPlayerWithDeck('${deck.id}'); closeMyDecksModal();">Practice</button>
                 </div>
             `;
             container.appendChild(row);
@@ -1117,7 +1223,7 @@
         document.getElementById('deck-editor-title').innerText = `Manage: ${editingDeck.name}`;
         
         const renameContainer = document.getElementById('deck-rename-container');
-        if (editingDeck.type.startsWith('common')) {
+        if (editingDeck.type === 'canonical') {
             renameContainer.style.display = 'none';
         } else {
             renameContainer.style.display = 'flex';
@@ -1133,8 +1239,10 @@
         const newName = document.getElementById('deck-rename-input').value.trim();
         if (newName) {
             editingDeck.name = newName;
+            saveUserDecksToStorage();
             document.getElementById('deck-editor-title').innerText = `Manage: ${editingDeck.name}`;
             alert(`🎉 Renamed to "${newName}"!`);
+            populateDeckDropdowns();
         }
     }
 
@@ -1178,6 +1286,13 @@
             return;
         }
 
+        // Basic LLM / Regex non-gibberish quality gate
+        const hasHangul = /[가-힣]/.test(kr);
+        if (!hasHangul) {
+            alert('Warning: The word must contain valid Korean Hangul characters.');
+            return;
+        }
+
         if (!editingDeck.words) editingDeck.words = [];
         editingDeck.words.unshift({
             word: kr,
@@ -1186,9 +1301,11 @@
             exampleEn: `I am studying "${kr}".`
         });
 
+        saveUserDecksToStorage();
         document.getElementById('editor-add-kr').value = '';
         document.getElementById('editor-add-en').value = '';
         renderDeckEditorWords();
+        populateDeckDropdowns();
     }
 
     function editSingleWord(idx) {
@@ -1201,6 +1318,7 @@
 
         editingDeck.words[idx].word = newKr.trim() || current.word;
         editingDeck.words[idx].meaning = newEn.trim() || current.meaning;
+        saveUserDecksToStorage();
         renderDeckEditorWords();
     }
 
@@ -1209,20 +1327,22 @@
         const wordName = editingDeck.words[idx].word;
         if (confirm(`Remove "${wordName}" from ${editingDeck.name}?`)) {
             editingDeck.words.splice(idx, 1);
+            saveUserDecksToStorage();
             renderDeckEditorWords();
+            populateDeckDropdowns();
         }
     }
 
     function openCreateDeckModal() {
         const body = document.getElementById('create-deck-body');
-        const customCount = USER_DECKS.filter(d => d.type !== 'common_core' && d.type !== 'common_weak').length;
+        const customCount = USER_DECKS.filter(d => d.type === 'custom').length;
         
         body.innerHTML = `
             <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.45;">
-                Every user gets <strong>2 Free Custom Decks</strong> and <strong>2 Common Decks</strong>. You currently have <strong>${customCount} custom slots active</strong>.
+                Create a personal vocabulary deck. You currently have <strong>${customCount} custom decks active</strong>.
             </p>
             <div style="margin-top:12px;">
-                <input type="text" class="form-input" id="new-deck-input" placeholder="e.g. Deck ${customCount + 1} (or custom name)">
+                <input type="text" class="form-input" id="new-deck-input" placeholder="e.g. TOPIK II Vocab (or custom name)">
             </div>
             <div class="modal-btn-row">
                 <button class="modal-btn secondary" onclick="document.getElementById('create-deck-modal').classList.remove('open')">Cancel</button>
@@ -1240,18 +1360,19 @@
         const name = (input.value || '').trim() || `Deck ${currentCount + 1}`;
         const newId = 'custom_' + Date.now();
         USER_DECKS.push({ id: newId, name: name, words: [], type: 'custom' });
+        saveUserDecksToStorage();
         alert(`🎉 Created "${name}"!`);
         document.getElementById('create-deck-modal').classList.remove('open');
         populateDeckDropdowns();
     }
 
     // =========================================================
-    // DYNAMIC BATCH INGESTION PIPELINE (WITH LOADING SCREEN)
+    // DYNAMIC BATCH INGESTION PIPELINE (WITH QUALITY CHECK)
     // =========================================================
     async function submitImport() {
         const text = document.getElementById('import-textarea').value.trim();
         const targetDeckId = document.getElementById('import-target-deck').value;
-        const targetDeck = USER_DECKS.find(d => d.id === targetDeckId) || USER_DECKS[2];
+        const targetDeck = USER_DECKS.find(d => d.id === targetDeckId) || USER_DECKS[USER_DECKS.length - 1];
 
         if (!text) {
             alert('Please enter at least one word.');
@@ -1286,21 +1407,25 @@
                 meaning = parts[1].trim();
             }
 
-            titleEl.innerText = `Ingesting Word ${i + 1} of ${lines.length}...`;
-            descEl.innerText = `Adding "${korean}" (${meaning}) & generating audio profile...`;
+            // Quality filter: require Hangul
+            if (/[가-힣]/.test(korean)) {
+                titleEl.innerText = `Validating Word ${i + 1} of ${lines.length}...`;
+                descEl.innerText = `Enrolling "${korean}" (${meaning}) & generating audio profile...`;
 
-            newParsedWords.push({
-                word: korean,
-                meaning: meaning,
-                exampleKr: `${korean}을/를 공부하고 있어요.`,
-                exampleEn: `I am studying "${korean}".`
-            });
+                newParsedWords.push({
+                    word: korean,
+                    meaning: meaning,
+                    exampleKr: `${korean}을/를 공부하고 있어요.`,
+                    exampleEn: `I am studying "${korean}".`
+                });
+            }
 
-            await new Promise(r => setTimeout(r, 120));
+            await new Promise(r => setTimeout(r, 80));
         }
 
         if (!targetDeck.words) targetDeck.words = [];
         targetDeck.words = [...targetDeck.words, ...newParsedWords];
+        saveUserDecksToStorage();
 
         titleEl.innerText = '🎉 Ingestion Complete!';
         descEl.innerText = `Successfully enrolled ${newParsedWords.length} words into ${targetDeck.name}! Launching practice...`;
@@ -1311,7 +1436,7 @@
 
         recordTodayActivity();
         pendingModeTarget = 'flashcard';
-        launchPlayerWithDeck(targetDeck);
+        launchPlayerWithDeck(targetDeck.id);
     }
 
     // =========================================================
@@ -1319,29 +1444,29 @@
     // =========================================================
     function playCurrentAudio() {
         const item = currentDeckCards[currentCardIdx % currentDeckCards.length] || currentDeckCards[0];
-        const koreanWord = item.word;
+        playCurrentAudioWord(item.word);
+    }
 
+    function playCurrentAudioWord(word) {
+        if (!word) return;
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(koreanWord);
+            const utterance = new SpeechSynthesisUtterance(word);
             utterance.lang = 'ko-KR';
             utterance.rate = 0.85;
-            
             const voices = window.speechSynthesis.getVoices();
             const koVoice = voices.find(v => v.lang.startsWith('ko') || v.name.includes('Korean'));
             if (koVoice) utterance.voice = koVoice;
-
             window.speechSynthesis.speak(utterance);
         }
-
         try {
-            const audio = new Audio(`/api/v1/vocab/tts?text=${encodeURIComponent(koreanWord)}`);
+            const audio = new Audio(`/api/v1/vocab/tts?text=${encodeURIComponent(word)}`);
             audio.play().catch(() => {});
         } catch (e) {}
     }
 
     // =========================================================
-    // FLASHCARD PLAYER
+    // TRACK 1: FLASHCARD PLAYER (PHASE 1 - COMPREHENSIBLE INPUT)
     // =========================================================
     let isTranslationVisible = false;
 
@@ -1350,6 +1475,10 @@
             currentDeckCards = USER_DECKS[0].words;
         }
         const item = currentDeckCards[currentCardIdx % currentDeckCards.length];
+        
+        // Mark as studied for the 2-phase rule
+        markWordAsStudied(item.word);
+
         document.getElementById('fc-counter-label').innerText = `Card ${currentCardIdx + 1} of ${currentDeckCards.length}`;
         document.getElementById('fc-word').innerText = item.word;
         document.getElementById('fc-meaning').innerText = item.meaning;
@@ -1385,137 +1514,34 @@
         renderFlashcard(); 
         playCurrentAudio();
     }
-    function toggleStruggle() { document.getElementById('fc-struggle-btn').classList.toggle('active'); }
-
-    // =========================================================
-    // EXERCISE ENGINE (DYNAMIC CHOICES FROM DECK)
-    // =========================================================
-
-    let isMcqMode = true; // true = 4-choice buttons, false = text typing
-
-    function setInputFormat(format) {
-        isMcqMode = (format === 'mcq');
-        const mcqBtn = document.getElementById('format-mcq-btn');
-        const typeBtn = document.getElementById('format-typing-btn');
-        if (mcqBtn && typeBtn) {
-            if (isMcqMode) {
-                mcqBtn.classList.add('active');
-                typeBtn.classList.remove('active');
-            } else {
-                mcqBtn.classList.remove('active');
-                typeBtn.classList.add('active');
+    function toggleStruggle() { 
+        const btn = document.getElementById('fc-struggle-btn');
+        btn.classList.toggle('active');
+        
+        // If struggle flagged, copy word to "Words I Forget Easily" deck
+        const item = currentDeckCards[currentCardIdx % currentDeckCards.length];
+        const weakDeck = USER_DECKS.find(d => d.id === 'weak');
+        if (weakDeck && item) {
+            if (!weakDeck.words.some(w => w.word === item.word)) {
+                weakDeck.words.push(item);
+                saveUserDecksToStorage();
             }
         }
-        updateHudFormatButton();
     }
 
-    function toggleInputFormat() {
-        isMcqMode = !isMcqMode;
-        setInputFormat(isMcqMode ? 'mcq' : 'typing');
-        renderExercise();
-    }
-
-    function updateHudFormatButton() {
-        const btn = document.getElementById('hud-format-toggle-btn');
-        if (btn) {
-            btn.innerHTML = isMcqMode ? '🔘 MCQ (Switch to ⌨️ Type)' : '⌨️ Typing (Switch to 🔘 MCQ)';
-        }
-    }
-
-    function handleTypingKeyDown(event) {
-        if (event.key === 'Enter') {
-            submitTypingAnswer();
-        }
-    }
-
-    function normalizeTextForEval(text = '') {
-        return text.toLowerCase()
-            .replace(/^(to\s+|a\s+|an\s+|the\s+)/gi, '')
-            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
-            .replace(/\s+/g, ' ')
-            .trim();
-    }
-
-    function submitTypingAnswer() {
-        const inputEl = document.getElementById('ex-typing-input');
-        const feedbackEl = document.getElementById('typing-answer-feedback');
-        const userTyped = (inputEl.value || '').trim();
-
-        if (!userTyped) {
-            inputEl.focus();
-            return;
-        }
-
-        const item = currentDeckCards[currentExerciseIdx % currentDeckCards.length];
-        const responseTimeMs = Date.now() - questionStartTime;
-        let isCorrect = false;
-        let expectedAnswer = '';
-
-        if (activeDirection === 'ko_to_en' || activeDirection === 'audio_drill') {
-            expectedAnswer = item.meaning;
-            // Check against all synonyms in the meaning string (e.g. "to reserve / make a reservation" -> ["reserve", "make a reservation"])
-            const allowedSynonyms = item.meaning.split(/[\/,;]/).map(s => normalizeTextForEval(s));
-            const userNorm = normalizeTextForEval(userTyped);
-            isCorrect = allowedSynonyms.some(syn => syn === userNorm || userNorm.includes(syn) || syn.includes(userNorm));
-        } else {
-            // English to Korean or Context Sentence
-            expectedAnswer = item.word;
-            isCorrect = (normalizeTextForEval(userTyped) === normalizeTextForEval(item.word));
-        }
-
-        inputEl.disabled = true;
-
-        // Log telemetry
-        logResearchTelemetry({
-            word: item.word || '',
-            meaning: item.meaning || '',
-            direction: activeDirection,
-            input_mode: 'typing',
-            is_correct: isCorrect,
-            user_answer: userTyped,
-            correct_answer: expectedAnswer,
-            response_time_ms: responseTimeMs,
-            grade: isCorrect ? 'good' : 'again'
-        });
-
-        if (isCorrect) {
-            feedbackEl.style.display = 'block';
-            feedbackEl.style.background = '#F0FFF4';
-            feedbackEl.style.color = 'var(--success-green)';
-            feedbackEl.style.border = '1px solid var(--success-green)';
-            feedbackEl.innerHTML = `✅ Perfect! "${userTyped}" matches "${expectedAnswer}"`;
-
-            streakCount = Math.min(5, streakCount + 1);
-            document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
-            document.getElementById('wrong-auto-banner').style.display = 'none';
-            document.getElementById('correct-srs-panel').style.display = 'flex';
-            recordTodayActivity();
-        } else {
-            feedbackEl.style.display = 'block';
-            feedbackEl.style.background = '#FFF0F1';
-            feedbackEl.style.color = 'var(--kp-color)';
-            feedbackEl.style.border = '1px solid var(--kp-color)';
-            feedbackEl.innerHTML = `❌ You typed: "${userTyped}" — Correct answer: <strong>"${expectedAnswer}"</strong>`;
-
-            streakCount = 0;
-            document.getElementById('graduation-streak-val').innerText = `0/5 (Reset on mistake)`;
-            document.getElementById('correct-srs-panel').style.display = 'none';
-            document.getElementById('wrong-auto-banner').style.display = 'flex';
-        }
-    }
-
-
-    let activeDirection = 'ko_to_en';
-
+    // =========================================================
+    // TRACK 2: RETENTION EXERCISES & AUTONOMOUS LATENCY SRS
+    // =========================================================
     function renderExercise() {
-        questionStartTime = Date.now(); // Start timer for latency calculation
+        if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+        questionStartTime = Date.now();
+        
         if (!currentDeckCards || currentDeckCards.length === 0) {
             currentDeckCards = USER_DECKS[0].words;
         }
         const item = currentDeckCards[currentExerciseIdx % currentDeckCards.length];
         document.getElementById('ex-counter-label').innerText = `Exercise ${currentExerciseIdx + 1} of ${currentDeckCards.length}`;
 
-        // Determine direction based on user's selected mode
         if (selectedExerciseType === 'mix') {
             const allModes = ['ko_to_en', 'en_to_ko', 'audio_drill', 'context_cloze'];
             activeDirection = allModes[currentExerciseIdx % allModes.length];
@@ -1529,13 +1555,11 @@
         let choices = [];
         let correctIdx = 0;
 
-        // Get pool of Korean words & English meanings for dynamic distractors
         const poolWords = getAllWordsPool();
         const koreanDistractors = poolWords.map(w => w.word).filter(w => w !== item.word);
         const englishDistractors = poolWords.map(w => w.meaning).filter(m => m !== item.meaning);
 
         if (activeDirection === 'ko_to_en') {
-            // Mode 1: Korean -> English
             dirLabel.innerText = 'Direction: 1. 🇰🇷➔🇬🇧 Recognition (Korean ➔ English)';
             questionText.innerHTML = `<span style="font-size:2.8rem;">${item.word}</span>`;
             subtext.innerText = 'Select the correct English definition:';
@@ -1545,7 +1569,6 @@
             correctIdx = choices.indexOf(item.meaning);
 
         } else if (activeDirection === 'en_to_ko') {
-            // Mode 2: English -> Korean (Production / Vice Versa)
             dirLabel.innerText = 'Direction: 2. 🇬🇧➔🇰🇷 Production (English ➔ Korean)';
             questionText.innerHTML = `<span style="font-size:2.2rem; color:var(--text-primary);">${item.meaning}</span>`;
             subtext.innerText = 'Select the matching Korean word:';
@@ -1555,7 +1578,6 @@
             correctIdx = choices.indexOf(item.word);
 
         } else if (activeDirection === 'audio_drill') {
-            // Mode 3: Audio Pronunciation Drill
             dirLabel.innerText = 'Direction: 3. 🔊 Audio Listening Drill';
             questionText.innerHTML = `
                 <button onclick="playCurrentAudioWord('${item.word}')" style="background:rgba(31,111,235,0.08); border:2px solid var(--sapphire-blue); color:var(--sapphire-blue); padding:12px 26px; border-radius:30px; font-size:1.15rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
@@ -1563,8 +1585,6 @@
                 </button>
             `;
             subtext.innerText = 'Listen to the spoken audio and identify the meaning:';
-            
-            // Auto play audio on question reveal
             playCurrentAudioWord(item.word);
 
             const distract = englishDistractors.length >= 3 ? englishDistractors : ['to cancel', 'to study', 'to depart', 'happiness'];
@@ -1572,7 +1592,6 @@
             correctIdx = choices.indexOf(item.meaning);
 
         } else if (activeDirection === 'context_cloze') {
-            // Mode 4: Context / Sentence Exercise
             dirLabel.innerText = 'Direction: 4. 📝 Context Sentence Exercise';
             
             let clozeSentence = item.exampleKr || `${item.word}을/를 공부해요.`;
@@ -1625,38 +1644,60 @@
         document.getElementById('wrong-auto-banner').style.display = 'none';
         document.getElementById('correct-srs-panel').style.display = 'none';
 
-        const emaFill = document.getElementById('ema-fill');
-        const emaLabel = document.getElementById('ema-pct');
-        const pct = Math.min(100, Math.round(60 + (currentExerciseIdx * 4)));
-        emaFill.style.width = pct + '%';
-        emaLabel.innerText = pct + '%';
-        
-        document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
+        // Mastery starts at 0% baseline: streak * 20%
+        const pct = Math.min(100, Math.round(streakCount * 20));
+        document.getElementById('ema-fill').style.width = pct + '%';
+        document.getElementById('ema-pct').innerText = pct + '%';
+        document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Mastery`;
     }
 
-    function playCurrentAudioWord(word) {
-        if (!word) return;
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(word);
-            utterance.lang = 'ko-KR';
-            utterance.rate = 0.85;
-            const voices = window.speechSynthesis.getVoices();
-            const koVoice = voices.find(v => v.lang.startsWith('ko') || v.name.includes('Korean'));
-            if (koVoice) utterance.voice = koVoice;
-            window.speechSynthesis.speak(utterance);
+    function handleTypingKeyDown(event) {
+        if (event.key === 'Enter') {
+            submitTypingAnswer();
         }
-        try {
-            const audio = new Audio(`/api/v1/vocab/tts?text=${encodeURIComponent(word)}`);
-            audio.play().catch(() => {});
-        } catch (e) {}
+    }
+
+    function submitTypingAnswer() {
+        const inputEl = document.getElementById('ex-typing-input');
+        const feedbackEl = document.getElementById('typing-answer-feedback');
+        const userTyped = (inputEl.value || '').trim();
+
+        if (!userTyped) {
+            inputEl.focus();
+            return;
+        }
+
+        const item = currentDeckCards[currentExerciseIdx % currentDeckCards.length];
+        const responseTimeMs = Date.now() - questionStartTime;
+        let isCorrect = false;
+        let expectedAnswer = '';
+
+        const userNorm = normalizeTextForEval(userTyped);
+
+        if (activeDirection === 'ko_to_en' || activeDirection === 'audio_drill') {
+            expectedAnswer = item.meaning;
+            const allowedSynonyms = item.meaning.split(/[\/,;()]/).map(s => normalizeTextForEval(s)).filter(Boolean);
+            allowedSynonyms.push(normalizeTextForEval(item.meaning));
+            isCorrect = allowedSynonyms.some(syn => syn === userNorm || (syn.length > 2 && userNorm.includes(syn)));
+        } else {
+            // English to Korean or Context Sentence
+            expectedAnswer = item.word;
+            const allowedKorean = item.word.split(/[\/,;()]/).map(s => normalizeTextForEval(s)).filter(Boolean);
+            allowedKorean.push(normalizeTextForEval(item.word));
+            isCorrect = allowedKorean.some(k => k === userNorm);
+        }
+
+        inputEl.disabled = true;
+
+        // Process Autonomous SRS Result
+        processSrsResult(isCorrect, userTyped, expectedAnswer, responseTimeMs, 'typing', item);
     }
 
     function handleExerciseAnswer(selectedIdx, correctIdx, choices = [], item = {}, direction = 'recognition') {
         const responseTimeMs = Date.now() - questionStartTime;
         const isCorrect = (selectedIdx === correctIdx);
         const userChoice = choices[selectedIdx] || '';
-        const correctChoice = choices[correctIdx] || item.meaning || '';
+        const correctChoice = choices[correctIdx] || item.meaning || item.word || '';
 
         const buttons = document.querySelectorAll('.exercise-option-btn');
         buttons.forEach((btn, idx) => {
@@ -1665,73 +1706,161 @@
             else if (idx === selectedIdx) btn.classList.add('wrong');
         });
 
-        // 📊 Log rich telemetry for research paper
+        processSrsResult(isCorrect, userChoice, correctChoice, responseTimeMs, 'mcq', item);
+    }
+
+    // Surrender Button: "⚡ I Forgot It / Show Answer"
+    function handleForgotIt() {
+        const item = currentDeckCards[currentExerciseIdx % currentDeckCards.length];
+        const responseTimeMs = Date.now() - questionStartTime;
+        const expected = (activeDirection === 'ko_to_en' || activeDirection === 'audio_drill') ? item.meaning : item.word;
+
+        // Automatically copy to "Words I Forget Easily" deck
+        const weakDeck = USER_DECKS.find(d => d.id === 'weak');
+        if (weakDeck && item) {
+            if (!weakDeck.words.some(w => w.word === item.word)) {
+                weakDeck.words.push(item);
+                saveUserDecksToStorage();
+            }
+        }
+
+        processSrsResult(false, '[I Forgot It]', expected, responseTimeMs, isMcqMode ? 'mcq' : 'typing', item, true);
+    }
+
+    // AUTONOMOUS LATENCY SRS ENGINE (CALCULATES INTERVAL BY LATENCY)
+    function processSrsResult(isCorrect, userAnswer, correctAnswer, responseTimeMs, inputMode, item, isSurrender = false) {
+        let latencyCategory = 'normal';
+        let stabilityMultiplier = 2.0;
+        let daysAdded = 3;
+
+        if (isCorrect) {
+            if (responseTimeMs < 2500) {
+                latencyCategory = 'Fluent Recall';
+                stabilityMultiplier = 3.0;
+                daysAdded = 7;
+            } else if (responseTimeMs <= 6000) {
+                latencyCategory = 'Good Recall';
+                stabilityMultiplier = 2.0;
+                daysAdded = 3;
+            } else {
+                latencyCategory = 'High Effort / Hesitation';
+                stabilityMultiplier = 1.2;
+                daysAdded = 1;
+            }
+        }
+
         logResearchTelemetry({
             word: item.word || '',
             meaning: item.meaning || '',
-            direction: direction,
+            direction: activeDirection,
+            input_mode: inputMode,
             is_correct: isCorrect,
-            user_answer: userChoice,
-            correct_answer: correctChoice,
+            user_answer: userAnswer,
+            correct_answer: correctAnswer,
             response_time_ms: responseTimeMs,
-            grade: isCorrect ? 'good' : 'again'
+            grade: isCorrect ? (stabilityMultiplier >= 3.0 ? 'easy' : stabilityMultiplier >= 2.0 ? 'good' : 'hard') : 'again'
         });
+
+        const feedbackEl = document.getElementById('typing-answer-feedback');
+        if (!isMcqMode && feedbackEl) {
+            feedbackEl.style.display = 'block';
+            if (isCorrect) {
+                feedbackEl.style.background = '#F0FFF4';
+                feedbackEl.style.color = 'var(--success-green)';
+                feedbackEl.style.border = '1px solid var(--success-green)';
+                feedbackEl.innerHTML = `✅ Perfect! "${userAnswer}" matches "${correctAnswer}"`;
+            } else {
+                feedbackEl.style.background = '#FFF0F1';
+                feedbackEl.style.color = 'var(--kp-color)';
+                feedbackEl.style.border = '1px solid var(--kp-color)';
+                feedbackEl.innerHTML = `❌ Correct Answer: <strong>"${correctAnswer}"</strong>`;
+            }
+        }
 
         if (isCorrect) {
             streakCount = Math.min(5, streakCount + 1);
-            document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Long-Term Memory`;
+            const pct = Math.min(100, Math.round(streakCount * 20));
+            document.getElementById('ema-fill').style.width = pct + '%';
+            document.getElementById('ema-pct').innerText = pct + '%';
+            document.getElementById('graduation-streak-val').innerText = `${streakCount}/5 to Mastery`;
+
+            document.getElementById('auto-srs-title').innerText = `✅ Correct! (⚡ ${latencyCategory}: ${(responseTimeMs/1000).toFixed(1)}s)`;
+            document.getElementById('auto-srs-subtitle').innerText = `Interval auto-adjusted: +${daysAdded} Days (×${stabilityMultiplier.toFixed(1)}) · Streak ${streakCount}/5`;
+
             document.getElementById('wrong-auto-banner').style.display = 'none';
             document.getElementById('correct-srs-panel').style.display = 'flex';
             recordTodayActivity();
+
+            // Auto-advance after 1.2s for frictionless flow
+            autoAdvanceTimer = setTimeout(() => {
+                advanceToNextExercise();
+            }, 1200);
+
         } else {
             streakCount = 0;
+            document.getElementById('ema-fill').style.width = '0%';
+            document.getElementById('ema-pct').innerText = '0%';
             document.getElementById('graduation-streak-val').innerText = `0/5 (Reset on mistake)`;
+            
+            document.getElementById('wrong-banner-text').innerHTML = isSurrender
+                ? `⚡ Card surrendered. Correct answer: <strong>"${correctAnswer}"</strong> (Repeat Today)`
+                : `❌ Incorrect. Correct answer: <strong>"${correctAnswer}"</strong> (Repeat Today)`;
+
             document.getElementById('correct-srs-panel').style.display = 'none';
             document.getElementById('wrong-auto-banner').style.display = 'flex';
         }
     }
 
-    function handleCorrectRating(grade) { advanceToNextExercise(); }
     function advanceToNextExercise() {
+        if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
         currentExerciseIdx++;
         renderExercise();
     }
 
     // =========================================================
-    // SEARCH GLOBAL DICTIONARY
+    // SEARCH GLOBAL DICTIONARY (UNIFIED POOL)
     // =========================================================
-    const GLOBAL_DICTIONARY = [
-        { word: '사랑', meaning: 'love' },
-        { word: '행복', meaning: 'happiness' },
-        { word: '친구', meaning: 'friend' },
-        { word: '학교', meaning: 'school' },
-        { word: '약속', meaning: 'appointment / promise' },
-        { word: '여행', meaning: 'travel / trip' },
-        { word: '바다', meaning: 'ocean / sea' },
-        { word: '하늘', meaning: 'sky' },
-        { word: '시간', meaning: 'time' },
-        { word: '마음', meaning: 'heart / mind' },
-        { word: '시작', meaning: 'start / beginning' },
-        { word: '선물', meaning: 'gift / present' },
-        { word: '공부', meaning: 'study' },
-        { word: '음악', meaning: 'music' },
-        { word: '가족', meaning: 'family' }
-    ];
+    function getGlobalDictionaryPool() {
+        let pool = [];
+        const seen = new Set();
+        USER_DECKS.forEach(d => {
+            if (d.words) {
+                d.words.forEach(w => {
+                    if (!seen.has(w.word)) {
+                        seen.add(w.word);
+                        pool.push(w);
+                    }
+                });
+            }
+        });
+        return pool;
+    }
 
     function handleVocabSearch() {
         const query = (document.getElementById('global-vocab-search-input').value || '').trim().toLowerCase();
         const container = document.getElementById('search-results-container');
         container.innerHTML = '';
-        const results = GLOBAL_DICTIONARY.filter(i => !query || i.word.toLowerCase().includes(query) || i.meaning.toLowerCase().includes(query));
+        const pool = getGlobalDictionaryPool();
+        const results = pool.filter(i => !query || i.word.toLowerCase().includes(query) || i.meaning.toLowerCase().includes(query));
+        
+        if (results.length === 0) {
+            container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">No matching words found. Use "+ Import Words" to add new words!</div>';
+            return;
+        }
+
         results.forEach(item => {
             const row = document.createElement('div');
-            row.className = 'search-result-item';
+            row.style.display = 'flex';
+            row.style.justifyContent = 'space-between';
+            row.style.alignItems = 'center';
+            row.style.padding = '12px 14px';
+            row.style.borderBottom = '1px solid var(--border-color)';
             row.innerHTML = `
                 <div>
                     <strong style="font-size:1.05rem;">${item.word}</strong>
                     <div style="font-size:0.85rem; color:var(--text-secondary);">${item.meaning}</div>
                 </div>
-                <button class="search-add-btn" onclick="addGlobalWordToChosenDeck('${item.word}', '${item.meaning}')">+ Add</button>
+                <button class="modal-btn primary" style="padding:6px 14px; font-size:0.85rem;" onclick="addGlobalWordToChosenDeck('${item.word}', '${item.meaning}')">+ Add</button>
             `;
             container.appendChild(row);
         });
@@ -1739,19 +1868,23 @@
 
     function addGlobalWordToChosenDeck(word, meaning) {
         const chosenDeckId = document.getElementById('search-target-deck-select').value;
-        const targetDeck = USER_DECKS.find(d => d.id === chosenDeckId) || USER_DECKS[2];
+        const targetDeck = USER_DECKS.find(d => d.id === chosenDeckId) || USER_DECKS[USER_DECKS.length - 1];
 
         if (!targetDeck.words) targetDeck.words = [];
-        targetDeck.words.push({ 
-            word, 
-            meaning, 
-            exampleKr: `${word}을/를 좋아해요.`, 
-            exampleEn: `I like ${meaning}.` 
-        });
-
-        alert(`🎉 Added "${word} (${meaning})" to ${targetDeck.name}!
+        if (!targetDeck.words.some(w => w.word === word)) {
+            targetDeck.words.push({ 
+                word, 
+                meaning, 
+                exampleKr: `${word}을/를 좋아해요.`, 
+                exampleEn: `I like ${meaning}.` 
+            });
+            saveUserDecksToStorage();
+            alert(`🎉 Added "${word} (${meaning})" to ${targetDeck.name}!
 (Total words in deck: ${targetDeck.words.length})`);
-        populateDeckDropdowns();
+            populateDeckDropdowns();
+        } else {
+            alert(`"${word}" is already enrolled in ${targetDeck.name}.`);
+        }
     }
 
     function executeClaimVKP() {
@@ -1760,6 +1893,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
+        loadUserDecksFromStorage();
         if (window.supabaseClient) {
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1768,7 +1902,6 @@
                 }
             } catch (e) {}
         }
-        // Login enables & maintains the daily streak!
         recordTodayActivity();
         syncUserKP();
         updateStreakUI();
