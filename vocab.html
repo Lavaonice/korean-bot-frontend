@@ -479,8 +479,29 @@
             </div>
         </div>
 
-        <p style="font-size:0.88rem; color:var(--text-secondary); margin-top:4px;">Choose which vocabulary pool to practice:</p>
-        <div style="display:flex; flex-direction:column; gap:10px;" id="deck-picker-list"></div>
+        <!-- Hierarchical Book & Chapter Selector -->
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:4px;">
+            <div style="display:flex; align-items:center; gap:8px; background:var(--secondary-bg); padding:10px 14px; border-radius:8px; border:1px solid var(--border-color);">
+                <label style="font-size:0.88rem; font-weight:700; white-space:nowrap; color:var(--text-primary);">📖 Select Curriculum / Book:</label>
+                <select class="form-input" id="deck-picker-book-select" style="background:#fff; font-weight:700;" onchange="handlePickerBookChange()"></select>
+            </div>
+
+            <!-- Entire Book Option Banner -->
+            <div id="picker-entire-book-banner" style="background:#F0F7FF; border:1px solid rgba(31,111,235,0.3); border-radius:8px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <strong style="font-size:0.95rem; color:var(--sapphire-blue);" id="picker-book-title-label">Yonsei Level 1-1</strong>
+                    <div style="font-size:0.8rem; color:var(--text-secondary);" id="picker-book-words-label">All 10 Chapters (143 words)</div>
+                </div>
+                <button class="modal-btn primary" style="padding:8px 16px; font-size:0.85rem;" onclick="launchSelectedBookEntirely()">⭐ Practice Entire Book</button>
+            </div>
+
+            <div style="font-size:0.85rem; font-weight:800; color:var(--text-secondary); margin-top:4px;" id="picker-chapters-header-label">
+                Or Choose Specific Chapter (Chapter-by-Chapter):
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto; padding-right:4px;" id="deck-picker-list"></div>
+        </div>
+
         <div class="modal-btn-row">
             <button class="modal-btn secondary" onclick="closeDeckPicker()">Cancel</button>
         </div>
@@ -1098,6 +1119,142 @@
         }
     }
 
+    let selectedPickerBookId = 'yonsei_1_1';
+
+    function populatePickerBookSelect() {
+        const select = document.getElementById('deck-picker-book-select');
+        if (!select) return;
+        select.innerHTML = '';
+
+        USER_DECKS.forEach(deck => {
+            const opt = document.createElement('option');
+            opt.value = deck.id;
+            const chCount = deck.chapters ? deck.chapters.length : 0;
+            const wCount = deck.words ? deck.words.length : 0;
+            if (chCount > 0) {
+                opt.innerText = `${deck.name} (${chCount} Chapters · ${wCount} words)`;
+            } else {
+                opt.innerText = `${deck.name} (${wCount} words)`;
+            }
+            select.appendChild(opt);
+        });
+
+        select.value = selectedPickerBookId;
+        renderChapterPickerForSelectedBook();
+    }
+
+    function handlePickerBookChange() {
+        const select = document.getElementById('deck-picker-book-select');
+        selectedPickerBookId = select.value;
+        renderChapterPickerForSelectedBook();
+    }
+
+    function renderChapterPickerForSelectedBook() {
+        const deck = USER_DECKS.find(d => d.id === selectedPickerBookId) || USER_DECKS[0];
+        const container = document.getElementById('deck-picker-list');
+        const entireBanner = document.getElementById('picker-entire-book-banner');
+        const headerLabel = document.getElementById('picker-chapters-header-label');
+        
+        container.innerHTML = '';
+
+        const chapters = deck.chapters || [];
+        const words = deck.words || [];
+
+        document.getElementById('picker-book-title-label').innerText = deck.name;
+        document.getElementById('picker-book-words-label').innerText = chapters.length > 0 
+            ? `All ${chapters.length} Chapters (${words.length} words combined)`
+            : `${words.length} enrolled words`;
+
+        if (chapters.length > 0) {
+            entireBanner.style.display = 'flex';
+            headerLabel.style.display = 'block';
+            headerLabel.innerText = `Or Choose Specific Chapter (${chapters.length} Chapters):`;
+
+            chapters.forEach(ch => {
+                const row = document.createElement('div');
+                row.className = 'deck-item-row';
+                row.style.padding = '10px 14px';
+                row.innerHTML = `
+                    <div style="flex:1;">
+                        <strong style="font-size:0.92rem; color:var(--text-primary);">${ch.name}</strong>
+                        <div style="font-size:0.78rem; color:var(--text-secondary);">${ch.words.length} words in chapter</div>
+                    </div>
+                    <button class="modal-btn primary" style="padding:6px 14px; font-size:0.82rem;" onclick="launchPlayerWithChapter('${deck.id}', '${ch.id}')">Practice ➔</button>
+                `;
+                container.appendChild(row);
+            });
+        } else {
+            // Deck has no chapters (custom or weak deck)
+            entireBanner.style.display = 'none';
+            headerLabel.style.display = 'block';
+            headerLabel.innerText = `Enrolled Words in this Deck (${words.length}):`;
+
+            const row = document.createElement('div');
+            row.className = 'deck-item-row';
+            row.style.padding = '14px 16px';
+            row.innerHTML = `
+                <div style="flex:1;">
+                    <strong style="font-size:1rem;">${deck.name}</strong>
+                    <div style="font-size:0.82rem; color:var(--text-secondary);">${words.length} words enrolled</div>
+                </div>
+                <button class="modal-btn primary" onclick="launchPlayerWithDeck('${deck.id}')">Launch Deck</button>
+            `;
+            container.appendChild(row);
+        }
+    }
+
+    function launchSelectedBookEntirely() {
+        launchPlayerWithDeck(selectedPickerBookId);
+    }
+
+    function launchPlayerWithChapter(bookId, chapterId) {
+        const book = USER_DECKS.find(d => d.id === bookId);
+        if (!book) return;
+        const chapter = (book.chapters || []).find(c => c.id === chapterId);
+        if (!chapter) return;
+
+        closeDeckPicker();
+
+        const words = chapter.words && chapter.words.length > 0 ? chapter.words : book.words;
+        const targetTitle = `${book.name} • ${chapter.name}`;
+
+        if (pendingModeTarget === 'flashcard') {
+            currentDeckCards = [...words];
+            document.getElementById('player-active-deck-badge').innerText = `Active: ${targetTitle} (Flashcards)`;
+            document.getElementById('player-section').style.display = 'flex';
+            document.getElementById('flashcard-view').style.display = 'flex';
+            document.getElementById('exercise-view').style.display = 'none';
+            currentCardIdx = 0;
+            renderFlashcard();
+        } else {
+            // 2-Phase Input Before Output Filter
+            const studiedMap = getStudiedWordsMap();
+            let candidateWords = words;
+
+            if (exerciseScope === 'studied') {
+                const studiedOnly = words.filter(w => studiedMap[w.word]);
+                if (studiedOnly.length > 0) {
+                    candidateWords = studiedOnly;
+                } else {
+                    alert(`Notice: You haven't reviewed flashcards for "${chapter.name}" yet! Practicing all chapter words so you can start right away.`);
+                    candidateWords = words;
+                }
+            }
+
+            // Shuffle exercise order
+            currentDeckCards = [...candidateWords].sort(() => 0.5 - Math.random());
+            document.getElementById('player-active-deck-badge').innerText = `Active: ${targetTitle} (Exercises)`;
+            document.getElementById('player-section').style.display = 'flex';
+            document.getElementById('flashcard-view').style.display = 'none';
+            document.getElementById('exercise-view').style.display = 'flex';
+            currentExerciseIdx = 0;
+            streakCount = 0;
+            renderExercise();
+        }
+
+        document.getElementById('player-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
     function openDeckPickerFor(mode) {
         pendingModeTarget = mode;
         const icon = mode === 'flashcard' ? '🎴' : '✍️';
@@ -1110,27 +1267,7 @@
             modeSelector.style.display = 'none';
         }
 
-        const container = document.getElementById('deck-picker-list');
-        container.innerHTML = '';
-
-        USER_DECKS.forEach(deck => {
-            const count = deck.words ? deck.words.length : 0;
-            const badge = deck.type === 'canonical' ? '<span class="deck-badge-canonical">Canonical</span>' : '<span class="deck-badge-custom">Custom</span>';
-            const row = document.createElement('div');
-            row.className = 'deck-item-row';
-            row.innerHTML = `
-                <div>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <strong style="font-size:0.95rem;">${deck.name}</strong>
-                        ${badge}
-                    </div>
-                    <div style="font-size:0.8rem; color:var(--text-secondary);">${count} words available</div>
-                </div>
-                <button class="modal-btn primary" onclick="launchPlayerWithDeck('${deck.id}')">Launch</button>
-            `;
-            container.appendChild(row);
-        });
-
+        populatePickerBookSelect();
         document.getElementById('deck-picker-modal').classList.add('open');
     }
 
